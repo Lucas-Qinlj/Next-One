@@ -13,7 +13,7 @@
 
 ## 代码托管
 
-- 2026-10-25：用户授权创建 GitHub 仓库并上传当前项目，已初始化本地 main 分支、创建私有仓库 [Lucas-Qinlj/Todo-AI](https://github.com/Lucas-Qinlj/Todo-AI)。首次源码上传正在进行；下方历史记录中的“无 Git 仓库/无提交”仅描述当时状态。
+- 2026-10-25：用户授权创建 GitHub 仓库并上传当前项目，已初始化本地 main 分支、创建私有仓库 [Lucas-Qinlj/Todo-AI](https://github.com/Lucas-Qinlj/Todo-AI)。首次源码提交 edf3328 已成功推送到 origin/main，推送前 swift test 20 项全通过；下方历史记录中的“无 Git 仓库/无提交”仅描述当时状态。
 - 托管源码、测试、Skill、文档和轻量原型资源；排除 .build、.local、数据库、环境/凭据、参考原图及验收截图。本机排除文件不删除，部分设计/验收文档中的本地图片证据不会随代码仓库提供。
 
 ## 已实现
