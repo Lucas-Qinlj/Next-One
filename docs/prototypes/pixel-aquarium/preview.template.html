@@ -1,0 +1,210 @@
+<div id="todo-aquarium" aria-label="Todo-AI 像素鱼缸动效预览">
+  <style>
+    #todo-aquarium{--aq-surface:light-dark(#f3f3f0,#222521);--aq-ink:light-dark(#272c28,#e7eae5);--aq-muted:light-dark(#5d675e,#a5afa4);--aq-line:light-dark(#d8ded5,#3d453d);--aq-control:light-dark(#fff,#30372f);color:var(--aq-ink);font:13px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color-scheme:light dark;width:100%}
+    #todo-aquarium{max-width:736px;margin:0 auto}
+    #todo-aquarium *{box-sizing:border-box}
+    #todo-aquarium .aq-top{display:flex;align-items:center;justify-content:space-between;padding:0 100px 12px 2px;gap:12px;flex-wrap:wrap}
+    #todo-aquarium .aq-title{font-size:15px;font-weight:600;letter-spacing:.04em}
+    #todo-aquarium .aq-muted{color:var(--aq-muted);font-size:12px}
+    #todo-aquarium .aq-stage{min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;padding:40px 16px 28px;overflow:hidden;border-radius:12px;background-color:light-dark(#e7ebe5,#171c19)}
+    #todo-aquarium .aq-tank{position:relative;width:300px;max-width:100%;aspect-ratio:3/2;border:4px solid #52675b;border-top-color:#839c85;border-bottom:8px solid #35463d;border-radius:10px 10px 8px 8px;box-shadow:0 12px 26px #0005,0 0 0 1px #121c17;transition:width .25s;overflow:hidden;background:#143c3e}
+    #todo-aquarium canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+    #todo-aquarium .aq-glass{pointer-events:none;position:absolute;inset:0;border:1px solid #ddffe52d;border-radius:5px;box-shadow:inset 3px 0 #dcffe517,inset -2px 0 #dcffe511}
+    #todo-aquarium .aq-stage-top{position:absolute;top:13px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    #todo-aquarium .aq-count{font:12px/1.4 -apple-system,sans-serif;color:var(--aq-muted)}
+    #todo-aquarium button,#todo-aquarium select{font:inherit;color:var(--aq-ink);background:var(--aq-control);border:1px solid var(--aq-line);border-radius:7px;min-height:30px;padding:5px 10px}
+    #todo-aquarium button:hover{filter:brightness(1.08)}
+    #todo-aquarium button[aria-pressed=true]{background:light-dark(#dfe9da,#414f3e);border-color:light-dark(#9aaa91,#718268)}
+    #todo-aquarium button:disabled{opacity:.45}
+    #todo-aquarium .aq-pause{padding:3px 9px;min-height:27px;background:transparent}
+    #todo-aquarium .aq-toast{position:absolute;bottom:16px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;max-width:calc(100% - 24px);width:max-content;padding:7px 12px;background:#254f38;color:#f0ffe9;border:1px solid #5c8862;border-radius:7px;transition:opacity .3s,transform .3s;font-size:12px}
+    #todo-aquarium .aq-toast.show{opacity:1;transform:translate(-50%,0)}
+    #todo-aquarium .aq-controls{margin-top:14px;display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px}
+    #todo-aquarium .aq-field{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    #todo-aquarium .aq-field>span:first-child{color:var(--aq-muted)}
+    #todo-aquarium .aq-scenes{display:flex;gap:5px;flex-wrap:wrap}
+    #todo-aquarium .aq-scenes button{padding:5px 9px}
+    #todo-aquarium input[type=range]{accent-color:light-dark(#718465,#b6cba7);width:110px;min-width:70px;margin:0}
+    #todo-aquarium output{font-size:12px;color:var(--aq-muted);font-variant-numeric:tabular-nums}
+    #todo-aquarium .aq-tasks{margin-top:18px;border-top:1px solid var(--aq-line)}
+    #todo-aquarium .aq-task{display:flex;align-items:center;gap:11px;width:100%;background:transparent;border:0;border-bottom:1px solid var(--aq-line);border-radius:0;text-align:left;padding:12px 2px;min-height:48px}
+    #todo-aquarium .aq-check{width:18px;height:18px;border:1px solid var(--aq-muted);border-radius:50%;display:inline-flex;justify-content:center;align-items:center;flex-shrink:0;font-size:12px}
+    #todo-aquarium .aq-task[data-done=true] .aq-check{background:#697f5c;border-color:#697f5c;color:#fff}
+    #todo-aquarium .aq-task[data-done=true] .aq-task-name{text-decoration:line-through;color:var(--aq-muted)}
+    #todo-aquarium .aq-task[aria-pressed=true]{background:transparent;border-color:var(--aq-line)}
+    #todo-aquarium .aq-task-count{margin-left:auto;color:var(--aq-muted);font-size:12px}
+    #todo-aquarium .aq-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px}
+    #todo-aquarium .aq-time{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    #todo-aquarium .aq-time button{font-size:12px}
+    #todo-aquarium .aq-life{font-size:12px;color:var(--aq-muted);margin-top:9px;min-height:18px}
+    #todo-aquarium .aq-error{color:#c14545}
+    @media(max-width:440px){#todo-aquarium .aq-stage{min-height:300px;padding-inline:12px}#todo-aquarium .aq-top{padding-right:90px}#todo-aquarium .aq-task-count{max-width:110px;text-align:right}#todo-aquarium .aq-controls{gap:12px}#todo-aquarium .aq-scenes button{padding-inline:7px}#todo-aquarium .aq-life{min-height:36px}}
+    @media(pointer:coarse){#todo-aquarium button,#todo-aquarium select{min-height:44px}#todo-aquarium .aq-stage-top{top:8px}}
+    @media(prefers-reduced-motion:reduce){#todo-aquarium .aq-tank,#todo-aquarium .aq-toast{transition:none}}
+  </style>
+  <div class="aq-top"><span class="aq-title">一缸小小的成就</span><span class="aq-muted">Todo-AI · 动效预览</span></div>
+  <div class="aq-stage viz-dotted-background">
+    <div class="aq-stage-top"><span class="aq-count" data-count>正在载入景观…</span><button type="button" class="aq-pause cursor-interaction" data-pause aria-pressed="false">暂停</button></div>
+    <div class="aq-tank"><canvas width="384" height="256" role="img" aria-label="像素鱼缸：鱼缓慢游动摆尾，水面光纹流动，水草随水轻摆">像素鱼缸预览</canvas><div class="aq-glass"></div></div>
+    <div class="aq-toast" role="status" aria-live="polite"></div>
+  </div>
+  <div class="aq-controls">
+    <div class="aq-field"><span>景观</span><div class="aq-scenes" role="group" aria-label="选择景观"><button type="button" class="cursor-interaction" data-scene="garden" aria-pressed="true">水草庭院</button><button type="button" class="cursor-interaction" data-scene="coral" aria-pressed="false">珊瑚浅湾</button><button type="button" class="cursor-interaction" data-scene="moon" aria-pressed="false">月色石景</button></div></div>
+    <label class="aq-field"><span>大小</span><input type="range" min="180" max="420" value="300" step="10" aria-label="鱼缸宽度"><output data-size>300 px</output></label>
+  </div>
+  <div class="aq-tasks" aria-label="模拟完成待办">
+    <button type="button" class="aq-task cursor-interaction" data-task="0" data-done="false" aria-pressed="false"><span class="aq-check" aria-hidden="true"></span><span class="aq-task-name">整理今天的想法</span><span class="aq-task-count">无子任务 · 小型鱼</span></button>
+    <button type="button" class="aq-task cursor-interaction" data-task="1" data-done="false" aria-pressed="false"><span class="aq-check" aria-hidden="true"></span><span class="aq-task-name">完成一个小计划</span><span class="aq-task-count">3 个后代 · 中档鱼</span></button>
+    <button type="button" class="aq-task cursor-interaction" data-task="2" data-done="false" aria-pressed="false"><span class="aq-check" aria-hidden="true"></span><span class="aq-task-name">收尾一个大项目</span><span class="aq-task-count">8 个后代 · 高档鱼</span></button>
+  </div>
+  <div class="aq-bottom"><span class="aq-muted" data-day>第 0 天 · 演示数据</span><div class="aq-time"><button type="button" class="cursor-interaction" data-day-next>时间 +1 天</button><button type="button" class="cursor-interaction" data-reset>重新演示</button></div></div>
+  <div class="aq-life" role="status" aria-live="polite">寿命示例：现实 12 个月 → 陪伴 6 天</div>
+  <script>
+  (function(){
+    const root=document.getElementById('todo-aquarium');
+    const q=s=>root.querySelector(s), qa=s=>Array.from(root.querySelectorAll(s));
+    const canvas=q('canvas'), ctx=canvas.getContext('2d');
+    const urls=__ASSET_URLS__;
+    const W=384,H=256;
+    const names=['红绿灯鱼','孔雀鱼','神仙鱼','蓝波子','蝶尾金鱼','金龙鱼'];
+    const pools=[[0,1],[2,3],[4,5]], widths=[25,29,32,30,42,53];
+    let scene='garden',time=0,day=0,paused=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let fish=[],particles=[],rewarded=new Set(),done=[false,false,false],lastStamp=0,frame=0,toastTimer,ready=false,visible=true,serial=0;
+    let sprites=[],plants=[],images={},lastFish=null;
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    const rand=(a,b)=>a+Math.random()*(b-a);
+    function tierForCount(n){if(!Number.isInteger(n)||n<0)throw Error('invalid descendant count');return n===0?0:n<=5?1:2;}
+    function lifetimeDays(months){if(!Number.isFinite(months)||months<=0)throw Error('invalid lifespan');return months/2;}
+    function toast(text){q('.aq-toast').textContent=text;q('.aq-toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>q('.aq-toast').classList.remove('show'),3000);}
+    function cropAtlas(img,cols,rows,regions=null){
+      const scratch=document.createElement('canvas');scratch.width=img.width;scratch.height=img.height;
+      const c=scratch.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
+      const data=c.getImageData(0,0,img.width,img.height).data, result=[];
+      for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+        const region=regions&&regions[row*cols+col];
+        const x0=region?Math.floor(region[0]*img.width/1536):Math.floor(col*img.width/cols),x1=region?Math.floor(region[2]*img.width/1536):Math.floor((col+1)*img.width/cols),y0=region?Math.floor(region[1]*img.height/1024):Math.floor(row*img.height/rows),y1=region?Math.floor(region[3]*img.height/1024):Math.floor((row+1)*img.height/rows);
+        let l=x1,r=x0,t=y1,b=y0;
+        for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){if(data[(y*img.width+x)*4+3]>90){l=Math.min(l,x);r=Math.max(r,x);t=Math.min(t,y);b=Math.max(b,y);}}
+        if(r<=l||b<=t)throw Error('empty sprite cell');
+        const out=document.createElement('canvas');out.width=r-l+1;out.height=b-t+1;
+        out.getContext('2d').drawImage(img,l,t,out.width,out.height,0,0,out.width,out.height);result.push(out);
+      }
+      return result;
+    }
+    function makeFish(species,entering=false,age=0){
+      const f={id:++serial,species,x:entering?rand(140,245):rand(55,325),y:entering?14:rand(60,177),vx:rand(-7,7),vy:0,tx:rand(42,342),ty:rand(55,180),speed:rand(8,14),turn:1,phase:rand(0,6.28),born:day-age,life:lifetimeDays(12),entry:entering?0:1,exit:null,targetAt:time+rand(4,12)};
+      fish.push(f);return f;
+    }
+    function bubbles(x,y,n=7){for(let i=0;i<n;i++)particles.push({x,y,vx:rand(-12,12),vy:rand(-16,-7),life:rand(.7,1.7),max:1.7,r:rand(1,2.5)});}
+    function count(){q('[data-count]').textContent=fish.filter(f=>f.exit===null).length+' 条鱼';}
+    function renderTasks(){qa('[data-task]').forEach((el,i)=>{el.dataset.done=String(done[i]);el.setAttribute('aria-pressed',String(done[i]));el.querySelector('.aq-check').textContent=done[i]?'✓':'';});}
+    function refreshLife(){
+      const alive=fish.filter(f=>f.exit===null),f=lastFish&&lastFish.exit===null?lastFish:alive[alive.length-1];
+      q('.aq-life').textContent=f?names[f.species]+' · 还可陪伴 '+Math.max(0,f.life-(day-f.born)).toFixed(0)+' 天 · 寿命暂用 12 个月示例':'鱼缸安静下来了。完成一个新的待办，迎接下一条鱼。';
+      q('[data-day]').textContent='第 '+day+' 天 · 演示数据';count();
+    }
+    function complete(index){
+      if(!ready)return;
+      done[index]=!done[index];renderTasks();
+      if(!done[index]){toast('待办已重新打开，已有鱼保留');return;}
+      if(rewarded.has(index)){toast('这件待办已经送过一条鱼了');return;}
+      rewarded.add(index);const tier=tierForCount([0,3,8][index]),pool=pools[tier];
+      lastFish=makeFish(pool[Math.floor(Math.random()*pool.length)],true);bubbles(lastFish.x,22,12);
+      toast('完成了！一条'+names[lastFish.species]+'游进鱼缸');refreshLife();draw();
+    }
+    function advanceDay(){
+      if(!ready)return;day++;
+      let leaving=0;fish.forEach(f=>{if(f.exit===null&&day-f.born>=f.life){f.exit=0;bubbles(f.x,f.y,9);leaving++;}});
+      if(paused||reduced.matches){fish=fish.filter(f=>f.exit===null);particles=[];}
+      toast(leaving?leaving+' 条鱼化作气泡，结束了这次陪伴':'时间往前走了一天');refreshLife();draw();
+    }
+    function reset(){
+      day=0;fish=[];particles=[];rewarded.clear();done=[false,false,false];lastFish=null;
+      [0,1,2,3,4].forEach((s,i)=>makeFish(s,false,[0,1,2,0,1][i]));
+      renderTasks();refreshLife();draw();
+    }
+    function swim(f,dt){
+      if(f.exit!==null){f.exit+=dt;f.y-=dt*8;return;}
+      if(f.entry<1){f.entry=Math.min(1,f.entry+dt*.5);f.y+=dt*24;}
+      if(time>f.targetAt||Math.hypot(f.tx-f.x,f.ty-f.y)<12){f.tx=rand(38,346);f.ty=rand(52,179);f.targetAt=time+rand(6,18);}
+      const dx=f.tx-f.x,dy=f.ty-f.y,d=Math.max(1,Math.hypot(dx,dy));
+      const ease=1-Math.exp(-dt*.65);
+      f.vx+=(dx/d*f.speed-f.vx)*ease;f.vy+=(dy/d*f.speed*.38-f.vy)*ease;
+      f.x=Math.max(32,Math.min(352,f.x+f.vx*dt));if(f.entry>=1)f.y=Math.max(44,Math.min(184,f.y+f.vy*dt));
+      const sign=f.vx<0?-1:1;f.turn+=(sign-f.turn)*(1-Math.exp(-dt*3));
+    }
+    function drawPlant(sprite,x,base,height,phase,flip=false){
+      const width=height*sprite.width/sprite.height,sw= sprite.width,sh=sprite.height;
+      ctx.save();ctx.translate(x,base);if(flip)ctx.scale(-1,1);
+      // Root stays fixed; top strips sway more than the bottom.
+      for(let y=0;y<sh;y+=3){const h=Math.min(3,sh-y),u=1-y/sh;const wave=Math.sin(time*.85+u*2.6+phase)*u*u*4.2+Math.sin(time*.42+phase)*u*1.5;
+        ctx.drawImage(sprite,0,y,sw,h,Math.round(-width/2+wave),-height+y/sh*height,width,Math.ceil(h/sh*height)+.25);}
+      ctx.restore();
+    }
+    function drawFish(f){
+      const s=sprites[f.species],w=widths[f.species],h=w*s.height/s.width;
+      const bob=Math.sin(time*1.8+f.phase)*1.2,alpha=f.exit===null?1:Math.max(0,1-f.exit/1.3);
+      ctx.save();ctx.translate(Math.round(f.x),Math.round(f.y+bob));ctx.globalAlpha=alpha;
+      ctx.scale(f.turn,1);ctx.rotate(Math.max(-.06,Math.min(.06,f.vy*.007))*Math.sign(f.turn));
+      // Strip deformation isolates tail flex instead of rigidly translating the sprite.
+      for(let x=0;x<s.width;x+=3){const sw=Math.min(3,s.width-x),u=x/s.width;const sway=Math.sin(time*6.4+f.phase+u*3)*Math.pow(1-u,2)*2.3;
+        ctx.drawImage(s,x,0,sw,s.height,-w/2+x/s.width*w,-h/2+sway,sw/s.width*w+.25,h);}
+      ctx.restore();
+    }
+    function water(){
+      const night=scene==='moon',baseAlpha=night?.075:.10;
+      ctx.save();ctx.fillStyle=night?'#9cdcff':'#e4ffe0';
+      // Thin interrupted surface ribbons drift in opposing directions.
+      for(let i=0;i<12;i++){const y=7+i*2,x=((i*43+time*(i%2?3:-2))%440+440)%440-40;
+        ctx.globalAlpha=baseAlpha*(.5+.5*Math.sin(time*.55+i));ctx.fillRect(Math.round(x),y,20+i%4*12,1);ctx.fillRect(Math.round(x+62),y+2,9,1);}
+      // Faint caustic fragments, no full-scene deformation of solid rocks.
+      for(let i=0;i<10;i++){const x=(i*43+Math.sin(time*.4+i)*7)%W,y=48+i*13+Math.sin(time*.5+i)*3;
+        ctx.globalAlpha=(night?.035:.05)*(.6+.4*Math.sin(time*.65+i));ctx.fillRect(Math.round(x),Math.round(y),8+i%3*5,1);}
+      for(let i=0;i<11;i++){let y=(H-((time*(2+i%3)+i*23)%H)),x=24+(i*37)%337+Math.sin(time*.5+i)*2;
+        ctx.globalAlpha=.10+i%3*.035;ctx.fillRect(Math.round(x),Math.round(y),1,1);}
+      // Surface light softly brightens and recedes.
+      const light=ctx.createLinearGradient(0,0,0,100);light.addColorStop(0,night?'#b4dfff':'#ffffc8');light.addColorStop(1,'transparent');ctx.globalAlpha=.035+.025*Math.sin(time*.38);ctx.fillStyle=light;ctx.fillRect(0,0,W,100);
+      ctx.restore();
+    }
+    function draw(){
+      if(!ready)return;ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,W,H);const bg=images[scene];ctx.drawImage(bg,0,0,W,H);
+      // Only the water surface refracts; submerged hardscape stays still.
+      for(let y=0;y<52;y+=2){const ripple=Math.sin(time*.85+y*.19)*1.5*(1-y/52);ctx.drawImage(bg,0,y/H*bg.height,bg.width,2/H*bg.height,Math.round(ripple)-2,y,W+4,2);}
+      water();
+      fish.slice().sort((a,b)=>a.y-b.y).forEach(drawFish);
+      const pi=['garden','coral','moon'].indexOf(scene);
+      drawPlant(plants[pi],30,250,scene==='coral'?73:105,0);
+      drawPlant(plants[pi],355,252,scene==='coral'?62:82,2.3,true);
+      ctx.save();ctx.strokeStyle='#d1f8ee';
+      particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max)*.7;ctx.strokeRect(Math.round(p.x),Math.round(p.y),Math.ceil(p.r),Math.ceil(p.r));});ctx.restore();
+    }
+    function loop(stamp){
+      frame=0;if(!root.isConnected)return;
+      const dt=lastStamp?Math.min(.05,(stamp-lastStamp)/1000):0;lastStamp=stamp;
+      if(visible&&!document.hidden&&!paused&&ready){
+        time+=dt;fish.forEach(f=>swim(f,dt));fish=fish.filter(f=>f.exit===null||f.exit<1.3);
+        particles.forEach(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;});particles=particles.filter(p=>p.life>0);draw();
+      }
+      if(visible&&!document.hidden&&!paused)frame=requestAnimationFrame(loop);
+    }
+    function schedule(){lastStamp=0;if(!frame&&!paused&&visible&&!document.hidden)frame=requestAnimationFrame(loop);}
+    function setPause(value){paused=value;q('[data-pause]').textContent=paused?'继续':'暂停';q('[data-pause]').setAttribute('aria-pressed',String(paused));if(paused){cancelAnimationFrame(frame);frame=0;}else schedule();}
+    q('[data-pause]').onclick=()=>setPause(!paused);
+    qa('[data-scene]').forEach(el=>el.onclick=()=>{scene=el.dataset.scene;qa('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b===el)));draw();});
+    q('input[type=range]').oninput=e=>{const size=Number(e.target.value);q('.aq-tank').style.width=size+'px';q('[data-size]').textContent=size+' px';};
+    qa('[data-task]').forEach(el=>el.onclick=()=>complete(Number(el.dataset.task)));
+    q('[data-day-next]').onclick=advanceDay;q('[data-reset]').onclick=()=>{if(ready){reset();toast('开始新一轮演示');}};
+    reduced.addEventListener('change',e=>{if(e.matches)setPause(true);draw();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;}else schedule();});
+    const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible){cancelAnimationFrame(frame);frame=0;}else schedule();});observer.observe(root);
+    function load(src){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src;});}
+    Promise.all(Object.entries(urls).map(async([key,url])=>{images[key]=await load(url);})).then(()=>{
+      sprites=cropAtlas(images.fish,3,2,[[0,100,512,490],[512,100,1024,510],[1024,0,1536,560],[0,560,512,1024],[500,550,965,1024],[965,570,1536,1024]]);plants=cropAtlas(images.plants,3,1);ready=true;reset();setPause(paused);schedule();
+      if(globalThis.Tweak){const state={width:300};const tweak=new Tweak({container:q('.aq-tank'),onChange:()=>{q('.aq-tank').style.width=state.width+'px';q('input[type=range]').value=state.width;q('[data-size]').textContent=state.width+' px';}});tweak.addSlider(state,'width',{label:'鱼缸宽度',min:180,max:420,step:10,unit:'px'});}
+    }).catch(()=>{q('[data-count]').textContent='素材载入失败';q('.aq-life').textContent='请重新打开预览。';q('.aq-life').classList.add('aq-error');});
+    // Read-only hooks for local acceptance, no app or database access.
+    root.aquariumPreview={tierForCount,lifetimeDays,getState:()=>({ready,scene,day,paused,fish:fish.map(f=>({id:f.id,species:f.species,x:f.x,y:f.y,born:f.born,life:f.life,leaving:f.exit!==null})),rewarded:Array.from(rewarded),done:[...done],time})};
+    setPause(paused);
+  })();
+  </script>
+</div>

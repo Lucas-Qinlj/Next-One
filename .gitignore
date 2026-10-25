@@ -1,0 +1,20 @@
+.build/
+.worktrees/
+.local/
+.DS_Store
+*.sqlite*
+.env*
+
+# Local credentials, user data and generated artifacts
+.swiftpm/
+__pycache__/
+*.pyc
+*.pem
+*.p12
+*.pfx
+*.key
+*.log
+# Keep research references and generated preview captures local.
+docs/design/2026-10-25/pixel-aquarium-references/
+docs/prototypes/pixel-aquarium/evidence/
+docs/prototypes/pixel-aquarium/assets/*-original.png
