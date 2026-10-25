@@ -4,6 +4,8 @@ import TodoCore
 
 @MainActor @Observable final class AppModel {
     let store: Store
+    var codexIntegration: CodexIntegration?
+    var integrationError: String?
     var state = Snapshot()
     var scope = "all" { didSet { composerExpanded = false } }
     var selectedID: String? { didSet { if selectedID != nil { composerExpanded = false } } }
@@ -35,6 +37,15 @@ import TodoCore
     var confirm: Confirmation?
     struct Confirmation: Identifiable { let id = UUID(); var title: String; var detail: String; var action: () -> Void }
     init(store: Store) { self.store = store; refresh() }
+    func prepareCodexIntegration() {
+        do {
+            codexIntegration = try CodexIntegration.prepare(dataDirectory: store.directory)
+            integrationError = nil
+        } catch {
+            codexIntegration = nil
+            integrationError = error.localizedDescription
+        }
+    }
     func refresh() {
         do {
             let snapshot = try store.snapshot()

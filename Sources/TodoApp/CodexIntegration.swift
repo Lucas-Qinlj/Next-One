@@ -1,23 +1,76 @@
 import Foundation
+import CryptoKit
+import Darwin
 
 struct CodexIntegration {
     let skill: URL
     let cli: URL
 
-    static func locate() -> CodexIntegration? {
-        var candidates: [URL] = []
-        var directory = Bundle.main.bundleURL
-        for _ in 0..<6 { candidates.append(directory); directory.deleteLastPathComponent() }
-        // Local development fallback, validated before offering a copyable instruction.
-        candidates.append(URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent())
-        for root in candidates {
-            let skill = root.appendingPathComponent("Skills/todo-ai/SKILL.md")
-            let cli = root.appendingPathComponent(".build/debug/todo")
-            if FileManager.default.isReadableFile(atPath: skill.path), FileManager.default.isExecutableFile(atPath: cli.path) {
-                return CodexIntegration(skill: skill, cli: cli)
+    /// Bundle-owned resources only. Never search the build machine's source tree.
+    static func prepare(dataDirectory: URL, bundleURL: URL = Bundle.main.bundleURL) throws -> CodexIntegration {
+        let fm = FileManager.default
+        let sourceCLI = bundleURL.appendingPathComponent("Contents/Helpers/todo").resolvingSymlinksInPath()
+        let sourceSkill = bundleURL.appendingPathComponent("Contents/Resources/CodexIntegration/todo-ai").resolvingSymlinksInPath()
+        guard fm.isExecutableFile(atPath: sourceCLI.path),
+              fm.isReadableFile(atPath: sourceSkill.appendingPathComponent("SKILL.md").path),
+              fm.isReadableFile(atPath: sourceSkill.appendingPathComponent("references/cli.md").path) else {
+            throw IntegrationError("应用包缺少接入文件，请重新构建或安装完整的 Todo-AI 应用。")
+        }
+        var files: [(String, URL)] = [("bin/todo", sourceCLI)]
+        for relative in try fm.subpathsOfDirectory(atPath: sourceSkill.path) {
+            let url = sourceSkill.appendingPathComponent(relative)
+            if try url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true {
+                files.append(("skills/todo-ai/" + relative, url))
             }
         }
-        return nil
+        files.sort { $0.0 < $1.0 }
+        var hash = SHA256()
+        for (path, url) in files {
+            hash.update(data: Data((path + "\0").utf8))
+            hash.update(data: try Data(contentsOf: url))
+        }
+        let version = hash.finalize().map { String(format: "%02x", $0) }.joined()
+        let root = dataDirectory.appendingPathComponent("integration", isDirectory: true)
+        let versions = root.appendingPathComponent("versions", isDirectory: true)
+        try fm.createDirectory(at: versions, withIntermediateDirectories: true)
+        var destination = versions.appendingPathComponent(version, isDirectory: true)
+        func valid(_ folder: URL) -> Bool {
+            fm.isExecutableFile(atPath: folder.appendingPathComponent("bin/todo").path) && files.allSatisfy {
+                fm.contentsEqual(atPath: $0.1.path, andPath: folder.appendingPathComponent($0.0).path)
+            }
+        }
+        let current = root.appendingPathComponent("current")
+        let previous = current.resolvingSymlinksInPath()
+        if previous.deletingLastPathComponent().resolvingSymlinksInPath() == versions.resolvingSymlinksInPath(),
+           previous.lastPathComponent.hasPrefix(version), valid(previous) { destination = previous }
+        if !valid(destination) {
+            // Retain an old generation even if it was modified; never overwrite a running executable.
+            if fm.fileExists(atPath: destination.path) { destination = versions.appendingPathComponent(version + "-" + UUID().uuidString) }
+            let staging = versions.appendingPathComponent(".staging-" + UUID().uuidString)
+            defer { try? fm.removeItem(at: staging) }
+            for (relative, source) in files {
+                let target = staging.appendingPathComponent(relative)
+                try fm.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try fm.copyItem(at: source, to: target)
+            }
+            guard valid(staging) else { throw IntegrationError("接入文件校验失败，请重试。") }
+            do { try fm.moveItem(at: staging, to: destination) }
+            catch { if !valid(destination) { throw error } }
+        }
+        if fm.fileExists(atPath: current.path), (try? fm.destinationOfSymbolicLink(atPath: current.path)) == nil {
+            throw IntegrationError("接入目录中存在同名文件，已保留原内容；请检查 integration/current。")
+        }
+        let link = root.appendingPathComponent(".current-" + UUID().uuidString)
+        defer { try? fm.removeItem(at: link) }
+        try fm.createSymbolicLink(atPath: link.path, withDestinationPath: "versions/" + destination.lastPathComponent)
+        guard rename(link.path, current.path) == 0 else { throw IntegrationError("无法切换接入文件，请检查数据目录的写入权限后重试。") }
+        return CodexIntegration(skill: current.appendingPathComponent("skills/todo-ai/SKILL.md"), cli: current.appendingPathComponent("bin/todo"))
+    }
+
+    struct IntegrationError: LocalizedError {
+        let message: String
+        init(_ message: String) { self.message = message }
+        var errorDescription: String? { message }
     }
 
     func installPrompt(dataDirectory: URL) -> String {

@@ -548,7 +548,7 @@ struct SettingsView: View {
 }
 struct CodexIntegrationView: View {
     @Bindable var model: AppModel
-    private let integration = CodexIntegration.locate()
+    private var integration: CodexIntegration? { model.codexIntegration }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -576,8 +576,9 @@ struct CodexIntegrationView: View {
                 Text("复制不会自动安装；发送后由 Codex 执行。")
                     .font(.caption2).foregroundStyle(.secondary)
             } else {
-                Text("未找到本机 Skill 或待办命令，请从项目目录运行 scripts/run.sh 后重试。")
+                Text(model.integrationError ?? "接入文件尚未准备好。")
                     .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                Button("重试") { model.prepareCodexIntegration() }
             }
         }
     }

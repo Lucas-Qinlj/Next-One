@@ -28,7 +28,8 @@ extension CoreTests {
         XCTAssertEqual(before, try store.snapshot())
     }
     func testPlaceOrderPersistenceAndBranchMove() throws {
-        let a = try add("A"), b = try add("B"), c = try add("C")
+        // Give the baseline a deterministic order; same-second creation uses random IDs as a tie-breaker.
+        let a = try add("A", extra: ["priority": "high"]), b = try add("B"), c = try add("C", extra: ["priority": "low"])
         _ = try call("place", ["id": c.id, "expected-revision": "1", "anchor": a.id, "anchor-revision": "1", "placement": "before"])
         XCTAssertEqual(try store.snapshot().children(nil).map(\.id), [c.id, a.id, b.id])
         let again = try Store(directory: directory)

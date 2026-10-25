@@ -5,7 +5,9 @@ import TodoCore
     var controller: FloatingController?
     func applicationDidFinishLaunching(_ notification: Notification) {
         do {
-            controller = FloatingController(model: AppModel(store: try Store()))
+            let model = AppModel(store: try Store())
+            model.prepareCodexIntegration()
+            controller = FloatingController(model: model)
             for item in NSApp.mainMenu?.items.first?.submenu?.items ?? [] { item.target = controller }
         }
         catch { let alert = NSAlert(); alert.messageText = "Todo-AI 无法打开"; alert.informativeText = error.localizedDescription; alert.runModal(); NSApp.terminate(nil) }

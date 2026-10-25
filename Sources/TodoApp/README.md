@@ -42,4 +42,4 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 设置页每条绑定目录在“重绑”右侧提供 trash 图标；悬停和辅助功能名称明确解除绑定、保留文件/待办，确认后走 project unbind。无目录后显示“绑定文件夹…”入口。
 
-CodexIntegration 在应用目录祖先及编译期项目路径中验证 Skill/CLI 是否存在，生成带当前 Store.directory 的自然语言安装指令；设置页展示同一全文并用 doc.on.doc 复制。缺资源时展示重建提示；只复制，不执行安装或发送消息。scripts/run.sh 构建全部产品，确保 CLI 同时可用。真实全局安装由用户粘贴给 Codex 后执行，应用不修改用户 Skill/配置。
+CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/CodexIntegration/todo-ai 读取资源，启动时准备到当前 Store.directory/integration 的内容寻址版本目录，完整校验后原子切换 current 链接。设置指令引用 current/bin/todo 和 current/skills/todo-ai/SKILL.md，不含源码定位逻辑或编译机路径。缺资源/无法写入时提示错误并支持重试，不影响待办打开。scripts/package-app.sh [debug|release] 构建自包含应用包，run.sh 打包 debug 后启动。用户级 Skill 仍由粘贴指令后的 Codex 安装，应用不自动修改全局配置。
