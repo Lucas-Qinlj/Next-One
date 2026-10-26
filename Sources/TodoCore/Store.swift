@@ -6,9 +6,20 @@ public final class Store {
     public let directory: URL
     private var db: OpaquePointer?
     private let lock = NSRecursiveLock()
+    public static var defaultDirectoryName: String {
+        #if TODO_AI_DISTRIBUTION
+        return "Todo-AI-Release"
+        #else
+        return "Todo-AI"
+        #endif
+    }
+    static func resolveDirectory(environment: [String: String], applicationSupport: URL) -> URL {
+        if let path = environment["TODO_AI_HOME"] { return URL(fileURLWithPath: path) }
+        return applicationSupport.appendingPathComponent(defaultDirectoryName)
+    }
     public static var defaultDirectory: URL {
-        if let path = ProcessInfo.processInfo.environment["TODO_AI_HOME"] { return URL(fileURLWithPath: path) }
-        return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Todo-AI")
+        resolveDirectory(environment: ProcessInfo.processInfo.environment,
+                         applicationSupport: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0])
     }
     public init(directory: URL = Store.defaultDirectory) throws {
         self.directory = directory

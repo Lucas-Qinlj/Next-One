@@ -9,6 +9,7 @@ from ds_store import DSStore
 volume = Path(sys.argv[1])
 app = volume / 'TodoAI.app'
 info = plistlib.loads((app / 'Contents/Info.plist').read_bytes())
+assert info['CFBundleIdentifier'] == 'local.todo-ai.release'
 assert info['CFBundleIconFile'] == 'TodoAI.icns'
 assert (app / 'Contents/Resources/TodoAI.icns').read_bytes()[:4] == b'icns'
 assert os.readlink(volume / 'Applications') == '/Applications'
@@ -21,5 +22,6 @@ with DSStore.open(str(volume / '.DS_Store'), 'r') as store:
     assert store['.']['icvp']['backgroundType'] == 2
     assert store['TodoAI.app']['Iloc'][0] < store['Applications']['Iloc'][0]
 assert any(volume.glob('.background.*'))
-subprocess.run([str(app / 'Contents/Helpers/todo'), '--help'], check=True, stdout=subprocess.DEVNULL)
+help_text = subprocess.check_output([str(app / 'Contents/Helpers/todo'), '--help'], text=True)
+assert 'Data: TODO_AI_HOME overrides Application Support/Todo-AI-Release.' in help_text
 print('PASS: app icon, Applications link, four languages, Skill, layout, background, CLI')

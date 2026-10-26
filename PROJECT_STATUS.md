@@ -7,6 +7,13 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## Release 安装版数据隔离（2026-10-26）
+
+- 按用户明确要求，debug 开发版保留 Application Support/Todo-AI，release 安装版与其 CLI 改用 Application Support/Todo-AI-Release；隔离数据库、附件、语言、窗口偏好和接入资源。TODO_AI_HOME 优先覆盖；不迁移、复制或清空旧数据，后续安装版升级仍沿用自己的目录。
+- TodoCore 使用 release 编译标识统一选择，包内/复制后的 CLI 不依赖路径位置；release bundle ID 改为 local.todo-ai.release。帮助可只读显示解析路径，Skill、接口说明、四语 README 和[安装说明](docs/distribution/local-install.md)同步更新；旧全局 Skill 不自动改写，需要用户用新版设置指令重新连接。
+- [隔离 Spec](docs/spec/2026-10-26/release-data-isolation.md)已完成。debug/release 全量测试各 29 项通过；真实 CLI 默认路径、显式临时目录覆盖、空库及复制后 CLI 检查通过。原生安装包副本在隔离目录启动，确认空清单、无旧项目、接入路径一致。
+- 新 DMG：`.local/releases/Todo-AI-0.1.0-local-isolated-arm64-3086de3.dmg`，0.1.0 build 3；完整性、SHA-256、资源、图标及安装版标识通过验证。保留旧包和真实数据，未安装替换现用软件、未修改全局 Skill、未推送/公证/对外发布；隔离验收实例已退出、镜像已推出。
+
 ## DMG 拖拽安装窗口与发布流程参考（2026-10-26）
 
 - 用户反馈旧包只是普通文件夹，要求正式拖拽窗口并寻找专业发布 Skill。本轮检索并阅读 macos-release、release-mac-app 等 Skill，与 Apple 官方分发文档交叉核对；[比较与发布流程](docs/research/2026-10-26-macos-release-tools.md)记录适用边界。未安装全局 Skill、采用 Sparkle 或执行其推送/发布步骤。

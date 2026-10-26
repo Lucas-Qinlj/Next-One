@@ -5,7 +5,8 @@ let package = Package(name: "TodoAI", defaultLocalization: "zh-Hans", platforms:
     .executable(name: "TodoAI", targets: ["TodoApp"])
 ], targets: [
     .systemLibrary(name: "CSQLite"),
-    .target(name: "TodoCore", dependencies: ["CSQLite"], exclude: ["README.md"], resources: [.process("Resources")]),
+    .target(name: "TodoCore", dependencies: ["CSQLite"], exclude: ["README.md"], resources: [.process("Resources")],
+            swiftSettings: [.define("TODO_AI_DISTRIBUTION", .when(configuration: .release))]),
     .executableTarget(name: "TodoCLI", dependencies: ["TodoCore"], exclude: ["README.md"]),
     .executableTarget(name: "TodoApp", dependencies: ["TodoCore"], exclude: ["README.md"]),
     .testTarget(name: "TodoCoreTests", dependencies: ["TodoCore"]),

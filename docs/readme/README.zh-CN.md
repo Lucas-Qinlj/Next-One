@@ -128,7 +128,8 @@ cd Todo-AI
 
 ## 数据与隐私
 
-- 默认数据目录为 `~/Library/Application Support/Todo-AI`，保存待办、附件、窗口偏好与已准备的接入资源。
+- Release 安装版及其 CLI 使用 `~/Library/Application Support/Todo-AI-Release`；debug 开发版使用 `~/Library/Application Support/Todo-AI`。待办、附件、语言、窗口设置和接入资源全部独立。安装版自身目录不存在时为空清单，后续升级保留自身数据，不导入或删除开发版数据。
+- 从旧的共用数据库安装包升级后，请从新版设置复制 Codex 接入指令重新接入。已有全局 Skill 不会自动改写，应使用新指令中的 CLI/数据路径。`TODO_AI_HOME` 可显式覆盖两种默认目录。
 - 附件导入时复制到托管目录，原文件移动不会影响副本；视频播放依赖系统默认媒体应用。
 - 已删除的任务和附件可恢复，不自动清空回收站。
 - Todo-AI 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。

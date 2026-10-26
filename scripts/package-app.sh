@@ -44,3 +44,8 @@ cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 </dict></plist>
 PLIST
+
+# Distinct application identities; storage selection lives in the shared compiled core.
+if [[ "$configuration" == release ]]; then
+    /usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier local.todo-ai.release' "$app_path"/Contents/Info.plist
+fi

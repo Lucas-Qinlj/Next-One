@@ -133,7 +133,8 @@ Updates require the task's latest `revision`. Creation supports stable request k
 
 ## Data and privacy
 
-- Tasks, attachments, window preferences, and prepared integration resources live in `~/Library/Application Support/Todo-AI` by default.
+- Release installers and their CLI use `~/Library/Application Support/Todo-AI-Release`; debug/development builds use `~/Library/Application Support/Todo-AI`. Tasks, attachments, language, window preferences, and integration resources are separate. The installer starts empty if its own directory does not exist, preserves its own data on later upgrades, and never imports or deletes development data.
+- After switching from the older shared-data installer, copy the new Codex setup instruction from Settings to reconnect the agent to the installer’s data. Existing global Skills are not rewritten automatically; use the CLI/data paths in that instruction. `TODO_AI_HOME` explicitly overrides either default.
 - Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
 - Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
 - Todo-AI does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.

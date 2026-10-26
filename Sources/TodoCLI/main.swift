@@ -29,7 +29,8 @@ Usage: todo <command> [id] [--field value] [--json]
 Fields: --title, --description, --description-file FILE (or - for stdin), --status,
         --priority high|medium|low, --color none|red|orange|green|blue|purple,
         --due-date yyyy-MM-dd, --due-at ISO8601 (timezone required); empty value clears.
-Data: TODO_AI_HOME overrides Application Support/Todo-AI. No network server.
+Data: TODO_AI_HOME overrides Application Support/\(Store.defaultDirectoryName). No network server.
+Resolved data directory: \(Store.defaultDirectory.path)
 """
 do {
     var tokens = Array(CommandLine.arguments.dropFirst())

@@ -60,3 +60,7 @@ todo attachment add TASK_ID --path ./reference.png --expected-revision 7 --reque
 - 普通 place 在已有顶层手动顺序时同步未分类根任务的顶层位置，避免 CLI 与界面排序分离。旧快照无 board_order 时由项目和未分类根任务生成默认顺序。
 
 - `project unbind ID --path DIR --expected-revision N` 仅解除一条路径关联，返回更新后的 project 和 removed_path；保留项目、待办与磁盘文件，允许移除最后一条路径。目录不存在也可解除已有路径；未绑定路径返回 not_found，过期版本返回 revision_conflict。解除后该路径不再匹配此项目，但可能匹配其他显式绑定的上级目录。
+
+## 数据渠道
+
+debug CLI 默认读取 Application Support/Todo-AI，release CLI 默认读取 Application Support/Todo-AI-Release。TODO_AI_HOME 显式覆盖默认值；`--help` 显示实际解析目录且不打开数据库。安装版与开发版不自动复制/迁移任务，调用方应使用目标应用设置给出的 CLI 与目录。

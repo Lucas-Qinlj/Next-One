@@ -2,7 +2,7 @@
 
 - 日期：2026-10-26
 - 范围：本机 release 应用与 DMG 制作，供用户手动拖入 Applications 试装。不是签名公证或公开发布。
-- 版本：0.1.0 本地试装版，build 2；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
+- 版本：0.1.0 本地试装版，build 3；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
 
 ## 安装窗口
 
@@ -25,7 +25,7 @@ python3.13 -m venv .local/dmg-tools/venv
 
 仅 DMG 打包依赖 dmgbuild 1.6.7、ds-store 1.3.3 和 mac-alias 2.2.3；应用运行没有新增依赖。锁文件包含版本和 wheel SHA-256，不安装全局包。可用 `TODO_AI_DMG_PYTHON` 指定已准备的同版本 Python 环境。产物位于忽略的 `.local/releases/`，包含 `.dmg` 和 SHA-256 校验文件；同名产物已存在时拒绝覆盖。
 
-脚本复用 `package-app.sh release <临时应用路径>`，不会覆盖 `.build/TodoAI.app` 中正在使用的开发版。DMG 可见内容只有完整 `TodoAI.app` 与指向 `/Applications` 的快捷方式，安装指引直接显示在背景上。dmgbuild 负责 Finder 布局和 Retina 背景元数据；不通过 AppleScript 操控 Finder。应用保留同一 bundle ID、默认数据目录、CLI、完整 Skill 与四语资源，不修改真实数据、全局 Skill 或系统设置。
+脚本复用 `package-app.sh release <临时应用路径>`，不会覆盖 `.build/TodoAI.app` 中正在使用的开发版。DMG 可见内容只有完整 `TodoAI.app` 与指向 `/Applications` 的快捷方式，安装指引直接显示在背景上。dmgbuild 负责 Finder 布局和 Retina 背景元数据；不通过 AppleScript 操控 Finder。安装版使用 local.todo-ai.release 标识和独立默认数据目录，保留 CLI、完整 Skill 与四语资源，不修改真实数据、全局 Skill 或系统设置。
 
 `package-app.sh` 的第二个参数可省略；原有 debug/release 调用默认仍输出 `.build/TodoAI.app`。CLI/应用核心功能不变。
 
@@ -36,13 +36,13 @@ python3.13 -m venv .local/dmg-tools/venv
 3. 从“应用程序”打开 TodoAI；单击悬浮球显示清单。
 4. 安装完成后推出磁盘映像。不要直接从只读映像长期运行应用。
 
-安装版会读取本机既有的 `~/Library/Application Support/Todo-AI`，不会新建另一套正式清单；同一数据目录不要同时运行两个 UI 实例。安装前如需备份，退出 UI、停止 CLI 写入，再复制完整数据目录。仅移除 Applications 中的应用不会清除待办数据。
+安装版使用独立的 `~/Library/Application Support/Todo-AI-Release`，开发版保留 `~/Library/Application Support/Todo-AI`。旧版共用目录中的待办不会导入或删除；首次打开新版安装版时，若其独立目录尚不存在，则显示空清单。以后更新安装版保留其自身数据。同一数据目录不要同时运行两个 UI 实例。安装前如需备份，退出 UI、停止 CLI 写入，再复制完整数据目录。仅移除 Applications 中的应用不会清除待办数据。
 
-安装不自动安装全局 Skill。需要接入时在设置中复制当前生成的 Codex 指令，再发送给本机 Codex 会话。旧开发版可保留作为回退入口，但切换前先退出安装版。
+安装不自动安装全局 Skill。需要接入时在设置中复制当前生成的 Codex 指令，再发送给本机 Codex 会话。旧全局 Skill 可能仍指向开发数据，请从新版设置复制接入指令重新接入；不自动覆盖已有全局 Skill。开发版与新版安装版可以分别使用各自数据，不能假设两个清单会同步。
 
 ## 验证边界
 
-DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI 接入检查属于本机试装前验证。实际拖入 Applications 并沿用真实数据由用户试装，不将隔离验证表述为用户已安装。
+DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI 接入检查属于本机试装前验证。实际拖入 Applications 并使用安装版独立数据由用户试装，不将隔离验证表述为用户已安装。
 
 该包未进行 Developer ID 签名或 Apple 公证。不给出绕过系统安全设置的脚本；其他 Mac、网络下载后的 Gatekeeper 行为、Intel 架构以及此前未验收的窗口/桌面组合不属于本次通过范围。正式公开发行需单独完成签名、公证与分发验证。
 

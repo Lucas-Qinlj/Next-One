@@ -54,3 +54,5 @@ CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/Co
 `L` 接收保留模板和插值参数的 `LocalizedText`，通过 TodoCore 的四套 `.strings` 资源读取译文；用户标题、备注、文件名、路径只能作为参数或原文展示，不能作为查找键。`TodoError` 同时保留中文 message 与本地化模板；UI 使用模板翻译，CLI 保留原有中文输出。接入错误在展示时翻译，安装指令按当前语言生成并复制同一全文。
 
 添加界面文案时使用 `L("中文模板")`，在四套资源中添加同键译文；动态值保留 Swift 插值，资源中使用 `%1$@` 等位置参数。运行 `swift test --filter LocalizationTests` 验证键集、占位参数、实际资源读取、语言保存与草稿/数据库不变。打包脚本复制 SwiftPM 资源 bundle 到应用包根目录，符合生成的 Bundle.module 解析路径。
+
+安装版与开发版：共享 Store 的编译期目录规则决定整套数据（含语言、窗口偏好及 integration），release 使用 Todo-AI-Release，debug 保留 Todo-AI。打包的 release bundle ID 为 local.todo-ai.release；安装指令始终读取当前 Store.directory，不迁移旧任务、不自动修改全局 Skill。

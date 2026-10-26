@@ -14,10 +14,10 @@ staging=$(mktemp -d "$PWD/.build/dmg-stage.XXXXXX")
 trap 'rm -rf "$staging"' EXIT
 ./scripts/package-app.sh release "$staging/TodoAI.app"
 /usr/libexec/PlistBuddy -c 'Add :CFBundleShortVersionString string 0.1.0' "$staging/TodoAI.app/Contents/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 2' "$staging/TodoAI.app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 3' "$staging/TodoAI.app/Contents/Info.plist"
 architecture=$(uname -m)
 revision=$(git rev-parse --short HEAD)
-image="$output_dir/Todo-AI-0.1.0-local-drag-install-${architecture}-${revision}.dmg"
+image="$output_dir/Todo-AI-0.1.0-local-isolated-${architecture}-${revision}.dmg"
 if [[ -e "$image" ]]; then
     print -u2 "Output already exists: $image"
     exit 1
