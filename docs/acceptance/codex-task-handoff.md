@@ -74,3 +74,5 @@ Codex UI 自动化此前明确被工具拒绝：`Computer Use is not allowed to 
 Codex UI 观察仍被 Computer Use 明确拒绝，未绕过；最终输入焦点需要用户观察。根因和修复均未确认，冷启动、跨 Spaces 等尚未验证。
 
 后续用户确认：非激活悬浮面板 A/B 均无法直接输入 x，实验已复现真实问题；在该实验条件下仅改变关闭顺序无效。下一项 C 保持相同面板及输入框，sheet 的 onDismiss 后调用宿主面板 makeFirstResponder(nil)、resignKey()，然后打开相同深链接。C 工具编译通过并已打开，结果待用户反馈；不将候选处理写为修复成功。
+
+用户随后反馈 C 仍无法输入 x。结论：本轮已测试的“调整 sheet 关闭顺序”及“关闭后 makeFirstResponder(nil) + resignKey()”均未解决非激活面板交接问题。停止本轮交互探针验证，保留负面结果；不将普通窗口成功推广为产品成功，也不能据此断言所有无权限方案均不可能。正式应用未修改或替换，未发送测试消息、未授予新权限。冷启动及跨 Spaces 未测试。
