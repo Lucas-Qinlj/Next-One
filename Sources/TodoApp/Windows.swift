@@ -76,6 +76,14 @@ final class TaskPanel: NSPanel {
         expanded.toggle(); ball.orderFrontRegardless()
         updateLockHoverTracking()
     }
+    // Handoff has already saved/validated the draft; do not toggle or save again here.
+    func setExpandedForHandoff(_ value: Bool) {
+        if value { panel.orderFrontRegardless() }
+        else { panel.orderOut(nil) }
+        expanded = value
+        ball.orderFrontRegardless()
+        updateLockHoverTracking()
+    }
     func move(to point: CGPoint, start: Bool, end: Bool) {
         if start { mouseOrigin = point; dragOrigin = geometry.anchor }
         if let initial = mouseOrigin, let origin = dragOrigin {

@@ -8,8 +8,30 @@ import TodoCore
     var codexIntegration: CodexIntegration?
     var integrationError: Error?
     var codexHandoff: CodexHandoffSession?
+    var pendingCodexHandoff: (session: CodexHandoffSession, url: URL)?
+
+    func prepareCodexHandoff(_ session: CodexHandoffSession) async {
+        guard codexHandoff === session, pendingCodexHandoff == nil,
+              let url = await session.prepareOpen(), codexHandoff === session else { return }
+        pendingCodexHandoff = (session, url)
+        codexHandoff = nil
+    }
+
+    // Called by the sheet's onDismiss, after it has finished returning focus to its parent.
+    func finishCodexHandoff(using opener: (URL) -> Bool = { NSWorkspace.shared.open($0) }) {
+        guard let pending = pendingCodexHandoff else { return }
+        pendingCodexHandoff = nil
+        let wasExpanded = window?.expanded == true
+        window?.setExpandedForHandoff(false)
+        guard !opener(pending.url) else { return }
+        window?.setExpandedForHandoff(wasExpanded)
+        pending.session.cancelled = false
+        pending.session.report(TodoError("codex_open", "无法打开 Codex，请确认已安装后重试。"))
+        codexHandoff = pending.session
+    }
+
     func beginCodexHandoff(_ item: TodoItem) {
-        guard saveDraft(), codexHandoff == nil else { return }
+        guard saveDraft(), codexHandoff == nil, pendingCodexHandoff == nil else { return }
         do { codexHandoff = CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL()) }
         catch { report(error) }
     }

@@ -78,3 +78,7 @@ Codex UI 观察仍被 Computer Use 明确拒绝，未绕过；最终输入焦点
 用户随后反馈 C 仍无法输入 x。结论：本轮已测试的“调整 sheet 关闭顺序”及“关闭后 makeFirstResponder(nil) + resignKey()”均未解决非激活面板交接问题。停止本轮交互探针验证，保留负面结果；不将普通窗口成功推广为产品成功，也不能据此断言所有无权限方案均不可能。正式应用未修改或替换，未发送测试消息、未授予新权限。冷启动及跨 Spaces 未测试。
 
 用户明确授权继续验证隐藏面板方案。新增 D 隔离实验：沿用 C 的非激活面板和生产输入框，在 sheet onDismiss 中以 orderOut(nil) 替代 makeFirstResponder(nil)/resignKey()，随后调用 NSWorkspace.open；打开失败则恢复面板。无额外激活、延时或权限，成功打开后不自动重新显示面板，以单独验证隐藏的作用。`.local/codex-focus-probe/C3 Hide Panel Probe.app` 编译通过且窗口已打开；实际输入结果待用户反馈。正式应用未变更。
+
+## C3 正式接入（2026-10-27 03:22）
+
+用户确认 D 可直接输入 x，随后授权修改正式实现、由用户验收。实现采用先校验、关闭 sheet、onDismiss 隐藏清单、打开 URL；保留球，成功不自动展开，系统拒绝 URL 时恢复清单和同一草稿。9 项 CodexHandoffTests 通过，新增生产 FloatingController 的面板隐藏／球可见／失败恢复／重试成功／重复回调／重新展开检查；这些使用注入 opener，不发送消息，不代表 Codex 焦点验收。真实流程与冷启动、Spaces 待用户验证。

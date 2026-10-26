@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 03:22 | codex-composer-focus | C3 隐藏面板后交接实现
+
+- 状态：实现完成、针对性测试通过；构建验收包中，真实 Codex 焦点待用户验收。
+- 需求与范围：用户确认 D 隔离实验可输入后授权修改；沿用 03:09 验证记录。打开 Codex 前收起清单、保留球，不自动发送或增加权限。
+- 改动：准备 URL 与打开分离，在 sheet onDismiss 后 orderOut 清单；成功保持收起，失败恢复同一草稿和展开状态；取消和校验错误不跳转。
+- 验证与证据：9 项 CodexHandoffTests 通过，包含真实 AppKit 面板可见状态与注入 opener 下的成功/失败恢复；不冒充 Codex 端到端。
+- 未完成/阻塞/下一步：准备本地包供用户真实流程验收；不替换现用应用、不推送、不发布。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)、[UI 模块](Sources/TodoApp/README.md)；main 小修复，仅提交本任务文件。
+
 ## 2026-10-27 03:09 | codex-composer-focus | C3 无权限焦点方案对照验证
 
 - 状态：A/B/C 未通过；用户授权继续 D 隐藏面板验证，结果待观察。

@@ -77,8 +77,10 @@ struct ContentView: View {
         .controlSize(.small)
         .tint(.primary)
         .environment(\.locale, LanguageSettings.shared.locale)
-        .sheet(item: $model.codexHandoff) { session in
-            CodexHandoffView(session: session) { model.codexHandoff = nil }
+        .sheet(item: $model.codexHandoff, onDismiss: { model.finishCodexHandoff() }) { session in
+            CodexHandoffView(session: session, dismiss: { model.codexHandoff = nil }, submit: {
+                Task { await model.prepareCodexHandoff(session) }
+            })
         }
         .alert(model.confirm?.title ?? L("确认"), isPresented: Binding(get: { model.confirm != nil }, set: { if !$0 { model.confirm = nil } })) {
             Button(L("确认")) { let action = model.confirm?.action; model.confirm = nil; action?() }

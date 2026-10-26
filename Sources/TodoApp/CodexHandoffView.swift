@@ -100,17 +100,16 @@ import TodoCore
         return try CodexHandoff.url(message: message, targetPath: targetPath)
     }
 
-    func open(using opener: (URL) -> Bool = { NSWorkspace.shared.open($0) }) async -> Bool {
-        guard !busy else { return false }
+    func prepareOpen() async -> URL? {
+        guard !busy, !cancelled else { return nil }
         busy = true; error = nil
         defer { busy = false }
         do {
             let url = try await prepareURL()
-            guard !cancelled else { return false }
-            guard opener(url) else { throw TodoError("codex_open", "无法打开 Codex，请确认已安装后重试。") }
-            return true
-        } catch { report(error); return false }
+            return cancelled ? nil : url
+        } catch { report(error); return nil }
     }
+
 }
 
 @MainActor enum ChatGPTMenuIcon {
@@ -132,6 +131,7 @@ import TodoCore
 struct CodexHandoffView: View {
     @Bindable var session: CodexHandoffSession
     let dismiss: () -> Void
+    let submit: () -> Void
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(L("创建 Codex 会话")).font(.system(size: 15, weight: .semibold))
@@ -183,13 +183,10 @@ struct CodexHandoffView: View {
         .padding(14).frame(width: 360)
         .font(.system(size: 13)).buttonStyle(.bordered).controlSize(.small).tint(.primary)
         .onDisappear { session.cancelled = true }
-        .task { await session.reload() }
+        .task { if !session.loaded { await session.reload() } }
         .background(HandoffScrollbarStyler())
     }
     func cancel() { session.cancelled = true; dismiss() }
-    func submit() {
-        Task { if await session.open() { dismiss() } }
-    }
     func pathList(_ paths: [String], action: @escaping (String) -> Void) -> some View {
         ScrollView {
             VStack(spacing: 6) {

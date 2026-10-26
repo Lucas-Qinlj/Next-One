@@ -95,18 +95,68 @@ final class CodexHandoffTests: XCTestCase {
         XCTAssertEqual(session.step, .prompt)
         session.instruction = "custom\ntext"
         _ = try store.execute("update", ["id":task.id,"title":"Updated","expected-revision":"1"])
+        let model = AppModel(store: store)
+        model.codexHandoff = session
+        await model.prepareCodexHandoff(session)
+        XCTAssertNil(model.codexHandoff)
+        XCTAssertNotNil(model.pendingCodexHandoff)
+        session.cancelled = true // The disappearing sheet cancels further preparation.
         var opened: URL?
-        let success = await session.open { opened = $0; return false }
-        XCTAssertFalse(success); XCTAssertNotNil(session.error)
+        model.finishCodexHandoff { opened = $0; return false }
+        XCTAssertTrue(model.codexHandoff === session)
+        XCTAssertFalse(session.cancelled)
+        XCTAssertNotNil(session.error)
         XCTAssertEqual(session.instruction,"custom\ntext")
         let message = URLComponents(url: try XCTUnwrap(opened), resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "prompt" }?.value
         XCTAssertTrue(message?.contains("A1 Updated") == true)
         XCTAssertEqual(try store.snapshot().liveTasks.first?.status,"todo")
         session.cancelled = true
-        let cancelled = await session.open { _ in XCTFail("Cancelled session opened"); return true }
-        XCTAssertFalse(cancelled)
+        let cancelled = await session.prepareOpen()
+        XCTAssertNil(cancelled)
         try sql("DELETE FROM project_roots")
         do { _ = try await session.prepareURL(); XCTFail() } catch {}
+    }
+
+    @MainActor func testHandoffHidesPanelBeforeOpenAndRestoresOnFailure() async throws {
+        try fixture(); let store = try store()
+        let task = try XCTUnwrap(store.snapshot().liveTasks.first)
+        let model = AppModel(store: store)
+        let controller = FloatingController(model: model)
+        defer {
+            controller.timer?.invalidate(); controller.lockHoverTimer?.invalidate()
+            controller.panel.orderOut(nil); controller.ball.orderOut(nil)
+            NSStatusBar.system.removeStatusItem(controller.statusItem)
+        }
+        let session = CodexHandoffSession(taskID: task.id, store: store, database: database)
+        await session.reload()
+        session.chooseProject(try XCTUnwrap(session.projects.first))
+        session.instruction = "preserve draft"
+        model.codexHandoff = session
+        await model.prepareCodexHandoff(session)
+        XCTAssertTrue(controller.panel.isVisible) // Validation must not hide the panel.
+        var count = 0
+        model.finishCodexHandoff { _ in
+            count += 1
+            XCTAssertFalse(controller.panel.isVisible)
+            XCTAssertFalse(controller.expanded)
+            XCTAssertTrue(controller.ball.isVisible)
+            return false
+        }
+        XCTAssertTrue(controller.panel.isVisible)
+        XCTAssertTrue(controller.expanded)
+        XCTAssertTrue(model.codexHandoff === session)
+        XCTAssertEqual(session.instruction, "preserve draft")
+        XCTAssertNotNil(session.error)
+        await model.prepareCodexHandoff(session)
+        model.finishCodexHandoff { _ in count += 1; return true }
+        XCTAssertFalse(controller.panel.isVisible)
+        XCTAssertFalse(controller.expanded)
+        XCTAssertTrue(controller.ball.isVisible)
+        XCTAssertNil(model.codexHandoff)
+        model.finishCodexHandoff { _ in XCTFail("Duplicate open"); return true }
+        XCTAssertEqual(count, 2)
+        controller.toggle()
+        XCTAssertTrue(controller.panel.isVisible)
     }
 
     @MainActor func testSingleAndMultipleSourcePathsAndUnmatchedFallback() async throws {

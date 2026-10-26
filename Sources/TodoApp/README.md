@@ -96,3 +96,7 @@ Managed setup: Settings copies an explicit installation/update request. App star
 Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源与归属见[素材说明](../../docs/assets/chatgpt-mark.md)。仓库 Skill 更新不等于全局安装已更新。
 
 验证：`swift test --filter CodexHandoffTests`；另运行 LocalizationTests 和 ScrollbarLayoutTests。真实窗口与 Codex 端验证边界见[验收记录](../../docs/acceptance/codex-task-handoff.md)，规则见[Spec](../../docs/spec/2026-10-27/codex-task-handoff.md)。
+
+### Codex 焦点交接（C3）
+
+`CodexHandoffSession.prepareOpen` 校验后交给 AppModel 暂存 session/URL 并关闭 sheet；根视图 `onDismiss` 调用 `finishCodexHandoff`，由 FloatingController 的 `setExpandedForHandoff(false)` 隐藏清单、保持球可见，再打开 URL。成功保持收起，失败恢复展开状态和同一 session；恢复展示不重新 reload，避免清掉目标选择和错误，重试仍重新校验。取消无 pending URL，不触发打开。没有额外延时、模拟输入或辅助功能权限。`CodexHandoffTests` 覆盖打开前隐藏、失败恢复草稿、重复回调及球展开行为；实际 Codex 输入焦点单独人工验收。
