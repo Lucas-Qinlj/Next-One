@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:44 | codex-task-handoff | 简化 B9 上下文格式
+
+- 状态：Spec 修订完成，未实施。
+- 需求与范围：用户要求上下文使用外层 neo 标签和易读文本，去掉复杂字段结构；接续下方 01:34 Spec 记录。
+- 改动：移除消息内 UUID、内部标签和属性；短编号与标题首行，备注、项目目录和附件路径按行展示；补充指令在标签外空一行追加。同步 Skill 契约及 AC06。
+- 验证与证据：检查示例与正文/验收条件一致性、相对链接及 git diff --check；纯文档不运行代码测试。
+- 未完成/阻塞/下一步：无文档阻塞；原接口实测事项不变，尚未开发。
+- 关联文档与 Git 状态：[B9 Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅提交本轮 Spec 与状态记录，不推送。
+
 ## 2026-10-27 01:34 | codex-task-handoff | B9 从待办打开 Codex 会话 Spec
 
 - 状态：需求已对齐，Spec 已形成；尚未实施。
