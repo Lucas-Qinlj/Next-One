@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:04 | codex-task-handoff | 本地 Codex 项目数据读取验证
+
+- 状态：本机项目名称/目录只读获取验证通过，尚未产品化。
+- 需求与范围：用户明确授权调查配置/数据库读取；仅项目字段，不读聊天正文或凭据，不修改 Codex 数据。
+- 改动：同步预验证记录和 Spec，区分公共接口未找到与内部数据实际可读。
+- 验证与证据：SQLite mode=ro + query_only 查询 projects/project_roots，66 项目/67 目录；Next One 精确匹配；JSON local-projects 名称/目录集合相同，但 ID 不同；config projects 段为 127，不能代替项目列表。
+- 未完成/阻塞/下一步：正式适配需处理内部 Schema 变化、只读错误与多路径；无项目聊天入口仍未解决。未实施产品读取代码。
+- 关联文档与 Git 状态：[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)、[Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅本轮文档提交，不推送。
+
 ## 2026-10-27 02:02 | codex-task-handoff | 无项目聊天入口专项调研
 
 - 状态：公开资料和源码调研完成，未找到满足无项目+预填的原生外部入口。
