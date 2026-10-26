@@ -61,6 +61,8 @@ DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI
 
 ## 最新本地安装包（2026-10-26）
 
+路径更名修正版：`.local/releases/Next-One-0.1.0-local-isolated-arm64-4e28be1.dmg`，0.1.0 build 4，同目录附 SHA-256；包含 next-one Skill/CLI、新数据路径及旧存储兼容链接。CRC/SHA-256、挂载资源和 CLI 通过，主程序及 CLI 与已实际启动验证的版本一致。以下 build 3 信息保留为上一版记录。
+
 - 文件：`.local/releases/Next-One-0.1.0-local-isolated-arm64-59ea3a2.dmg`，约 4.5 MB；同目录附 `.sha256`。
 - 源码：`59ea3a2`；产品名称 Next One，0.1.0 build 3，arm64。
 - release 构建、镜像 CRC/SHA-256、挂载资源/布局/CLI、安装包复制完整性及隔离数据启动均通过；上图为本次 Finder 实际截图。测试应用已退出，未覆盖 Applications 中现用开发版。
