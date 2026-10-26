@@ -1,5 +1,14 @@
 # 本机 DMG 试装
 
+## 2026-10-27 正式签名本机安装
+
+本机已安装 Developer ID Application: LIJIAN QIN (5C58V84WF7) 签名的 0.1.0 build 2026102701，标识 `local.todo-ai.release`。App 与内置 CLI 使用 hardened runtime 和安全时间戳，严格签名校验通过。资源包位于 `Contents/Resources/`，SwiftPM 开发／测试仍使用默认资源回退。
+
+从临时签名切换后，用户重新允许提醒事项访问，清单自动读出；本次正常退出再启动保留权限。未来更新及其他 Mac 未验证。本轮未公证、未生成新 DMG、未对外发布；`spctl` 返回 `Unnotarized Developer ID`，不能当作公开分发验收通过。
+
+产物 `.local/releases/developer-id-final-20261027/Next One.app`；旧应用及完整数据备份 `.local/backups/before-developer-id-20261027-0452/`。详细证据见 [项目状态](../../PROJECT_STATUS.md)。以下均为历史试装／公开预览记录。
+
+
 公开预览版已发布：[v0.1.0-preview.1](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)，应用 0.1.0 build 6、macOS 14+ / arm64。Assets 提供 DMG 与 SHA-256，匿名下载校验通过。该版本包含 LICENSE/NOTICE 与 neo Skill，仍未签名公证；详细限制见[版本说明](releases/v0.1.0-preview.1.md)。下方旧本机包记录保留供追溯。
 
 - 日期：2026-10-26

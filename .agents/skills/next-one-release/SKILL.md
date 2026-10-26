@@ -15,6 +15,8 @@ description: 处理 Next One 项目的 macOS App 与 DMG 打包、Developer ID �
 
 ## 签名资料
 
+本项目现用安装版已切换到正式 Developer ID 签名；后续替换现用应用沿用相同 Team 与 bundle ID，不得用未签名／ad-hoc 包覆盖。证书或签名失败时保留现用版并报告，不静默降级。隔离开发包不受此限制。
+
 - 私钥保留在 macOS 登录钥匙串，不导出到项目。`.cer` 仅含公开证书，复制它到另一台机器并不能恢复签名能力。
 - 项目本地资料目录为 `.local/signing/`，受 `.gitignore` 保护。可保存 `developer-id-application.cer`、CSR 和 `signing.json`；配置只含签名身份、Team ID、证书指纹、公证钥匙串 profile 名，不存密码、私钥或 API key。
 - 用 `security find-identity -v -p codesigning` 实时确认 Developer ID Application 身份与私钥配对；再核对证书到期时间。不能用 Apple Distribution、Apple Development 或 ad-hoc 代替站外分发身份。
@@ -26,7 +28,7 @@ description: 处理 Next One 项目的 macOS App 与 DMG 打包、Developer ID �
 
 - `scripts/package-app.sh release <输出.app>` 构建 Swift Package 与应用资源，不做正式签名、公证、安装。
 - `scripts/package-dmg.sh` 目前是本地试装流程：重新构建 App、写入固定版本号，再生成 DMG。**不能用它封装预先签好的 App**；它会重建内容。正式流程应复用 `scripts/distribution/dmg-settings.py`，直接封装已经完成签名／票据处理的 App。用户授权改造自动化时再修改脚本，不提前宣称已有正式一键流水线。
-- `TodoAI_TodoCore.bundle` 当前位于 App 根目录以满足 SwiftPM 的 `Bundle.module` 查找。正式签名时需验证资源布局；如果签名拒绝，不移动后跳过运行测试，也不使用 `--deep` 签名掩盖问题。需要变更布局时同步资源加载逻辑并验证四语资源、图标、CLI 与产品 Skill。
+- SwiftPM 的 `TodoAI_TodoCore.bundle` 与 `TodoAI_TodoApp.bundle` 放在 `Contents/Resources/`，应用优先从该位置加载，SwiftPM 开发／测试回退 `Bundle.module`。不要在 App 根目录放资源或使用 `--deep` 签名掩盖布局问题；签名前后检查四语资源、图标、CLI 与产品 Skill。
 
 ## 执行流程
 

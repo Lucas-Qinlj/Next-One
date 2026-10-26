@@ -22,8 +22,9 @@ public struct LocalizedText: ExpressibleByStringLiteral, ExpressibleByStringInte
 
 public enum Localization {
     public static let languages = ["zh-Hans", "en", "ja", "ko"]
+    private static let resources = Bundle.main.url(forResource: "TodoAI_TodoCore", withExtension: "bundle").flatMap(Bundle.init(url:)) ?? Bundle.module
     private static let bundles: [String: Bundle] = Dictionary(uniqueKeysWithValues: languages.compactMap { language in
-        Bundle(url: Bundle.module.bundleURL.appendingPathComponent(language.lowercased() + ".lproj")).map { (language, $0) }
+        Bundle(url: resources.bundleURL.appendingPathComponent(language.lowercased() + ".lproj")).map { (language, $0) }
     })
     public static func resolve(_ preference: String, preferredLanguages: [String] = Locale.preferredLanguages) -> String {
         if languages.contains(preference) { return preference }

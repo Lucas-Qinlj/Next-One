@@ -93,7 +93,7 @@ Managed setup: Settings copies an explicit installation/update request. App star
 
 启动交接先保存已有详情草稿；异步只读查询 Codex 项目，按精确规范化目录匹配。确认时重新校验项目目录和最新任务／附件，组装易读 `<neo>` 文本，通过 `NSWorkspace.open` 打开预填页面；不自动发送或修改任务状态。无项目聊天不在首版；未分类／无匹配目录必须选择已有项目。失败保留指令，取消使尚未完成的准备操作失效。
 
-Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源与归属见[素材说明](../../docs/assets/chatgpt-mark.md)。仓库 Skill 更新不等于全局安装已更新。
+Logo 为 SwiftPM 应用资源，打包时携带 `Contents/Resources/TodoAI_TodoApp.bundle`，应用优先从标准资源目录加载，SwiftPM 开发／测试回退 `Bundle.module`；来源与归属见[素材说明](../../docs/assets/chatgpt-mark.md)。仓库 Skill 更新不等于全局安装已更新。
 
 验证：`swift test --filter CodexHandoffTests`；另运行 LocalizationTests 和 ScrollbarLayoutTests。真实窗口与 Codex 端验证边界见[验收记录](../../docs/acceptance/codex-task-handoff.md)，规则见[Spec](../../docs/spec/2026-10-27/codex-task-handoff.md)。
 

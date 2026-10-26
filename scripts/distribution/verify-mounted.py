@@ -18,7 +18,7 @@ for notice in ['LICENSE', 'NOTICE']:
     assert (app / 'Contents/Resources/CodexIntegration/next-one' / notice).read_bytes() == expected
 assert os.readlink(volume / 'Applications') == '/Applications'
 for lang in ['zh-Hans', 'en', 'ja', 'ko']:
-    assert (app / 'TodoAI_TodoCore.bundle' / f'{lang}.lproj/Localizable.strings').is_file(), lang
+    assert (app / 'Contents/Resources/TodoAI_TodoCore.bundle' / f'{lang}.lproj/Localizable.strings').is_file(), lang
 for name in ['SKILL.md', 'references/cli.md']:
     assert (app / 'Contents/Resources/CodexIntegration/next-one' / name).is_file(), name
 assert not any(p.suffix in {'.sqlite', '.db', '.env'} for p in app.rglob('*'))

@@ -17,6 +17,8 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 `project unbind` 校验项目 revision 及已绑定路径，仅删除项目 paths 中的对应项，不触碰文件系统和任务；允许最后一条路径解除。ProjectUnbindTests 覆盖文件/任务保留、路径不存在、版本冲突、最后一条解除及后续重绑。
 
 
+本地化资源：正式应用从 `Contents/Resources/TodoAI_TodoCore.bundle` 加载，SwiftPM 开发／测试回退 `Bundle.module`；此布局支持完整 App 签名。
+
 本地化：`LocalizedText` 分离文案模板与插值参数，`Localization` 使用本地 `.strings` 资源输出中/英/日/韩文；只改变展示，不参与 Store 数据更新。`TodoError.localizedText` 供 UI 翻译，`message` / `errorDescription` 保留原中文契约，系统生成的动态错误使用 `verbatim:`。位置参数一次性从原模板替换，用户内容中的 `%1$@` 等文本不会被再次替换。
 
 品牌路径兼容：默认目录为 Next-One / Next-One-Release。新路径不存在时可链接至同渠道旧目录，保留同一数据库，不复制 live WAL；已有新目录优先，不跨渠道导入。显式 Store(directory:) 与环境变量指定目录不创建兼容链接。NEXT_ONE_HOME 优先于旧 TODO_AI_HOME。DataDirectoryTests 覆盖链接复用、双入口一致性、附件/偏好及异常保护。

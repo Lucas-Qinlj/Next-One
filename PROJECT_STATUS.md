@@ -7,6 +7,16 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+
+## 2026-10-27 04:54 | developer-id-install | 正式 Developer ID 签名及本机安装
+
+- 状态：正式证书签名、备份安装和重启后提醒事项授权验证通过。
+- 需求与范围：用户要求使用已申请证书重新打包安装，不再使用临时签名；未授权对外发布，本轮不做公证或 DMG。
+- 改动：将两份 SwiftPM 资源包放入 Contents/Resources，应用优先读取标准目录、开发测试保留 Bundle.module 回退；同步打包检查、模块说明及 release Skill。版本 0.1.0 build 2026102701，bundle ID local.todo-ai.release；Developer ID Application: LIJIAN QIN (5C58V84WF7)，证书有效至 2027-11-25 17:37:34 UTC，App 与 CLI 均启用 runtime 和安全时间戳。
+- 验证与证据：24 项相关测试、release 构建、App/Helper 严格签名验证、四语资源及图标/CLI 检查通过；安装内容与产物逐文件相等。安装前完整备份 App 与 release 数据，启动后既有非 integration 数据文件哈希全部不变。用户亲自允许新签名身份后，设置自动显示 iCloud · Next One List；正常退出并重启后无需再授权，清单仍可读。日志位于 `.local/releases/developer-id-final-20261027/`；主程序 SHA-256 `14a4899def883fb7c26ee64c1a7f2edcb689a8a85a2d77642c82b6e0fd46a588`。
+- 未完成/阻塞/下一步：无本机安装阻塞；未公证，spctl 返回 Unnotarized Developer ID，不声称 Gatekeeper 分发通过。未来不同版本更新后的权限保留、跨设备提醒送达未验证；未重置系统权限、未绕过 Gatekeeper。
+- 关联文档与 Git 状态：[安装说明](docs/distribution/local-install.md)、[同步 Spec](docs/spec/2026-10-26/calendar-reminders-sync.md)、[release Skill](.agents/skills/next-one-release/SKILL.md)；main 小范围打包兼容修复，本地提交、不推送；备份 `.local/backups/before-developer-id-20261027-0452/`。
+
 ## 2026-10-27 04:40 | codex-handoff-final-install | C3 最终验收、推送及应用替换
 
 - 状态：用户明确确认本轮全部验收通过；已完成备份、安装替换、启动及数据一致性检查。

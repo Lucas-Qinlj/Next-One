@@ -123,7 +123,8 @@ import TodoCore
 @MainActor enum ChatGPTMenuIcon {
     static let image: NSImage = {
         // Blossom mark: bundled vector, used solely to identify the Codex destination.
-        let image = NSImage(contentsOf: Bundle.module.url(forResource: "chatgpt", withExtension: "svg")!)!
+        let resources = Bundle.main.url(forResource: "TodoAI_TodoApp", withExtension: "bundle").flatMap(Bundle.init(url:)) ?? Bundle.module
+        let image = NSImage(contentsOf: resources.url(forResource: "chatgpt", withExtension: "svg")!)!
         image.size = NSSize(width: 16, height: 16)
         let gray = NSImage(size: image.size, flipped: false) { rect in
             image.draw(in: rect)
