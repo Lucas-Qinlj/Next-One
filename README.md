@@ -68,6 +68,8 @@ Lock mode makes the panel ignore mouse input while the floating ball remains ava
 
 ## How you and the agent work together
 
+With the updated `next-one` Skill installed and available to your coding agent, start a direct request with **`neo`**: `neo tomorrow at 8am I need to mail a parcel`, `neo show today's tasks`, or `neo mark mailing the parcel as done`. The agent interprets the request and uses the local CLI. Standalone personal tasks default to Unfiled; project tasks retain project context. Dates are resolved in your timezone. This records due dates, not scheduled notifications. `neo` is a Skill routing convention, not a shell command or background listener.
+
 1. **Capture the work.** Create a project, bind its folder, and add the goal, constraints, and acceptance criteria.
 2. **Start with context.** Ask Codex to read that project's open tasks before making changes.
 3. **Keep progress shared.** Edit priorities and notes in the app while the agent records actual progress through the CLI.
