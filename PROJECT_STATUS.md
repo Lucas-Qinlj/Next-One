@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:34 | scrollbar-edge-alignment | 滚动条贴容器边界
+
+- 状态：公共绘制修复完成，构建与原生离屏渲染验证通过；未替换现用应用。
+- 需求与范围：用户截图指出清单滑块与右侧边界留缝，要求项目滚动条紧贴边界；覆盖共用 ThinScroller 的所有滚动容器。
+- 改动：3 pt 纵向滑块从原生滑块区域居中改为贴 bounds 右边，横向贴底边并兼容翻转坐标；保留内容间距、原生 frame、命中区与滚动逻辑。同步协作规范、产品 Spec 和 UI 模块说明。
+- 验证与证据：`swift build --product TodoAI` 通过；隔离 AppKit 渲染脚本 `.local/scrollbar-edge/main.swift` 检查真实 ThinScroller 绘制，2× 位图纵向 x=24…29/宽30，横向 y=24…29/高30，均占6像素即3 pt且接触外边缘；图片为同目录 `vertical.png`、`horizontal.png`。初次横向断言因离屏画布未采用视图翻转坐标失败，修正验证画布后双向通过。
+- 未完成/阻塞/下一步：现用安装包未替换；实际应用各页视觉、物理拖动和滚轮未在本轮复验，离屏检查不替代这些交互验收。无数据或系统设置修改。
+- 关联文档与 Git 状态：[产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[UI 模块](Sources/TodoApp/README.md)；main 上的小修复，仅提交本任务内容，不推送、不安装。
+
 ## 2026-10-27 00:14 | default-priority-low | 新建待办默认一般
 
 - 状态：实现、验证和现用应用替换完成。

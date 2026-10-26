@@ -10,10 +10,10 @@ final class ThinScroller: NSScroller {
         var knob = rect(for: .knob)
         guard !knob.isEmpty else { return }
         if bounds.height >= bounds.width {
-            knob.origin.x = knob.midX - 1.5
+            knob.origin.x = bounds.maxX - 3
             knob.size.width = 3
         } else {
-            knob.origin.y = knob.midY - 1.5
+            knob.origin.y = isFlipped ? bounds.maxY - 3 : bounds.minY
             knob.size.height = 3
         }
         NSColor.secondaryLabelColor.setFill()
