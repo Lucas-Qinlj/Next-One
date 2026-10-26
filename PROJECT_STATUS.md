@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:13 | codex-task-handoff | 确认项目数据方案并核对聊天目录
+
+- 状态：项目列表读取方案已写入 Spec；指定聊天归属只读核对完成。
+- 需求与范围：用户确认采用只读数据库建议，并授权检查截图中“调研 monid 平台”的路径和归属。
+- 改动：新增 Spec 7.1 数据库只读适配规则，扩展 AC03；记录指定会话 cwd 与项目归属的区别。
+- 验证与证据：只读查询 name 精确匹配截图；project_id 为 NULL，cwd 为 Documents 下独立任务目录且未在 project_roots 登记；未读取聊天正文或目录内容。文档一致性与差异检查。
+- 未完成/阻塞/下一步：该存储目录不证明新建 path 参数可强制无项目；无项目入口继续待验证。未开发产品或改 Codex 数据。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)；main，仅相关文档提交，不推送。
+
 ## 2026-10-27 02:04 | codex-task-handoff | 本地 Codex 项目数据读取验证
 
 - 状态：本机项目名称/目录只读获取验证通过，尚未产品化。
