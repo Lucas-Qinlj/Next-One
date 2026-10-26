@@ -22,6 +22,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             header.padding(.horizontal, 14).padding(.top, 18).padding(.bottom, 10)
+                .background(HeaderDragArea(model: model))
             Divider()
             ZStack {
                 TaskListView(model: model)

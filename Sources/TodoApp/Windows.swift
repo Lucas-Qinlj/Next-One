@@ -137,6 +137,37 @@ final class TaskPanel: NSPanel {
     @objc func settingsAction() { guard model.saveDraft() else { return }; setLocked(false); model.showSettings(); if !expanded { toggle() }; panel.makeKeyAndOrderFront(nil) }
     @objc func quitAction() { if model.saveDraft() { savePreferences(); NSApplication.shared.terminate(nil) } }
 }
+struct HeaderDragArea: NSViewRepresentable {
+    let model: AppModel
+    func makeNSView(context: Context) -> HeaderDragView { HeaderDragView() }
+    func updateNSView(_ view: HeaderDragView, context: Context) { view.controller = model.window }
+}
+
+@MainActor final class HeaderDragView: NSView {
+    weak var controller: FloatingController?
+    private var start: CGPoint?
+    private var dragging = false
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var mouseDownCanMoveWindow: Bool { false }
+    override func mouseDown(with event: NSEvent) {
+        start = window?.convertPoint(toScreen: event.locationInWindow)
+        dragging = false
+    }
+    override func mouseDragged(with event: NSEvent) {
+        guard let start, let window else { return }
+        let point = window.convertPoint(toScreen: event.locationInWindow)
+        if !dragging && hypot(point.x - start.x, point.y - start.y) > 4 {
+            dragging = true
+            controller?.move(to: start, start: true, end: false)
+        }
+        if dragging { controller?.move(to: point, start: false, end: false) }
+    }
+    override func mouseUp(with event: NSEvent) {
+        if dragging, let window { controller?.move(to: window.convertPoint(toScreen: event.locationInWindow), start: false, end: true) }
+        start = nil; dragging = false
+    }
+}
+
 @MainActor final class BallView: NSView {
     weak var controller: FloatingController?
     var start: CGPoint?

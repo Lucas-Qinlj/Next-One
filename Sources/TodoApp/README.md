@@ -22,6 +22,8 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 `BallView.acceptsFirstMouse` 返回 true，允许其他应用或窗口有焦点时首次按下直接进入原有拖动事件链；移动超过 4 pt 后联动球与面板，松手不触发单击。此设置与键盘 `acceptsFirstResponder` 分开，不通过主动激活应用或全局事件监听实现。
 
+共用顶部的 padding 后挂载 `HeaderDragArea` 原生背景视图，只接收控件之外的空白区域输入；`HeaderDragView` 接受首次按下并复用 `FloatingController.move`，超过 4 pt 后移动球与面板、松手保存位置，空白单击不折叠。Picker 和按钮在前景保留命中，锁定时继续由整个面板的 `ignoresMouseEvents` 穿透。`swift test --filter HeaderDragTests` 验证阈值、联动、不误折叠和结束状态清理。
+
 透明度仅作用于背景，提高对比度/减少透明时使用实色背景。窗口偏好单独保存于 window.json。显示器变动时按实际屏幕可见区域回收位置；实际多屏、Spaces 与穿透测试限制见 [验收报告](../../docs/acceptance/macos-floating-todo.md)。
 
 启动：根目录 `./scripts/run.sh`。运行开发测试时使用 `TODO_AI_HOME` 隔离。原生窗口测试须操作实际应用；几何单元测试不替代拖动、置顶和跨应用输入验证。

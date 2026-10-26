@@ -7,6 +7,12 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 顶部空白区拖动（2026-10-26）
+
+- 按用户截图，清单/详情/设置/回收站共用顶部工具栏及其上下留白支持按住拖动，保留控件点击；通过原生背景视图接收首次输入，超过 4 pt 后复用球与面板联动及位置保存，不触发清单折叠。锁定穿透不变，无新增权限或依赖。
+- `swift build --product TodoAI` 和 `swift test --filter HeaderDragTests` 通过；测试覆盖阈值、两窗联动、松手清理/保存及不误折叠。隔离应用实际验证返回按钮和项目选择菜单可操作。
+- 原生坐标拖动在中心留白和顶部上沿两次均返回 `windowNotFoundAtPosition`，未发出有效拖动；不能以测试模拟事件替代实际顶部拖动验收。需手动检查顶部留白联动、按钮不被拦截、其他应用有焦点时首次拖动及锁定穿透。
+
 ## Release 安装版数据隔离（2026-10-26）
 
 - 按用户明确要求，debug 开发版保留 Application Support/Todo-AI，release 安装版与其 CLI 改用 Application Support/Todo-AI-Release；隔离数据库、附件、语言、窗口偏好和接入资源。TODO_AI_HOME 优先覆盖；不迁移、复制或清空旧数据，后续安装版升级仍沿用自己的目录。
