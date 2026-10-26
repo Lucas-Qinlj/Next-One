@@ -142,6 +142,8 @@ final class TaskPanel: NSPanel {
     var start: CGPoint?
     var dragging = false
     override var acceptsFirstResponder: Bool { true }
+    // Preserve the initial mouseDown when another app or window has focus.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override func keyDown(with event: NSEvent) { if event.keyCode == 49 || event.keyCode == 36 { controller?.toggle() } else { super.keyDown(with: event) } }
     override init(frame frameRect: NSRect) { super.init(frame: frameRect); setAccessibilityElement(true); setAccessibilityRole(.button); refreshLanguage() }
     func refreshLanguage() {

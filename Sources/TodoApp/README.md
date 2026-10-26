@@ -20,6 +20,8 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 面板置顶使用 `.floating`，球使用高于 `.floating` 一级的独立窗口层级，防止面板获得焦点或打开设置时遮挡球；不依赖一次性的 `orderFront` 顺序。锁定使用 `ignoresMouseEvents`、禁止成为 key、释放 first responder；不捕获或重放输入，不请求辅助功能/屏幕录制权限。球独立且可交互，菜单可解锁，设置入口先解锁。每次启动不恢复锁定。
 
+`BallView.acceptsFirstMouse` 返回 true，允许其他应用或窗口有焦点时首次按下直接进入原有拖动事件链；移动超过 4 pt 后联动球与面板，松手不触发单击。此设置与键盘 `acceptsFirstResponder` 分开，不通过主动激活应用或全局事件监听实现。
+
 透明度仅作用于背景，提高对比度/减少透明时使用实色背景。窗口偏好单独保存于 window.json。显示器变动时按实际屏幕可见区域回收位置；实际多屏、Spaces 与穿透测试限制见 [验收报告](../../docs/acceptance/macos-floating-todo.md)。
 
 启动：根目录 `./scripts/run.sh`。运行开发测试时使用 `TODO_AI_HOME` 隔离。原生窗口测试须操作实际应用；几何单元测试不替代拖动、置顶和跨应用输入验证。
