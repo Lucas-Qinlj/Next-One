@@ -2,7 +2,7 @@
 
 - 日期：2026-10-26
 - 范围：本机 release 应用与 DMG 制作，供用户手动拖入 Applications 试装。不是签名公证或公开发布。
-- 版本：0.1.0 本地试装版，build 4；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
+- 版本：0.1.0 本地试装版，build 5；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
 
 ## 安装窗口
 
@@ -60,6 +60,8 @@ DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI
 脚本检查图标、四语资源、完整 Skill、Applications 链接、背景与图标左右关系，并调用包内 CLI --help。检查不安装应用、不修改真实待办。更换 macOS 或打包依赖后仍需实际 Finder 检查。
 
 ## 最新本地安装包（2026-10-26）
+
+neo 入口版：`.local/releases/Next-One-0.1.0-local-isolated-arm64-13ab22b.dmg`，0.1.0 build 5，4,498,544 字节，同目录附 SHA-256。包含新版 Skill description 的 neo 触发描述及完整 references/neo.md；安装后需从设置复制指令更新 Agent 已安装的 Skill。release 构建、CRC/SHA-256、挂载资源与 CLI 检查通过；包内 Skill 与源码一致，主程序/CLI 与已验证运行版本一致。本轮只制作本机试装包，未替用户安装、未推送或发布 GitHub Release。
 
 路径更名修正版：`.local/releases/Next-One-0.1.0-local-isolated-arm64-4e28be1.dmg`，0.1.0 build 4，同目录附 SHA-256；包含 next-one Skill/CLI、新数据路径及旧存储兼容链接。CRC/SHA-256、挂载资源和 CLI 通过，主程序及 CLI 与已实际启动验证的版本一致。以下 build 3 信息保留为上一版记录。
 

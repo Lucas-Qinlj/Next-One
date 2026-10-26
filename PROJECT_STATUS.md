@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 14:49 | neo-installer | 包含 neo 的最新本机安装包
+
+- 状态：本机安装包生成并验证完成。
+- 需求与范围：用户明确选择重新打包供本机安装，不发布 GitHub Release。
+- 改动：0.1.0 build 5，源码 13ab22b，包含最新 next-one Skill 的 neo 入口与参考文档、新路径和回形针品牌资源。
+- 验证与证据：release 构建、镜像 CRC/SHA-256、挂载四语/图标/布局/CLI 检查通过；包内 Skill 全部文件与源码一致并含 references/neo.md，主程序/CLI 与已验证运行版本逐字节一致。产物 Next-One-0.1.0-local-isolated-arm64-13ab22b.dmg，4,498,544 字节。
+- 未完成/阻塞/下一步：交付本机 arm64 DMG 和 SHA-256；不自动覆盖现用应用、全局 Skill，不签名公证或对外发布。
+- 关联文档与 Git 状态：[安装说明](docs/distribution/local-install.md)；main，本轮本地提交，不推送。
+
 ## 2026-10-26 14:41 | readme-neo-examples | 四语 README 与 neo 输入示例
 
 - 状态：四语文档与配图更新完成，检查通过。
