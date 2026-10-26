@@ -331,3 +331,6 @@
 "正在确认 Codex 输入焦点…" = "Checking Codex keyboard focus…";
 "已确认 Codex 的系统输入焦点。" = "System keyboard focus confirmed for Codex.";
 "聚焦流程已停止，未确认输入焦点。" = "Focus attempt stopped; keyboard focus was not confirmed.";
+"等待 Codex 输入框超时，请手动点击。" = "Timed out waiting for the Codex input. Please click it manually.";
+"Codex 页面超出查找范围，请手动点击。" = "The Codex page exceeded the search limit. Please click the input manually.";
+"暂时无法读取 Codex 界面，请重试。" = "Could not read the Codex interface. Please retry.";

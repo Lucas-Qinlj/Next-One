@@ -24,12 +24,14 @@ enum CodexFocusMatch {
 }
 
 enum CodexFocusFailure: String {
-    case permission, windowNotReady, searchIncomplete, noMatch, ambiguous, changed, writeRejected, unconfirmed
+    case permission, windowNotReady, searchTimeout, searchLimit, readFailed, noMatch, ambiguous, changed, writeRejected, unconfirmed
     @MainActor var message: String {
         switch self {
         case .permission: return L("请开启 Next One 的辅助功能权限，返回后重试。")
         case .windowNotReady: return L("Codex 页面尚未就绪，请重试。")
-        case .searchIncomplete: return L("未能完成输入框查找，请手动点击。")
+        case .searchTimeout: return L("等待 Codex 输入框超时，请手动点击。")
+        case .searchLimit: return L("Codex 页面超出查找范围，请手动点击。")
+        case .readFailed: return L("暂时无法读取 Codex 界面，请重试。")
         case .noMatch: return L("未找到与本次指令匹配的输入框，请手动点击。")
         case .ambiguous: return L("找到多个匹配输入框，请手动选择。")
         case .changed: return L("Codex 页面发生变化，请重试。")
@@ -81,10 +83,18 @@ private enum CodexAX {
         let app = AXUIElementCreateApplication(pid)
         AXUIElementSetMessagingTimeout(app, 0.05)
         guard let window = element(value(app, kAXFocusedWindowAttribute)) else { return .failed(.windowNotReady) }
+        // Prefer the editor identified by Codex itself; it must belong to this window
+        // and contain the complete new prompt. Global keyboard ownership is verified later.
+        if let editor = element(value(app, kAXFocusedUIElementAttribute)),
+           let editorWindow = element(value(editor, kAXWindowAttribute)), CFEqual(editorWindow, window),
+           matches(editor, prompt: prompt), !Task.isCancelled,
+           ProcessInfo.processInfo.systemUptime < deadline {
+            return .found(Match(app: app, window: window, editor: editor))
+        }
         var queue: [(AXUIElement, Int)] = [(window, 0)], visited: [AXUIElement] = [], found: AXUIElement?
         var index = 0
         while index < queue.count, index < 400 {
-            guard !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline else { return .failed(.searchIncomplete) }
+            guard !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline else { return .failed(.searchTimeout) }
             let (item, depth) = queue[index]; index += 1
             if visited.contains(where: { CFEqual($0, item) }) { continue }
             visited.append(item)
@@ -95,14 +105,14 @@ private enum CodexAX {
             var children: CFArray?
             var count: CFIndex = 0
             let childResult = AXUIElementGetAttributeValueCount(item, kAXChildrenAttribute as CFString, &count)
-            guard [.success, .attributeUnsupported, .noValue].contains(childResult) else { return .failed(.searchIncomplete) }
+            guard [.success, .attributeUnsupported, .noValue].contains(childResult) else { return .failed(.readFailed) }
             if childResult == .success, count > 0 {
-                guard depth < 30, queue.count + count <= 400 else { return .failed(.searchIncomplete) }
-                guard AXUIElementCopyAttributeValues(item, kAXChildrenAttribute as CFString, 0, count, &children) == .success else { return .failed(.searchIncomplete) }
+                guard depth < 30, queue.count + count <= 400 else { return .failed(.searchLimit) }
+                guard AXUIElementCopyAttributeValues(item, kAXChildrenAttribute as CFString, 0, count, &children) == .success else { return .failed(.readFailed) }
                 for child in (children as? [AXUIElement]) ?? [] { queue.append((child, depth + 1)) }
             }
         }
-        guard ProcessInfo.processInfo.systemUptime < deadline else { return .failed(.searchIncomplete) }
+        guard ProcessInfo.processInfo.systemUptime < deadline else { return .failed(.searchTimeout) }
         guard let found else { return .failed(.noMatch) }
         return .found(Match(app: app, window: window, editor: found))
     }
@@ -181,7 +191,7 @@ enum CodexFocusOutcome: Equatable {
         }
         task = Task { [weak self] in
             defer { if self?.generation == generation { self?.cancel() } }
-            let deadline = ProcessInfo.processInfo.systemUptime + 4
+            let deadline = ProcessInfo.processInfo.systemUptime + 8
             var sawCodex = false
             var lastFailure = CodexFocusFailure.windowNotReady
             while !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline {
@@ -189,7 +199,9 @@ enum CodexFocusOutcome: Equatable {
                 let front = NSWorkspace.shared.frontmostApplication
                 if front?.bundleIdentifier == "com.openai.codex", let pid = front?.processIdentifier {
                     sawCodex = true
-                    let worker = Task.detached { CodexAX.find(pid: pid, prompt: prompt, deadline: deadline) }
+                    // Do not let one stale full-window scan consume the whole readiness window.
+                    let scanDeadline = min(deadline, ProcessInfo.processInfo.systemUptime + 1)
+                    let worker = Task.detached { CodexAX.find(pid: pid, prompt: prompt, deadline: scanDeadline) }
                     let result = await withTaskCancellationHandler(operation: { await worker.value }, onCancel: { worker.cancel() })
                     guard !Task.isCancelled, NSWorkspace.shared.frontmostApplication?.processIdentifier == pid else { return }
                     switch result {
@@ -211,7 +223,7 @@ enum CodexFocusOutcome: Equatable {
                 } else if sawCodex || (front?.processIdentifier != initialFrontPID && front?.processIdentifier != ProcessInfo.processInfo.processIdentifier) {
                     return // The user chose another app; never activate Codex to override them.
                 }
-                do { try await Task.sleep(for: .milliseconds(150)) } catch { return }
+                do { try await Task.sleep(for: .milliseconds(300)) } catch { return }
             }
             if !Task.isCancelled { failure(lastFailure) }
         }
