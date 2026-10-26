@@ -26,3 +26,9 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 存储版本 2 为所有任务持久化 `shortCode`，`nextTaskNumber` 在 `BEGIN IMMEDIATE` 内原子递增。`Snapshot.taskCode` 用双射 26 进制字母和 1–9 末位编码；旧库初始化时按创建时间/UUID 为所有任务（含回收站）补号，不修改用户字段与 revision。版本在事务内再次检查，避免并发迁移重复编号。升级前退出旧程序；旧版本新连接拒绝打开 v2 库，禁止旧进程继续写新库。原 UUID 和关系保持不变。
 
 `resolveTaskReferences` 在业务执行前将精确短编号解析成 UUID，确保层级、循环、分支和附件校验使用同一主键。请求幂等指纹保留原始参数，失败回滚不占号。JSON 与 context 增加 `short_code`，详见 [CLI 契约](../../Skills/next-one/references/cli.md#global-task-short-codes)。`ShortCodeTests` 与 CoreTests 覆盖编码边界、迁移、并发和编号引用。
+
+## v3 完成归档与编号复用
+
+最新规则以 [归档 Spec](../../docs/spec/2026-10-26/archive-completed.md) 为准，替代上文 v2 的删除不复用约定。v3 清空回收站编号，普通删除/批量归档释放编号；归档将分配游标置 1，按占用集合跳号。恢复分支一次构建占用集合，按创建时间/UUID为每项重新分配。短编号仅供 get，写入先解析为 UUID，防止编号复用及相同 revision 误命中新任务。
+
+`archive preview` 返回完成候选数与 SHA256(ID/revision) token；`archive completed` 在写事务中重验 token、按连续完成祖先分组 deletionID、原子归档并重置游标，支持 request-key。归档单次扫描，不为每个完成项反复调用 delete/descendants。已有 UUID、父子关系、附件内容不变。

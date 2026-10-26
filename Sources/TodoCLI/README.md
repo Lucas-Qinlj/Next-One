@@ -8,4 +8,6 @@ Skill 保存在项目内，不自动安装到全局目录，不修改用户 Code
 
 默认数据：debug 为 Application Support/Todo-AI，release 为 Application Support/Todo-AI-Release；TODO_AI_HOME 优先。`--help` 在不打开数据库的情况下显示解析后的目录。应用设置指令指定的 CLI 与数据路径优先，不能把开发 CLI 当作安装版 CLI 使用。
 
-任务引用支持全局短编号（如 `get A1`、`complete A1 --expected-revision N`）；返回 `short_code` 和原 UUID，编号不可修改，具体参数与升级约束见 [CLI 契约](../../Skills/next-one/references/cli.md#global-task-short-codes)。
+查询支持全局短编号（如 `get A1`）；写入使用查询返回的 UUID，因为归档后短编号可复用；返回 `short_code` 和原 UUID，编号不可修改，具体参数与升级约束见 [CLI 契约](../../Skills/next-one/references/cli.md#global-task-short-codes)。
+
+全局完成归档使用 `archive preview` → `archive completed --expected-token TOKEN --request-key KEY`；恢复按 UUID 并重新分配编号，详见 CLI 契约。

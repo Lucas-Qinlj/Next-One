@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 public struct TodoError: Error, LocalizedError {
     public let code: String
@@ -68,18 +69,34 @@ public struct Snapshot: Codable, Equatable {
         }
         return prefix + String((number - 1) % 9 + 1)
     }
+    mutating func allocateTaskCode(occupied: inout Set<String>) throws -> String {
+        var number = nextTaskNumber ?? 1
+        while number > 0 && number < Int.max {
+            let code = Self.taskCode(number)
+            number += 1
+            if occupied.insert(code).inserted {
+                nextTaskNumber = number
+                return code
+            }
+        }
+        throw TodoError("storage_unavailable", verbatim: "Task number capacity exceeded.")
+    }
     mutating func allocateTaskCode() throws -> String {
-        let number = nextTaskNumber ?? 1
-        guard number > 0, number < Int.max else { throw TodoError("storage_unavailable", verbatim: "Task number capacity exceeded.") }
-        nextTaskNumber = number + 1
-        return Self.taskCode(number)
+        var occupied = Set(liveTasks.compactMap(\.shortCode))
+        return try allocateTaskCode(occupied: &occupied)
     }
     mutating func assignLegacyTaskCodes() throws {
-        // Include deleted tasks, so their codes are never reused.
+        var occupied = Set<String>()
         let indices = tasks.indices.sorted {
             tasks[$0].createdAt == tasks[$1].createdAt ? tasks[$0].id < tasks[$1].id : tasks[$0].createdAt < tasks[$1].createdAt
         }
-        for i in indices { tasks[i].shortCode = try allocateTaskCode() }
+        for i in indices { tasks[i].shortCode = try allocateTaskCode(occupied: &occupied) }
+    }
+    public var needsCodeArchiving: Bool { tasks.contains { $0.deletionID == nil && ($0.shortCode?.count ?? 0) >= 4 } }
+    public var completedArchiveTasks: [TodoItem] { tasks.filter { $0.deletionID == nil && $0.status == "done" } }
+    public var completedArchiveToken: String {
+        let input = completedArchiveTasks.sorted { $0.id < $1.id }.map { "\($0.id):\($0.revision)" }.joined(separator: "\n")
+        return SHA256.hash(data: Data(input.utf8)).map { String(format: "%02x", $0) }.joined()
     }
     public func taskTreeCount(_ roots: [TodoItem]) -> Int {
         roots.reduce(0) { $0 + 1 + descendants($1.id).count }

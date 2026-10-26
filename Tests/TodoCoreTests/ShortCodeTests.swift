@@ -22,7 +22,7 @@ final class ShortCodeTests: XCTestCase {
         sqlite3_close(db)
         let store = try Store(directory: directory)
         let state = try store.snapshot()
-        XCTAssertEqual(state.tasks.map(\.shortCode), ["A2", "A1"])
+        XCTAssertEqual(state.tasks.map(\.shortCode), [nil, "A1"])
         XCTAssertEqual(state.tasks.map(\.revision), [5, 1])
         XCTAssertEqual(state.tasks.map(\.deletionID), ["deleted", nil])
         XCTAssertEqual(state.tasks.map(\.createdAt), ["2020", "2020"])
@@ -36,14 +36,14 @@ extension CoreTests {
         let root = try add("Root", extra: ["request-key":"same"])
         XCTAssertEqual(root.shortCode, "A1")
         XCTAssertEqual(try add("Root", extra: ["request-key":"same"]).shortCode, "A1")
-        let childJSON = try call("add", ["parent":"a1", "title":"Child"])["task"] as! [String:Any]
+        let childJSON = try call("add", ["parent":root.id, "title":"Child"])["task"] as! [String:Any]
         XCTAssertEqual(childJSON["short_code"] as? String, "A2")
         let child = try task(childJSON["id"] as! String)
-        fails("cascade_required") { _ = try self.call("complete", ["id":"A1", "expected-revision":"1"]) }
-        fails("cycle_detected") { _ = try self.call("move", ["id":"A1", "parent":"a2", "expected-revision":"1"]) }
+        fails("cascade_required") { _ = try self.call("complete", ["id":root.id, "expected-revision":"1"]) }
+        fails("cycle_detected") { _ = try self.call("move", ["id":root.id, "parent":child.id, "expected-revision":"1"]) }
         XCTAssertEqual(try store.snapshot().tasks.count, 2)
         let projectID = try project("codes")
-        _ = try call("move", ["id":"a1", "project":projectID, "expected-revision":"1", "parent":"root"])
+        _ = try call("move", ["id":root.id, "project":projectID, "expected-revision":"1", "parent":"root"])
         XCTAssertEqual(try task(child.id).shortCode, "A2")
         XCTAssertEqual(try task(child.id).projectID, projectID)
         let context = try call("context", ["cwd": directory.appendingPathComponent("codes").path])["tasks"] as! [[String:Any]]
@@ -52,9 +52,8 @@ extension CoreTests {
         fails("not_found") { _ = try self.call("get", ["id":"A1"]) }
         let next = try add("No reuse")
         XCTAssertEqual(next.shortCode, "A3")
-        _ = try call("restore", ["id":"a1", "expected-revision":String(try task(root.id).revision)])
-        XCTAssertEqual(try task(root.id).shortCode, "A1")
-        XCTAssertEqual(try task(child.id).shortCode, "A2")
+        _ = try call("restore", ["id":root.id, "expected-revision":String(try task(root.id).revision)])
+        XCTAssertEqual(Set([try task(root.id).shortCode!, try task(child.id).shortCode!]), ["A4", "A5"])
         fails("not_found") { _ = try self.call("get", ["id":"A"]) }
         fails("invalid_field") { _ = try self.call("update", ["id":"A1", "expected-revision":String(try self.task(root.id).revision), "short-code":"Z9"]) }
         let codes = try store.snapshot().tasks.compactMap(\.shortCode)
@@ -81,15 +80,15 @@ extension CoreTests {
 extension CoreTests {
     func testShortCodeOrderingAndDepthValidation() throws {
         let first = try add("First"), second = try add("Second")
-        fails("invalid_field") { _ = try self.call("place", ["id":"A1", "anchor":first.id, "placement":"before", "expected-revision":"1", "anchor-revision":"1"]) }
-        _ = try call("place", ["id":"A2", "anchor":"a1", "placement":"before", "expected-revision":"1", "anchor-revision":"1"])
+        fails("invalid_field") { _ = try self.call("place", ["id":first.id, "anchor":first.id, "placement":"before", "expected-revision":"1", "anchor-revision":"1"]) }
+        _ = try call("place", ["id":second.id, "anchor":first.id, "placement":"before", "expected-revision":"1", "anchor-revision":"1"])
         XCTAssertEqual(try store.snapshot().children(nil).first?.id, second.id)
         var parent = first
         for level in 2...10 {
-            let value = try call("add", ["parent":parent.shortCode!, "title":"Level \(level)"])["task"] as! [String:Any]
+            let value = try call("add", ["parent":parent.id, "title":"Level \(level)"])["task"] as! [String:Any]
             parent = try task(value["id"] as! String)
         }
-        fails("depth_exceeded") { _ = try self.call("add", ["parent":parent.shortCode!, "title":"Too deep"]) }
+        fails("depth_exceeded") { _ = try self.call("add", ["parent":parent.id, "title":"Too deep"]) }
         let after = try add("After failure")
         XCTAssertEqual(after.shortCode, Snapshot.taskCode(12))
     }

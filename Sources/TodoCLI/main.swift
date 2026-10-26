@@ -4,6 +4,8 @@ import TodoCore
 let help = """
 Next One local interface · JSON on stdout, errors on stderr, nonzero exit on failure
 Usage: next-one <command> [id] [--field value] [--json]
+  archive preview
+  archive completed --expected-token TOKEN [--request-key KEY]
   board list
   board place --key p:ID|t:ID --expected-revision N --expected-board-revision N --anchor p:ID|t:ID --placement before|after|end
   project create --name NAME
@@ -29,7 +31,7 @@ Usage: next-one <command> [id] [--field value] [--json]
 Fields: --title, --description, --description-file FILE (or - for stdin), --status,
         --priority high|medium|low, --color none|red|orange|green|blue|purple,
         --due-date yyyy-MM-dd, --due-at ISO8601 (timezone required); empty value clears.
-Task references: ID, parent, target and task anchors accept UUID or global short code (A1, AA1), case-insensitive.
+Task lookup: get accepts UUID or global short code (A1, AA1), case-insensitive. Writes use the returned UUID, including parent/target/anchors; codes can be reused.
 Data: NEXT_ONE_HOME overrides Application Support/\(Store.defaultDirectoryName). No network server.
 Resolved data directory: \(Store.defaultDirectory.path)
 """
@@ -37,7 +39,7 @@ do {
     var tokens = Array(CommandLine.arguments.dropFirst())
     if tokens.isEmpty || tokens.contains("--help") || tokens == ["help"] { print(help); exit(0) }
     var command = tokens.removeFirst()
-    if ["project", "attachment", "board"].contains(command), !tokens.isEmpty { command += " " + tokens.removeFirst() }
+    if ["project", "attachment", "board", "archive"].contains(command), !tokens.isEmpty { command += " " + tokens.removeFirst() }
     var args: [String: String] = [:]
     while !tokens.isEmpty {
         let token = tokens.removeFirst()

@@ -34,6 +34,7 @@ import TodoCore
     var growsRight = false
     var growsDown = true
     var window: FloatingController?
+    var isArchiving = false
     var confirm: Confirmation?
     struct Confirmation: Identifiable { let id = UUID(); var title: String; var detail: String; var action: () -> Void }
     init(store: Store) { self.store = store; LanguageSettings.shared.load(directory: store.directory); refresh() }
@@ -47,6 +48,7 @@ import TodoCore
         }
     }
     func refresh() {
+        guard !isArchiving else { return }
         do {
             let snapshot = try store.snapshot()
             refreshError = nil
@@ -176,6 +178,36 @@ import TodoCore
             confirm = Confirmation(title: L("一并完成 \(state.descendants(item.id).filter { $0.status != "done" }.count) 个子任务？"), detail: L("父任务与未完成后代将一起完成。"), action: { [weak self] in args["cascade"] = "true"; self?.run("complete", args) }); return
         }
         args["status"] = item.status == "done" ? "todo" : "done"; _ = run("update", args)
+    }
+    func archiveCompleted() {
+        guard saveDraft() else { return }
+        refresh()
+        let count = state.completedArchiveTasks.count
+        let token = state.completedArchiveToken
+        let request = UUID().uuidString
+        confirm = Confirmation(title: L("归档 \(count) 个已完成 Todo？"),
+                               detail: L("所有项目的已完成任务（含子任务）将移入回收站。新任务从 A1 查找可用编号；恢复时重新编号。"), action: { [weak self] in
+            guard let self else { return }
+            guard !self.isArchiving else { return }
+            self.isArchiving = true
+            let directory = self.store.directory
+            Task {
+                do {
+                    let snapshot = try await Task.detached {
+                        let store = try Store(directory: directory)
+                        _ = try store.execute("archive completed", ["expected-token": token, "request-key": request])
+                        return try store.snapshot()
+                    }.value
+                    self.state = snapshot
+                    self.isArchiving = false
+                    self.notify(L("已归档 \(count) 个 Todo"))
+                } catch {
+                    self.isArchiving = false
+                    self.refresh()
+                    self.report(error)
+                }
+            }
+        })
     }
     func delete(_ item: TodoItem) {
         let count = state.descendants(item.id).count + 1

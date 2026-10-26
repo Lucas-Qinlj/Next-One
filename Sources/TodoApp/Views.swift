@@ -56,6 +56,7 @@ struct ContentView: View {
                 else if model.selectedID != nil { DetailView(model: model) }
             }
         }
+        .disabled(model.isArchiving)
         .background(Color(nsColor: .windowBackgroundColor).opacity(reduceTransparency || contrast == .increased ? 1 : model.opacity))
         .clipShape(.rect(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(.primary.opacity(0.14)))
@@ -137,6 +138,20 @@ struct TaskListView: View {
     }
     var body: some View {
         VStack(spacing: 0) {
+            if model.state.needsCodeArchiving {
+                HStack(spacing: 8) {
+                    Text(L("编号开始变多？")).font(.system(size: 12))
+                    Spacer(minLength: 0)
+                    if model.isArchiving {
+                        ProgressView().controlSize(.small)
+                        Text(L("正在归档…")).font(.system(size: 12))
+                    } else {
+                        Button(L("归档已完成Todo")) { model.archiveCompleted() }
+                            .help(L("归档所有项目的已完成任务，并从 A1 查找可用编号。"))
+                    }
+                }
+                .padding(.horizontal, 14).padding(.vertical, 8)
+            }
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: model.scope == "all" ? 0 : 2) {
                     if model.scope == "all" {

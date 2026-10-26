@@ -61,19 +61,20 @@ public final class Store {
         try sql("PRAGMA journal_mode=WAL")
         try sql("PRAGMA synchronous=FULL")
         let version = try scalar("PRAGMA user_version")
-        guard version == "0" || version == "1" || version == "2" else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
+        guard ["0", "1", "2", "3"].contains(version) else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
         try sql("BEGIN IMMEDIATE")
         do {
             try sql("CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL)")
             if try scalar("SELECT json FROM state WHERE id=1").isEmpty { try save(Snapshot()) }
             // Read version again inside the write lock: another process may have migrated it.
             let lockedVersion = try scalar("PRAGMA user_version")
-            guard ["0", "1", "2"].contains(lockedVersion) else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
-            if lockedVersion != "2" {
+            guard ["0", "1", "2", "3"].contains(lockedVersion) else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
+            if lockedVersion != "3" {
                 var state = try load()
-                try state.assignLegacyTaskCodes()
+                if lockedVersion == "0" || lockedVersion == "1" { try state.assignLegacyTaskCodes() }
+                for i in state.tasks.indices where state.tasks[i].deletionID != nil { state.tasks[i].shortCode = nil }
                 try save(state)
-                try sql("PRAGMA user_version=2")
+                try sql("PRAGMA user_version=3")
             }
             try sql("COMMIT")
         } catch { try? sql("ROLLBACK"); throw error }
@@ -116,7 +117,7 @@ public final class Store {
     public func execute(_ command: String, _ args: [String: String] = [:]) throws -> [String: Any] {
         lock.lock(); defer { lock.unlock() }
         try validateArguments(command, args)
-        let readOnly = ["project list", "board list", "context", "list", "get", "trash"].contains(command)
+        let readOnly = ["project list", "board list", "context", "list", "get", "trash", "archive preview"].contains(command)
         try sql(readOnly ? "BEGIN" : "BEGIN IMMEDIATE")
         var copied: URL?
         do {
@@ -152,12 +153,16 @@ public final class Store {
         if command == "group" { fields.append("target") }
         for field in fields {
             guard let value = args[field], !(field == "parent" && value == "root") else { continue }
-            resolved[field] = state.tasks[try index(value, state, deleted: command == "restore")].id
+            let id = state.tasks[try index(value, state, deleted: command == "restore")].id
+            if command != "get", value != id { throw TodoError("invalid_field", "写入请使用 get 返回的任务 ID，编号可能已被复用。") }
+            resolved[field] = id
         }
         if command == "board place" {
             for field in ["key", "anchor"] {
                 if let value = args[field], value.hasPrefix("t:") {
-                    resolved[field] = "t:" + state.tasks[try index(String(value.dropFirst(2)), state)].id
+                    let id = state.tasks[try index(String(value.dropFirst(2)), state)].id
+                    guard value == "t:" + id else { throw TodoError("invalid_field", "写入请使用 get 返回的任务 ID，编号可能已被复用。") }
+                    resolved[field] = "t:" + id
                 }
             }
         }
@@ -166,6 +171,7 @@ public final class Store {
     private func validateArguments(_ command: String, _ args: [String: String]) throws {
         let fields = "title description status priority color due-date due-at"
         let options: [String: String] = [
+            "archive preview": "", "archive completed": "expected-token request-key",
             "board list": "", "board place": "key expected-revision expected-board-revision anchor placement",
             "project create": "name", "place": "id expected-revision anchor anchor-revision placement project parent",
             "group": "id expected-revision target target-revision project name",
@@ -232,6 +238,29 @@ public final class Store {
     }
     private func perform(_ command: String, _ args: [String: String], _ state: inout Snapshot, _ copied: inout URL?) throws -> [String: Any] {
         switch command {
+        case "archive preview":
+            return ["count": state.completedArchiveTasks.count, "token": state.completedArchiveToken]
+        case "archive completed":
+            guard try required("expected-token", args) == state.completedArchiveToken else {
+                throw TodoError("revision_conflict", "已完成任务已变化，请重新确认归档范围。")
+            }
+            let candidates = state.completedArchiveTasks
+            let completed = Dictionary(uniqueKeysWithValues: candidates.map { ($0.id, $0) })
+            var deletions: [String: String] = [:]
+            var affected: [String] = []
+            for i in state.tasks.indices where completed[state.tasks[i].id] != nil {
+                var root = state.tasks[i]
+                var visited = Set<String>()
+                while let parent = root.parentID.flatMap({ completed[$0] }), visited.insert(parent.id).inserted { root = parent }
+                let deletion = deletions[root.id] ?? UUID().uuidString
+                deletions[root.id] = deletion
+                state.tasks[i].deletionID = deletion
+                state.tasks[i].shortCode = nil
+                touch(&state.tasks[i])
+                affected.append(state.tasks[i].id)
+            }
+            state.nextTaskNumber = 1
+            return ["count": affected.count, "affected_ids": affected]
         case "board list": return ["ordered_keys": state.boardKeys, "board_revision": state.boardRevision ?? 0]
         case "board place":
             let key = try required("key", args)
@@ -451,16 +480,19 @@ public final class Store {
                 for child in branch { let k = try index(child.id, state); state.tasks[k].projectID = destination; touch(&state.tasks[k]); affected.append(child.id) }
             } else if command == "delete" {
                 let deletion = UUID().uuidString
-                item.deletionID = deletion
-                for child in state.descendants(id) { let k = try index(child.id, state); state.tasks[k].deletionID = deletion; touch(&state.tasks[k]); affected.append(child.id) }
+                item.deletionID = deletion; item.shortCode = nil
+                for child in state.descendants(id) { let k = try index(child.id, state); state.tasks[k].deletionID = deletion; state.tasks[k].shortCode = nil; touch(&state.tasks[k]); affected.append(child.id) }
             } else if command == "restore" {
                 guard let deletion = item.deletionID else { throw TodoError("invalid_field", "任务没有被删除。") }
                 if let parent = item.parentID, let p = state.tasks.first(where: { $0.id == parent }), p.deletionID != nil {
                     if p.deletionID == deletion { throw TodoError("invalid_field", "请从回收站恢复分支根任务。") }
                     throw TodoError("invalid_field", "请先恢复父任务。")
                 }
-                let restoredIDs = state.tasks.filter { $0.deletionID == deletion }.map(\.id)
-                for key in restoredIDs { let k = try index(key, state, deleted: true); state.tasks[k].deletionID = nil; touch(&state.tasks[k]); affected.append(key) }
+                let restoredIDs = state.tasks.filter { $0.deletionID == deletion }.sorted {
+                    $0.createdAt == $1.createdAt ? $0.id < $1.id : $0.createdAt < $1.createdAt
+                }.map(\.id)
+                var occupied = Set(state.liveTasks.compactMap(\.shortCode))
+                for key in restoredIDs { let k = try index(key, state, deleted: true); state.tasks[k].deletionID = nil; state.tasks[k].shortCode = try state.allocateTaskCode(occupied: &occupied); touch(&state.tasks[k]); affected.append(key) }
                 item = state.tasks[i]
                 let restoredProject = try item.parentID.map { state.tasks[try index($0, state)].projectID } ?? item.projectID
                 for key in restoredIDs {

@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:41 | archive-completed | 长编号提示与完成归档
+
+- 状态：实现、自动测试、隔离真实 CLI/原生流程验证完成。
+- 需求与范围：全局长编号固定提示、完成任务归档回收站、从头跳号分配、恢复重新编号。
+- 改动：独立分支，存储 v3、原子归档/候选校验、清理回收站占号、编号查询后 UUID 写入及顶部固定提示。
+- 验证与证据：全量41项通过，新增后台归档/本地化定向6项通过；50k合成样本归档49,999条成功（debug预览/归档/读取/新建约25.13秒，不等于全应用50k性能通过）。原生取消/确认/回收站恢复及CLI跳号A2、恢复AAA1→A3验证通过；截图 `.local/archive-data/notice.png`。Skill校验及debug打包通过。
+- 未完成/阻塞/下一步：无功能阻塞；大存量归档需要等待，已改后台进度并暂停轮询。未替换现用应用、更新全局Skill或归档真实任务；全应用50k交互性能未验收。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/archive-completed.md)；codex/archive-completed，基于 1b8f216，不合并或推送。
+
 ## 2026-10-26 18:30 | install-task-short-codes | 替换现用 Next One 安装版
 
 - 状态：按用户授权完成替换并启动。

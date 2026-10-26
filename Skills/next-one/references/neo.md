@@ -15,7 +15,7 @@ Act on direct user requests. Remove the leading standalone `neo` prefix and its 
 | neo Show today's unfinished tasks. | Query all projects unless a scope was specified; select unfinished tasks due on the user's local calendar date. Separate overdue items if included. Tasks with no due date are not automatically due today. |
 | neo Move mailing the parcel to tomorrow at 3pm. | Uniquely identify the task, fetch its current revision, and change only its due time. |
 | neo I have mailed the parcel. | Treat this as the user's completion confirmation and complete the matched task. Do not silently cascade to unfinished descendants. |
-| neo Complete A1. | Resolve `get A1`, use its current revision, and complete that exact task; retain cascade confirmation rules. |
+| neo Complete A1. | Resolve `get A1`, verify its title/project, use the returned UUID and current revision, and complete that exact task; retain cascade confirmation rules. |
 | neo Delete the mailing task. | Soft-delete the matched task, explaining the branch impact. Do not permanently purge anything. |
 | neo Restore the mailing task I just deleted. | Uniquely identify it in the trash and restore it. |
 
@@ -25,7 +25,7 @@ Phrases such as "note this", "I need to", or "I want to" can express creation; t
 
 - An explicitly named project takes precedence. For clear project work, use the established conversation context or directory binding. If the requested project is missing or ambiguous, clarify; do not automatically create or bind one.
 - Clearly personal work, or a standalone new task with no project context, defaults to `unclassified`. Say so in the result. Do not place personal tasks in a code project merely because that directory is the agent's working directory.
-- Explicit short codes such as `A1` and `AA1` identify one task across all projects in the selected app store. Use `get CODE` directly, including completed tasks; do not search titles or require a folder binding. If a stated project conflicts with the returned project, clarify. For deleted tasks, use `trash` to match `short_code` and obtain the revision before `restore`. Missing codes must not fall back to a similarly named title.
+- Explicit short codes such as `A1` and `AA1` identify one task across all projects in the selected app store. Use `get CODE` directly, including completed tasks; do not search titles or require a folder binding. If a stated project conflicts with the returned project, clarify. Deleted tasks have no short code. Use `trash` to uniquely match the title/project, then restore by UUID and revision. Restored tasks receive new available codes; old codes can identify a different live task after reuse. Missing codes must not fall back to a similarly named title.
 - Queries without a scope use `list --project all`. For edits or completion, search the stated scope or clear context first; otherwise search all projects, but require a unique match before writing.
 - Read all relevant result pages before concluding that a match is unique. Do not silently select the first result. Resolve "this task" directly only when the conversation identifies a definite task ID. Present concise titles, projects, and dates when multiple candidates exist.
 - If a requested requirements document or project context is unavailable, report what is missing rather than inventing requirements, dependencies, or acceptance criteria.

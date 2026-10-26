@@ -213,3 +213,13 @@
 "颜色" = "Color";
 "：展开项目" = ": expand project";
 "：收起项目" = ": collapse project";
+
+"编号开始变多？" = "Codes getting longer?";
+"归档已完成Todo" = "Archive completed todos";
+"归档所有项目的已完成任务，并从 A1 查找可用编号。" = "Archive completed tasks across all projects and search for free codes from A1.";
+"归档 %1$@ 个已完成 Todo？" = "Archive %1$@ completed todos?";
+"所有项目的已完成任务（含子任务）将移入回收站。新任务从 A1 查找可用编号；恢复时重新编号。" = "Completed tasks in all projects, including subtasks, will move to Trash. New tasks search for free codes from A1; restored tasks get new codes.";
+"写入请使用 get 返回的任务 ID，编号可能已被复用。" = "Use the task ID returned by get for writes; short codes may have been reused.";
+"已完成任务已变化，请重新确认归档范围。" = "Completed tasks have changed. Review the archive scope again.";
+"正在归档…" = "Archiving…";
+"已归档 %1$@ 个 Todo" = "Archived %1$@ todos";
