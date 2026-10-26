@@ -72,3 +72,5 @@ Codex UI 自动化此前明确被工具拒绝：`Computer Use is not allowed to 
 代码核对发现真实窗口使用 accessory 应用、borderless/nonactivatingPanel、floating 层级及主动获取焦点的 NSTextView，与普通窗口实验不同。普通窗口 A/B 不能排除真实面板的关闭时序问题。已编译并打开 `.local/codex-focus-probe/C3 Panel Probe.app`，采用相同关键窗口属性并复用生产输入框实现，继续比较两种顺序；该工具仍不是完整生产流程，结果待用户反馈。工具仅预填固定测试文字，不读取待办、不请求辅助功能权限。
 
 Codex UI 观察仍被 Computer Use 明确拒绝，未绕过；最终输入焦点需要用户观察。根因和修复均未确认，冷启动、跨 Spaces 等尚未验证。
+
+后续用户确认：非激活悬浮面板 A/B 均无法直接输入 x，实验已复现真实问题；在该实验条件下仅改变关闭顺序无效。下一项 C 保持相同面板及输入框，sheet 的 onDismiss 后调用宿主面板 makeFirstResponder(nil)、resignKey()，然后打开相同深链接。C 工具编译通过并已打开，结果待用户反馈；不将候选处理写为修复成功。
