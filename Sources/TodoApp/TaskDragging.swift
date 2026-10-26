@@ -351,22 +351,22 @@ struct MergeProjectPopover: View {
     var emptyProjects: [Project] { model.state.projects.filter { project in !model.state.liveTasks.contains { $0.projectID == project.id } } }
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("合并到项目").font(.headline)
-            Text("“\(merge.target.title)”与“\(merge.source.title)”及其子任务将移入同一个项目。")
+            Text(L("合并到项目")).font(.headline)
+            Text(L("“\(merge.target.title)”与“\(merge.source.title)”及其子任务将移入同一个项目。"))
                 .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-            Picker("项目", selection: $selection) {
-                Text("创建新项目").tag("new")
+            Picker(L("项目"), selection: $selection) {
+                Text(L("创建新项目")).tag("new")
                 ForEach(emptyProjects) { Text($0.name).tag($0.id) }
             }
             if selection == "new" {
-                TextField("项目名称", text: $name).textFieldStyle(.roundedBorder)
-                Text("之后可在设置中绑定文件夹。").font(.caption).foregroundStyle(.secondary)
+                TextField(L("项目名称"), text: $name).textFieldStyle(.roundedBorder)
+                Text(L("之后可在设置中绑定文件夹。")).font(.caption).foregroundStyle(.secondary)
             }
             if let error { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
             HStack {
-                Button("取消") { model.taskMerge = nil }.keyboardShortcut(.cancelAction)
+                Button(L("取消")) { model.taskMerge = nil }.keyboardShortcut(.cancelAction)
                 Spacer()
-                Button("合并") {
+                Button(L("合并")) {
                     var args = ["id": merge.source.id, "expected-revision": String(merge.source.revision),
                                 "target": merge.target.id, "target-revision": String(merge.target.revision)]
                     args[selection == "new" ? "name" : "project"] = selection == "new" ? name : selection
@@ -374,7 +374,7 @@ struct MergeProjectPopover: View {
                         let result = try model.store.execute("group", args)
                         model.refresh()
                         if let project = result["project"] as? [String: Any], let id = project["id"] as? String { model.collapsed.remove("project-" + id) }
-                        model.taskMerge = nil; model.notify("已合并到项目")
+                        model.taskMerge = nil; model.notify(L("已合并到项目"))
                     } catch { self.error = error.localizedDescription }
                 }.buttonStyle(.borderedProminent).tint(.blue)
                     .disabled(selection == "new" && name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

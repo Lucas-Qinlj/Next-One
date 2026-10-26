@@ -56,3 +56,8 @@ python3 scripts/cli-smoke.py
 应用启动时，接入文件自动准备到当前用户数据目录的 `integration/current/`：`bin/todo` 和 `skills/todo-ai/SKILL.md`（包括 references）。默认数据目录由系统生成，为 `~/Library/Application Support/Todo-AI`；`TODO_AI_HOME` 可用于隔离测试。版本内容先完整校验再原子切换 current 链接，旧版本保留；不会覆盖正在执行的 CLI、真实待办或用户级 Skill。
 
 设置里的复制指令使用上述实际路径，可在源码目录不存在时工作。该能力已在本机移动应用包及模拟用户目录中验证，不代表完成签名、公证、跨架构或另一台 Mac 的正式分发验证。
+
+
+### 界面语言
+
+在设置顶部选择“跟随系统 / 简体中文 / English / 日本語 / 한국어”，立即生效并记住选择。默认跟随系统，未匹配到支持的语言时使用英文。菜单、提示、业务错误与 Codex 安装指令同步翻译；待办标题、备注、项目名称和附件保持原文。详细范围与验证见[多语言 Spec](docs/spec/2026-10-26/multilingual.md)。

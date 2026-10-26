@@ -15,7 +15,7 @@ public final class Store {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
             try FileManager.default.createDirectory(at: directory.appendingPathComponent("attachments"), withIntermediateDirectories: true)
-        } catch { throw TodoError("storage_unavailable", error.localizedDescription) }
+        } catch { throw TodoError("storage_unavailable", verbatim: error.localizedDescription) }
         guard sqlite3_open_v2(directory.appendingPathComponent("todo.sqlite").path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nil) == SQLITE_OK else {
             if db != nil { sqlite3_close(db); db = nil }
             throw TodoError("storage_unavailable", "无法打开待办存储。")
@@ -36,7 +36,7 @@ public final class Store {
     private func sql(_ query: String) throws {
         guard sqlite3_exec(db, query, nil, nil, nil) == SQLITE_OK else { throw databaseError() }
     }
-    private func databaseError() -> TodoError { TodoError("storage_unavailable", String(cString: sqlite3_errmsg(db))) }
+    private func databaseError() -> TodoError { TodoError("storage_unavailable", verbatim: String(cString: sqlite3_errmsg(db))) }
     private func scalar(_ query: String) throws -> String {
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else { throw databaseError() }

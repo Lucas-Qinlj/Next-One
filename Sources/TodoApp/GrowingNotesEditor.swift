@@ -17,14 +17,14 @@ struct GrowingNotesEditor: View {
                     }
                 }.hidden()
             if text.isEmpty {
-                Text("备注").foregroundStyle(.tertiary).padding(.leading, 5).padding(.top, 1)
+                Text(L("备注")).foregroundStyle(.tertiary).padding(.leading, 5).padding(.top, 1)
                     .allowsHitTesting(false)
             }
         }
         .frame(height: min(152, max(22, contentHeight)), alignment: .topLeading)
         .overlay {
             TextEditor(text: $text).font(.system(size: 13))
-                .scrollContentBackground(.hidden).accessibilityLabel("描述")
+                .scrollContentBackground(.hidden).accessibilityLabel(L("描述"))
         }
         .clipped()
     }

@@ -28,8 +28,8 @@ struct QuickAddView: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(expanded ? "添加待办" : "展开添加待办")
-                .accessibilityLabel(expanded ? "添加待办" : "展开添加待办")
+                .help(expanded ? L("添加待办") : L("展开添加待办"))
+                .accessibilityLabel(expanded ? L("添加待办") : L("展开添加待办"))
             }
             .frame(width: expanded ? geometry.size.width : buttonSize, height: expanded ? expandedHeight : buttonSize, alignment: .bottomTrailing)
             .background(.primary.opacity(expanded ? 0.04 : 0))
@@ -52,28 +52,28 @@ struct QuickAddView: View {
             HStack(spacing: 8) {
                 if let id = model.parentForNew {
                     Menu {
-                        Button("改为普通待办") {
+                        Button(L("改为普通待办")) {
                             model.newProject = model.state.liveTasks.first { $0.id == id }?.projectID ?? "unclassified"
                             model.parentForNew = nil
                         }
                     } label: {
-                        Text("子任务 → \(model.state.liveTasks.first { $0.id == id }?.title ?? "父任务已不可用")")
+                        Text(L("子任务 → \(model.state.liveTasks.first { $0.id == id }?.title ?? L("父任务已不可用"))"))
                             .lineLimit(1)
-                    }.menuStyle(.borderlessButton).help("子任务归属；可改为普通待办")
+                    }.menuStyle(.borderlessButton).help(L("子任务归属；可改为普通待办"))
                 } else {
-                    Text("添加到")
+                    Text(L("添加到"))
                     if model.scope == "all" {
-                        Picker("添加到", selection: $model.newProject) {
-                            Text("未分类").tag("unclassified")
+                        Picker(L("添加到"), selection: $model.newProject) {
+                            Text(L("未分类")).tag("unclassified")
                             ForEach(model.state.projects) { Text($0.name).tag($0.id) }
                         }.labelsHidden().controlSize(.regular)
                     } else {
-                        Text(model.state.projects.first { $0.id == model.newProject }?.name ?? "未分类").lineLimit(1)
+                        Text(model.state.projects.first { $0.id == model.newProject }?.name ?? L("未分类")).lineLimit(1)
                     }
                 }
                 Spacer(minLength: 0)
             }.font(.system(size: 13)).frame(height: 24).padding(.trailing, buttonSize)
-            TextField("添加待办…", text: $model.newTitle)
+            TextField(L("添加待办…"), text: $model.newTitle)
                 .textFieldStyle(.plain).font(.system(size: 13))
                 .focused($titleFocused)
                 .onSubmit { model.add() }

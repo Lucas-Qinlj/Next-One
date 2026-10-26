@@ -3,7 +3,9 @@ import Foundation
 public struct TodoError: Error, LocalizedError {
     public let code: String
     public let message: String
-    public init(_ code: String, _ message: String) { self.code = code; self.message = message }
+    public let localizedText: LocalizedText
+    public init(_ code: String, _ message: LocalizedText) { self.code = code; self.localizedText = message; self.message = message.original }
+    public init(_ code: String, verbatim message: String) { self.init(code, LocalizedText(stringLiteral: message)) }
     public var errorDescription: String? { message }
 }
 public struct Project: Codable, Identifiable, Equatable {

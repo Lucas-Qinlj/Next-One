@@ -43,3 +43,12 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 设置页每条绑定目录在“重绑”右侧提供 trash 图标；悬停和辅助功能名称明确解除绑定、保留文件/待办，确认后走 project unbind。无目录后显示“绑定文件夹…”入口。
 
 CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/CodexIntegration/todo-ai 读取资源，启动时准备到当前 Store.directory/integration 的内容寻址版本目录，完整校验后原子切换 current 链接。设置指令引用 current/bin/todo 和 current/skills/todo-ai/SKILL.md，不含源码定位逻辑或编译机路径。缺资源/无法写入时提示错误并支持重试，不影响待办打开。scripts/package-app.sh [debug|release] 构建自包含应用包，run.sh 打包 debug 后启动。用户级 Skill 仍由粘贴指令后的 Codex 安装，应用不自动修改全局配置。
+
+
+## 多语言
+
+设置顶部的语言选择器支持跟随系统、简体中文、English、日本語、한국어。`LanguageSettings` 保存当前数据目录的 `language.json`，SwiftUI 观察语言状态即时刷新（不使用 `.id` 重建页面），AppKit 通过通知更新主菜单、窗口标题、悬浮球说明；业务数据和草稿不翻译。日期显示使用所选 locale，ISO / 日期存储格式不变。系统语言匹配与英文回退规则见[多语言 Spec](../../docs/spec/2026-10-26/multilingual.md)。
+
+`L` 接收保留模板和插值参数的 `LocalizedText`，通过 TodoCore 的四套 `.strings` 资源读取译文；用户标题、备注、文件名、路径只能作为参数或原文展示，不能作为查找键。`TodoError` 同时保留中文 message 与本地化模板；UI 使用模板翻译，CLI 保留原有中文输出。接入错误在展示时翻译，安装指令按当前语言生成并复制同一全文。
+
+添加界面文案时使用 `L("中文模板")`，在四套资源中添加同键译文；动态值保留 Swift 插值，资源中使用 `%1$@` 等位置参数。运行 `swift test --filter LocalizationTests` 验证键集、占位参数、实际资源读取、语言保存与草稿/数据库不变。打包脚本复制 SwiftPM 资源 bundle 到应用包根目录，符合生成的 Bundle.module 解析路径。
