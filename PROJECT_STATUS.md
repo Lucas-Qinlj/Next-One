@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:22 | codex-task-handoff | 补充创建会话菜单样式
+
+- 状态：Spec 已更新，未实施。
+- 需求与范围：用户要求“创建 Codex 会话”位于右键菜单第一行，前置灰色 ChatGPT Logo，下方灰线分隔。
+- 改动：补充入口位置、图标样式、分隔线及原有选项顺序保持规则，同步示例文案和 AC01。
+- 验证与证据：正文/示例/验收文案一致性、相对链接及 git diff --check；纯文档不运行代码测试。
+- 未完成/阻塞/下一步：无文档阻塞；菜单视觉与实际交互待实施验证。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅提交本轮文档，不推送。
+
 ## 2026-10-27 02:17 | codex-task-handoff | 首版仅支持已有 Codex 项目
 
 - 状态：用户确认范围调整，Spec 已同步；未实施。
