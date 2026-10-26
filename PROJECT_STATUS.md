@@ -9,12 +9,12 @@
 
 ## 2026-10-27 02:42 | scrollbar-visible | 贴边滚动滑块持续可见
 
-- 状态：修复已实现，验证及安装进行中。
+- 状态：修复、相关验证、备份及现用应用替换完成。
 - 需求与范围：用户反馈滚动条几乎看不到，要求贴边且明显粗于边框，并授权提交、推送和替换现用应用；延续 01:12 scrollbar-gutter 的无占位布局。
 - 改动：保留 3 pt（约 1 pt 边框的三倍）和原生 overlay 布局/输入机制；独立无命中绘制层避免原生渐隐，颜色增强为 labelColor 65%，无溢出隐藏。同步 Spec、模块说明及通用偏好。
-- 验证与证据：进行中；证据目录 `.local/scrollbar-visible/`。初轮检查发现切换布局后绘制层尺寸未更新，已修正为随宿主布局同步。
-- 未完成/阻塞/下一步：完成必要检查、release 构建、推送及备份后替换；不进行公开发布、公证或修改系统偏好。
-- 关联文档与 Git 状态：[产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[UI 模块](Sources/TodoApp/README.md)；main 小修复，仅提交本轮内容。
+- 验证与证据：2 项 ScrollbarLayoutTests 通过，覆盖四页面 340/520 pt、嵌套滚动区、深浅色空闲渲染、纵横 3 pt、贴边命中、位置更新及无溢出隐藏；release 构建通过。原生窗口截图及已安装清单确认常显，AX 滚动值更新通过。初轮发现绘制层尺寸及可见滑块命中问题，均已修复后复验；证据 `.local/scrollbar-visible/`。
+- 未完成/阻塞/下一步：坐标拖动返回 windowNotFoundAtPosition，不报告物理拖动通过；多屏/Spaces 未新增验收。完整备份 `.local/backups/before-scrollbar-visible-20261027-024500/`，替换包哈希一致，重启后任务/项目/回收站快照及附件不变。保持现用本地构建签名方式，未正式签名公证或公开发布。
+- 关联文档与 Git 状态：[产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[UI 模块](Sources/TodoApp/README.md)；main 小修复，用户授权提交、推送及替换，本轮仅暂存相关文件。应用主程序 SHA-256 `f15395916e426d3b9ca39266971a8e43f1d44e39273ad92847fea20dc683e182`。
 
 ## 2026-10-27 02:22 | codex-task-handoff | 补充创建会话菜单样式
 
