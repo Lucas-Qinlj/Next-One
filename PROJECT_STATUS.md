@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 03:30 | codex-composer-focus-install | C3 验收与应用替换
+
+- 状态：用户确认真实流程无需点击输入框即可打字；备份、替换、重启和数据校验通过。
+- 需求与范围：用户明确授权推送、替换；不发布 DMG、不安装全局 Skill。
+- 改动：安装已验收 release 包至 Applications，保持原 bundle ID、数据目录及兼容链接；正常退出后完整备份旧应用与数据。
+- 验证与证据：安装包逐文件与验收包一致，主程序 SHA-256 `40f35c9d84ef4ba5b002d95c97290225cfaf94a549a00dde23077a20b28f5df3`；替换期间数据未变，重启后待办、项目、回收站、附件及偏好一致；启动进程位于 Applications。备份与 verification.txt：`.local/backups/before-c3-focus-20261027-033055/`。
+- 未完成/阻塞/下一步：冷启动 Codex、Spaces、多屏未新增验收；沿用现用 linker ad-hoc 身份，未正式签名公证。无安装阻塞。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)；main；按用户授权推送 origin/main。
+
 ## 2026-10-27 03:22 | codex-composer-focus | C3 隐藏面板后交接实现
 
 - 状态：实现完成、9 项针对性测试及 release 打包通过；真实 Codex 焦点待用户验收。
