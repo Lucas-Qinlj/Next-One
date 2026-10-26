@@ -334,3 +334,4 @@
 "等待 Codex 输入框超时，请手动点击。" = "Timed out waiting for the Codex input. Please click it manually.";
 "Codex 页面超出查找范围，请手动点击。" = "The Codex page exceeded the search limit. Please click the input manually.";
 "暂时无法读取 Codex 界面，请重试。" = "Could not read the Codex interface. Please retry.";
+"补充指令（可留空回车）" = "Additional instructions (optional; Enter to open)";

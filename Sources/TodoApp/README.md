@@ -99,6 +99,8 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 ### Codex 交接窗口（C3）
 
+原生标题栏保留创建会话标题；内容首行绑定 session.taskHeading，展示编号-标题，长标题最多两行并提供完整悬停文字。加载、重选及准备 URL 时同步最新任务标题；输入标签与无障碍名称统一为“补充指令（可留空回车）”。
+
 窗口显示时 `nearbyOrigin` 按来源清单所在屏幕选择右侧/左侧，间距 12 pt、顶部对齐，位置约束于 visibleFrame 内侧 8 pt；尺寸改变保留顶部并重新限位。无来源面板时才居中。几何检查包含负坐标副屏和窄屏，不冒充实际多屏验收。
 
 `AppModel.presentCodexHandoff` 保持单个 `CodexHandoffWindow`（普通 NSWindow），复用原 `CodexHandoffView`。窗口主动激活供用户输入，按内容调整高度；重复入口提到前面，不替换草稿。关闭或取消设置 session.cancelled，并清除模型持有的窗口；异步准备完成仍复查 session 身份，已关闭窗口不能再打开 Codex。

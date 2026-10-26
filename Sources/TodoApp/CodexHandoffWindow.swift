@@ -21,6 +21,7 @@ import SwiftUI
             .fixedSize()
             .onChange(of: session.step) { [weak self] in self?.resizeToFit() }
             .onChange(of: session.error) { [weak self] in self?.resizeToFit() }
+            .onChange(of: session.taskHeading) { [weak self] in self?.resizeToFit() }
         )
         resizeToFit()
     }

@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 04:37 | codex-handoff-copy | 交接窗口显示待办标题及简化文案
+
+- 状态：实现、15 项回归测试、release 构建和隔离原生窗口视觉检查通过。
+- 需求与范围：内容区重复创建会话标题改为编号-标题；输入提示按截图原词“补充指令”改为“补充指令（可留空回车）”。不改变焦点与发送行为。
+- 改动：session 保存当前任务显示信息，加载/重选/确认前刷新标题；标题最多两行并提供完整悬停文字，标题变化同步调整窗口高度。四语标签和无障碍名称同步。
+- 验证与证据：15 项交接/本地化测试通过；隔离示例 A1-增加功能的截图和 AX 文本确认内容首行及新输入标签，测试应用已退出。release 资源及 CLI --help 通过。包 `.local/releases/c3-handoff-copy-20261027/Next One.app`，日志同目录；主程序 SHA-256 `85cc710d32cc6e3f73bcf4e35439c1df7f7c38db4e797ee11553b623f8e4d861`。
+- 未完成/阻塞/下一步：用户确认视觉；未替换安装版、未推送、未正式签名公证。未打开或发送 Codex 测试消息。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[UI 模块](Sources/TodoApp/README.md)；main，仅本轮显示与文案修改。
+
 ## 2026-10-27 04:35 | codex-handoff-window-placement | 交接窗口靠近悬浮清单
 
 - 状态：用户确认独立普通窗口方案成功；本轮位置调整、10 项测试及 release 打包通过，待用户确认位置。

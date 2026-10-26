@@ -21,9 +21,15 @@ import TodoCore
     var cancelled = false
     var sourceProjectID: String?
     var candidates: [CodexProject] = []
+    var displayTask: TodoItem?
+    var taskHeading: String {
+        guard let displayTask else { return "" }
+        return [displayTask.shortCode, displayTask.title].compactMap { $0 }.joined(separator: "-")
+    }
 
     init(taskID: String, store: Store, database: URL) {
         self.taskID = taskID; self.store = store; self.database = database
+        displayTask = (try? store.snapshot())?.liveTasks.first { $0.id == taskID }
     }
 
     func reload() async {
@@ -39,6 +45,7 @@ import TodoCore
                 throw TodoError("codex_task", "该任务已移入回收站")
             }
             sourceProjectID = task.projectID
+            displayTask = task
             sourcePaths = snapshot.projects.first(where: { $0.id == task.projectID })?.paths ?? []
             sourcePath = nil; targetProject = nil; targetPath = nil
             loaded = true
@@ -87,6 +94,7 @@ import TodoCore
         try CodexHandoff.requireDirectory(targetPath)
         let snapshot = try store.snapshot()
         guard let task = snapshot.liveTasks.first(where: { $0.id == taskID }) else { throw TodoError("codex_task", "该任务已移入回收站") }
+        displayTask = task
         let paths = snapshot.projects.first(where: { $0.id == task.projectID })?.paths ?? []
         guard task.projectID == sourceProjectID, paths == sourcePaths else { throw TodoError("codex_path", "待办的项目目录已变化，请重新选择。") }
         if let sourcePath { try CodexHandoff.requireDirectory(sourcePath) }
@@ -134,7 +142,8 @@ struct CodexHandoffView: View {
     let submit: () -> Void
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(L("创建 Codex 会话")).font(.system(size: 15, weight: .semibold))
+            Text(session.taskHeading).font(.system(size: 15, weight: .semibold))
+                .lineLimit(2).help(session.taskHeading)
             if session.step == .loading { ProgressView().frame(maxWidth: .infinity).padding(.vertical, 12) }
             else if session.step == .sourcePath {
                 Text(L("选择待办目录")).foregroundStyle(.secondary)
@@ -163,7 +172,7 @@ struct CodexHandoffView: View {
             } else {
                 Text(session.targetProject?.name ?? "").fontWeight(.medium)
                 Text(session.targetPath ?? "").font(.system(size: 11)).foregroundStyle(.secondary).textSelection(.enabled)
-                Text(L("补充指令（可留空）")).foregroundStyle(.secondary)
+                Text(L("补充指令（可留空回车）")).foregroundStyle(.secondary)
                 HandoffInstructionEditor(text: $session.instruction, submit: submit, cancel: cancel)
                     .frame(height: 108).padding(6).disabled(session.busy)
                     .background(.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 8))
@@ -218,7 +227,7 @@ struct HandoffInstructionEditor: NSViewRepresentable {
         editor.textContainer?.containerSize = NSSize(width: 340, height: CGFloat.greatestFiniteMagnitude)
         editor.delegate = context.coordinator; editor.string = text
         editor.submit = submit; editor.cancel = cancel
-        editor.setAccessibilityLabel(L("补充指令（可留空）"))
+        editor.setAccessibilityLabel(L("补充指令（可留空回车）"))
         scroll.documentView = editor
         DispatchQueue.main.async { editor.window?.makeFirstResponder(editor) }
         return scroll
