@@ -9,6 +9,7 @@ import TodoCore
             LanguageSettings.shared.load(directory: store.directory)
             let model = AppModel(store: store)
             model.prepareCodexIntegration()
+            model.reminderSync = ReminderSync(store: store)
             controller = FloatingController(model: model)
             for item in NSApp.mainMenu?.items.first?.submenu?.items ?? [] { item.target = controller }
         }

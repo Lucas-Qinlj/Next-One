@@ -94,3 +94,7 @@ After the user approves this scope, run `archive completed --expected-token TOKE
 ## Codex integration management
 
 `integration install|status|uninstall [--skill-root DIR --codex-home DIR]` manages only the explicitly authorized local Codex connection. These commands do not initialize the task database. `status` is read-only. Setup conflicts return `integration_conflict`; preserve existing files and reconcile instead of forcing replacement. See [setup lifecycle](setup.md).
+
+## Optional Apple Reminders sync
+
+When the user enables calendar sync in Next One and selects a Reminders list, the running Mac app also syncs eligible dated tasks saved through this CLI. A successful CLI result confirms local persistence only, not delivery to iCloud or an iPhone. If the app is closed, changes are reconciled on its next launch. The CLI does not request Reminders access. Phone completion changes become visible through existing get/list commands after the Mac app receives them. Attachments are not exported. Do not enable sync, choose a cloud list, or change permissions without authorization.

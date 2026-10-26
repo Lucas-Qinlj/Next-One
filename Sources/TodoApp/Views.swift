@@ -639,6 +639,7 @@ struct SettingsView: View {
                     Text(L("删除的分支和附件保留在本机，不自动清理。")).font(.caption2).foregroundStyle(.secondary)
                 }
                 Divider()
+                if let sync = model.reminderSync { ReminderSyncView(sync: sync); Divider() }
                 CodexIntegrationView(model: model)
                 Divider()
                 Text(L("本版本默认当前桌面，不启用登录启动。锁定时右键球可解锁；菜单栏可找回悬浮球。")).font(.caption2).foregroundStyle(.secondary)

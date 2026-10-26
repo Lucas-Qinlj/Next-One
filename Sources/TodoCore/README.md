@@ -34,3 +34,9 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 `archive preview` 返回完成候选数与 SHA256(ID/revision) token；`archive completed` 在写事务中重验 token、按连续完成祖先分组 deletionID、原子归档并重置游标，支持 request-key。归档单次扫描，不为每个完成项反复调用 delete/descendants。已有 UUID、父子关系、附件内容不变。
 
 CodexSetup implements explicitly authorized install/status/uninstall with a next-one entry, NEXT_ONE_HOME, and integration/current/bin/next-one. It backs up owned files, preserves unrelated rules and USER.md, and refuses unmanaged or modified content.
+
+## 提醒事项同步持久化
+
+`ReminderSync.swift` 定义字段投影、完成状态判定和受管对象记录。数据目录内 `reminder-sync.json` 为版本化独立 sidecar，`reminder-sync.lock` 提供进程互斥；旧 CLI 保存任务 Snapshot 不会擦除映射，因此任务 schema 保持 v3。任务最新快照与删除记录可重建未发送意图；创建前保存映射意图，来源标记用于系统写入后中断恢复。映射使用数据集 ID + Todo UUID，复制到不同路径的映射拒绝自动启用。
+
+`Store.applyReminderCompletion` 在同一事务内复用 update 的 revision 和父子校验，再保留系统完成时间。同步失败不回滚用户本地保存。验证：`swift test --filter Reminder`，系统／iCloud 证据见[验收记录](../../docs/acceptance/calendar-reminders-sync.md)。

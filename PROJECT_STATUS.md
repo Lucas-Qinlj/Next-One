@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 23:12 | calendar-reminders-sync | 日历提醒同步开发
+
+- 状态：本地实现完成，自动测试及主要 Mac/iPhone 链路通过；未覆盖的系统边界见验收记录。
+- 需求与范围：按已授权 Spec 独立实施；手机验证集中在 Mac 自动与原生验证之后，提前通知用户。
+- 改动：EventKit 协调器、独立持久化 UUID 映射与互斥、双向完成状态、删除恢复、冲突暂停／恢复、清单迁移、四语设置／问号与权限用途。按用户纠正实际标题为 A1-待办1；附件不同步，普通网络延迟静默。
+- 验证与证据：Swift 全量55项、最终同步／本地化12项及真实CLI smoke通过；debug打包与原生设置、系统读写、失效ID恢复、启动接收完成、级联确认、清单迁移和暂停恢复实测。用户确认手机日历显示、A4完成、A5取消完成及23:38通知；Mac读回状态核验，手动Urgent在改标题后保留。证据见验收文档。
+- 未完成/阻塞/下一步：自动 Urgent 开关仍不支持；真实断网／合盖／权限撤销和全部跨账户／附件属性边界未验证。8条受管测试提醒已移除，空测试清单保留，隔离测试应用已退出；现用应用未替换。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/calendar-reminders-sync.md)、[验收](docs/acceptance/calendar-reminders-sync.md)；codex/calendar-reminders-sync，本地提交，不合并或推送。
+
 ## 2026-10-26 22:54 | calendar-reminders-sync | 日历提醒同步 Spec
 
 - 状态：Spec 编写完成，尚未实现／验收；本轮仅文档。

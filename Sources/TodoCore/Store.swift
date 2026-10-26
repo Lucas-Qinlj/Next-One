@@ -144,6 +144,22 @@ public final class Store {
             throw error
         }
     }
+    /// Internal reminder bridge entry: reuse update validation and hierarchy rules in the same transaction.
+    public func applyReminderCompletion(id: String, expectedRevision: Int, status: String, completionDate: Date?) throws {
+        lock.lock(); defer { lock.unlock() }
+        try sql("BEGIN IMMEDIATE")
+        var copied: URL?
+        do {
+            var state = try load()
+            guard state.tasks.contains(where: { $0.id == id && $0.deletionID == nil }) else { throw TodoError("not_found", "待办不存在或已删除。") }
+            _ = try perform("update", ["id": id, "expected-revision": String(expectedRevision), "status": status], &state, &copied)
+            if status == "done", let date = completionDate, date.timeIntervalSince1970.isFinite,
+               let index = state.tasks.firstIndex(where: { $0.id == id }) {
+                state.tasks[index].completedAt = ISO8601DateFormatter().string(from: date)
+            }
+            try save(state); try sql("COMMIT")
+        } catch { try? sql("ROLLBACK"); throw error }
+    }
     private func resolveTaskReferences(_ command: String, _ args: [String: String], _ state: Snapshot) throws -> [String: String] {
         var resolved = args
         var fields: [String] = []

@@ -13,3 +13,7 @@ Skill 保存在项目内，不自动安装到全局目录，不修改用户 Code
 全局完成归档使用 `archive preview` → `archive completed --expected-token TOKEN --request-key KEY`；恢复按 UUID 并重新分配编号，详见 CLI 契约。
 
 `integration install/status/uninstall` dispatches to CodexSetup before Store initialization, preserving the Next-One directory and JSON/error protocol without creating a task database.
+
+## 系统提醒事项同步
+
+用户在应用设置中启用并选择清单后，CLI 保存的有日期任务也由运行中的主应用同步。CLI 成功只代表本地保存，不表示 iCloud／iPhone 已收到；应用退出时保留本地变更，下次启动补同步。CLI 不申请提醒事项权限。手机完成状态回传后可通过既有 get/list 读取，不新增网络服务。

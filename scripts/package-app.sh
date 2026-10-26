@@ -46,6 +46,8 @@ cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>CFBundleDevelopmentRegion</key><string>zh-Hans</string>
 <key>CFBundleLocalizations</key><array><string>zh-Hans</string><string>en</string><string>ja</string><string>ko</string></array>
+<key>NSRemindersFullAccessUsageDescription</key><string>Next One syncs your selected tasks with Reminders and reads their completion status.</string>
+<key>NSRemindersUsageDescription</key><string>Next One syncs your selected tasks with Reminders and reads their completion status.</string>
 <key>LSUIElement</key><true/>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 </dict></plist>

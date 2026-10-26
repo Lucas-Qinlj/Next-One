@@ -225,3 +225,69 @@
 "复制 Codex 安装/更新指令" = "Copy Codex setup / update instructions";
 "复制指令到本机 Codex，安装 Skill 与持续工作规则；应用更新后接入内容自动跟随。" = "Send these instructions to local Codex to install the Skill and persistent work rules. The connection follows app updates.";
 "请在这台 Mac 上安装或检查更新 Next One 接入，让你在明确的项目工作中主动读取待办、记录任务并维护真实进度。\n\nSkill 源文件：%1$@\nCLI：%2$@\n待办数据目录：%3$@\n\n我授权本次安装用户级 ~/.agents/skills/next-one，并在当前 CODEX_HOME（默认 ~/.codex）生效的 AGENTS.override.md 或 AGENTS.md 中添加 Next One 专属持续工作规则；保留其他内容，不修改其他 Agent 配置或系统设置。\n\n先读取上述 SKILL.md 和 references/cli.md。显式设置 NEXT_ONE_HOME 为上述数据目录，使用上述 CLI 执行 integration status，再执行 integration install。路径必须正确 shell 引用。不手工覆盖已有 Skill 或整份 AGENTS 文件。若提示旧的非托管 Skill、人工修改或不同数据绑定冲突，先检查并向我说明备份与迁移方案，不删除或强行覆盖。\n\n安装器会保留备份，并建立稳定入口和 run 脚本。应用升级后启动一次，入口跟随 integration/current 读取新版 Skill 与 CLI，无需重新覆盖全局配置；USER.md 保存用户自定义内容。旧会话可能保留旧内容，请用新会话验证。若安装器接口或数据目录改变，再复制新版指令执行安装检查。\n\n安装后执行 integration status、--help、project list 做只读验证，再按当前工作目录执行 context。未匹配时由我选择项目或未分类，不自动绑定，不为了验证修改真实任务。更新前读取 revision，仅局部更新；失败如实报告。\n\n从新 Codex 会话进行一次普通开发请求，确认能主动读写项目待办；仅复制/安装成功不等于行为已验证。不要把探讨变成任务，不虚报完成，不承诺后台监听。需要解除接入时使用同一 CLI 的 integration uninstall，仅移除本工具管理且未被修改的入口/规则，保留自定义内容和待办数据。\n\n完成后报告实际安装位置、规则文件、备份、只读检查和新会话验证结果；未验证的项目明确标注。" = "Please install or check updates for Next One on this Mac so you proactively read project tasks, record explicit work requests, and maintain verified progress.\n\nSkill source: %1$@\nCLI: %2$@\nTask data folder: %3$@\n\nI authorize installing the user-level ~/.agents/skills/next-one and adding a Next One-only persistent work block to the active AGENTS.override.md or AGENTS.md in CODEX_HOME (default ~/.codex). Preserve all other content. Do not change other agents or system settings.\n\nRead the supplied SKILL.md and references/cli.md first. Explicitly set NEXT_ONE_HOME to the data folder above and use this CLI to run integration status, then integration install. Quote shell paths correctly. Do not overwrite an existing Skill or entire AGENTS file manually. If setup reports an unmanaged Skill, user edits, or another data binding, inspect it and explain a backup/migration plan to me; do not delete or force replacement.\n\nThe installer keeps backups and creates a stable entrypoint and run script. After updating and launching the app, the entrypoint follows integration/current for the latest Skill and CLI without rewriting global configuration. USER.md holds user customization. Existing chats may retain old instructions; verify in a new chat. If the installer contract or data folder changes, copy the new instructions and check setup again.\n\nAfter setup, run integration status, --help, and project list for read-only verification, then context for the working directory. If unmatched, let me choose a project or Unfiled; do not bind automatically or mutate real tasks just for verification. Read revision before partial updates and report failures honestly.\n\nUse an ordinary development request in a new Codex chat to verify proactive task maintenance. Successful copying/installation is not behavioral verification. Do not turn discussion into tasks, claim unverified completion, or promise background monitoring. To disconnect, use this CLI's integration uninstall: it removes only unchanged managed entries/rules and retains custom content and task data.\n\nReport the installed paths, rules file, backup, read-only checks, and new-chat verification results. Explicitly mark anything not verified.";
+
+"同步到日历" = "Sync to Calendar";
+
+"日历同步说明" = "About calendar sync";
+
+"目标清单" = "Destination list";
+
+"选择 iCloud 清单…" = "Choose an iCloud list…";
+
+"原清单暂不可用" = "Previous list unavailable";
+
+"开启同步" = "Enable sync";
+
+"重新读取清单" = "Reload lists";
+
+"打开系统设置" = "Open System Settings";
+
+"手机已完成此父任务，但仍有未完成子任务。" = "This parent was completed on your phone, but has unfinished subtasks.";
+
+"系统侧内容已变化；请选择如何处理此条待办。" = "The system reminder changed. Choose how to handle this task.";
+
+"同时完成子任务" = "Complete subtasks too";
+
+"保持未完成" = "Keep incomplete";
+
+"使用 Next One 内容" = "Use Next One content";
+
+"停止此条同步" = "Stop syncing this task";
+
+"确认同步清单" = "Confirm sync destination";
+
+"停止同步？" = "Stop syncing?";
+
+"停止同步" = "Stop syncing";
+
+"已有系统提醒事项会保留，仍可能通知；重新开启后继续同步。" = "Existing system reminders remain and may still notify you. Turn sync back on to resume.";
+
+"请在系统设置中允许 Next One 访问提醒事项。" = "Allow Next One to access Reminders in System Settings.";
+
+"请先在系统提醒事项中创建 iCloud 清单。" = "Create an iCloud list in Reminders first.";
+
+"请选择 iCloud 提醒事项清单。" = "Choose an iCloud Reminders list.";
+
+"目标清单不可用，请重新选择。" = "Destination unavailable. Choose a list again.";
+
+"暂时无法读取提醒事项。" = "Reminders are temporarily unavailable.";
+
+"无法打开同步记录。" = "Cannot open sync records.";
+
+"无法保存同步记录。" = "Cannot save sync records.";
+
+"另一个 Next One 正在同步此数据目录。" = "Another Next One instance is syncing this data directory.";
+
+"同步记录版本较新，请升级应用。" = "Sync records require a newer app version.";
+
+"数据目录已移动或复制；请先核对原同步记录，避免重复同步。" = "The data directory was moved or copied. Check its original sync records before reconnecting.";
+
+"将同步 %1$@ 条有日期的未完成待办；%2$@ 条已有映射会移至所选清单。包含标题、描述、时间和完成状态，不包含附件。请选择你自己的 iCloud 清单；共享清单中的内容可能被其他成员看到。" = "Sync %1$@ dated, incomplete tasks; move %2$@ linked items to this list. Includes titles, notes, dates and completion, but no attachments. Choose your own iCloud list; shared-list members may see its contents.";
+
+"开启后，有截止日期的待办会同步到所选提醒事项清单，并可在系统日历中显示。请在 Mac 和 iPhone 登录同一 Apple 账户，选择 iCloud 清单，并开启 iCloud「提醒事项」同步和通知权限。日历展示需 macOS 15／iOS 18 或更新版本。\n\n修改、完成和删除会同步，手机勾选或取消完成也会回传。图片、视频及其他附件不同步，子任务独立显示。紧急优先级不会自动开启系统紧急闹钟。关闭同步会保留已有提醒事项。" = "Sync dated tasks to the selected Reminders list and view them in Calendar. Use the same Apple Account on Mac and iPhone, select an iCloud list, and enable iCloud Reminders and notifications. Calendar display requires macOS 15 / iOS 18 or later.\n\nEdits, completion and deletion sync out; checking or unchecking on your phone syncs back. Attachments are not synced; subtasks appear separately. High priority does not enable an urgent alarm. Turning sync off keeps existing reminders.";
+
+"系统侧已完成此父任务，还有 %1$@ 条未完成子任务。" = "The system completed this parent; %1$@ subtasks remain unfinished.";
+
+"此条待办已停止同步。" = "Sync is paused for this task.";
+
+"恢复此条同步" = "Resume this task";

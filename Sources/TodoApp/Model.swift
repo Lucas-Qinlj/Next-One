@@ -4,6 +4,7 @@ import TodoCore
 
 @MainActor @Observable final class AppModel {
     let store: Store
+    var reminderSync: ReminderSync?
     var codexIntegration: CodexIntegration?
     var integrationError: Error?
     var state = Snapshot()

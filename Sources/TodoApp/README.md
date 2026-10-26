@@ -76,3 +76,9 @@ CodexIntegration 只从应用包 Contents/Helpers/next-one 和 Contents/Resource
 归档确认后设 `isArchiving`，后台独立 Store 执行事务并读取新快照；归档期间暂停主线程轮询，暂时禁用面板操作并显示进度，完成或失败后恢复。`ArchiveActionTests` 验证取消和异步完成状态。
 
 Managed setup: Settings copies an explicit installation/update request. App startup prepares current resources only; it never installs global rules. See [lifecycle](../../Skills/next-one/references/setup.md).
+
+## 提醒事项同步
+
+`ReminderSync` 由 AppModel 持有，统一管理 EventKit 权限与串行对账。五秒检查本地变化、约三十秒兜底对账，系统变更通知也触发读取；先接收系统完成状态再发布本地字段。拉取二十秒超时，普通失败退避静默重试；权限、目标和逐项冲突在设置中反馈。
+
+`ReminderSyncView` 提供开关、账户与清单下拉、问号、目标迁移确认、冲突暂停／恢复。父任务完成复用现有级联规则。应用关闭时 CLI 仍可保存，下次启动补同步；无额外服务或后台进程。打包补充提醒事项权限用途说明。见[Spec](../../docs/spec/2026-10-26/calendar-reminders-sync.md)及[验收](../../docs/acceptance/calendar-reminders-sync.md)。
