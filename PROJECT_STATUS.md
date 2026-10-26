@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:12 | scrollbar-gutter | 移除全页面滚动条占位空白
+
+- 状态：公共修复、验证及现用应用替换完成。
+- 需求与范围：用户指出清单和设置右侧留白过大，要求所有页面检查；根因是此前只调整ThinScroller绘制，传统scroller仍占内容宽度。
+- 改动：宿主统一NSScrollView.scrollerStyle为overlay，保留3 pt贴边滑块、原生命中区和现有内容padding，不改系统偏好；覆盖清单、详情、设置、回收站与嵌套滚动区。同步Spec、模块说明和通用边距规范。
+- 验证与证据：ScrollbarLayoutTests在340/520 pt两种宽度遍历四页面及嵌套NSScrollView，强制legacy后验证恢复overlay、clip宽度等于容器宽度；测试通过。release打包通过；隔离原生清单／详情／设置／空回收站截图确认边距，证据 `.local/scrollbar-gutter/`。复制的隔离数据触发同步身份／接入保护提示，未绕过；接入框实际界面未在该实例重验，共用滚动策略覆盖该入口。
+- 未完成/阻塞/下一步：无修复阻塞；物理滚轮／拖拽及全系统组合未新增验收。备份旧应用与全量数据后替换，启动后任务／项目／回收站快照、附件及保存透明度不变；备份 `.local/backups/before-scrollbar-gutter-20261027-011151/`。
+- 关联文档与 Git 状态：[产品Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[UI模块](Sources/TodoApp/README.md)；main小修复，沿用本会话提交推送和替换授权，安装校验见 `.local/scrollbar-gutter-install/verification.txt`。
+
 ## 2026-10-27 00:59 | readme-screenshot-refresh | 四语README更新当前应用实拍
 
 - 状态：12张新截图拍摄、替换及视觉检查完成。

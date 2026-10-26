@@ -45,6 +45,8 @@ final class TodoHostingView<Content: View>: NSHostingView<Content> {
 
     private func styleScrollbars(in view: NSView) {
         if let scroll = view as? NSScrollView {
+            // Keep the native hit area over the content, rather than reserving an empty gutter.
+            if scroll.scrollerStyle != .overlay { scroll.scrollerStyle = .overlay }
             if let scroller = scroll.verticalScroller, !(scroller is ThinScroller) {
                 scroll.verticalScroller = ThinScroller.replacing(scroller)
             }
