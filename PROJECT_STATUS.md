@@ -7,9 +7,18 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 03:39 | codex-composer-focus-pointer | C3 展开后等待用户点击再取焦点
+
+- 状态：实现、10 项针对性测试及 release 打包通过；真实焦点待用户验收。
+- 需求与范围：用户确认 03:33 自动恢复试验失败，授权改为展开后持续不取焦点，主动点击时恢复；不增加权限、不替换现用安装。
+- 改动：新增独立 awaitingUserFocus 标志，不复用锁定开关；自身鼠标按下清除等待并正常分发同一事件。鼠标移动不恢复、锁定不被绕过；球切换和设置入口恢复正常操作。
+- 验证与证据：10 项 CodexHandoffTests 通过，覆盖持续不能成为 key、鼠标移动不解除、按下恢复、原点击只分发一次及锁定约束。release 构建、资源及 CLI --help 校验通过，验收包 `.local/releases/c3-pointer-20261027/Next One.app`；日志在同目录，主程序 SHA-256 `c8a6b514708b7820c8fe79095cdb12290f0957cfd9e21cbd353d725a99d1ff40`。未正式签名公证；自动检查不冒充 Codex 实机验收。
+- 未完成/阻塞/下一步：800 ms 仍为试验延时，无预填完成回执；需用户验证浮窗展开后 Codex 可直接输入及首次点击浮窗可正常操作。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[UI 模块](Sources/TodoApp/README.md)；main，小范围迭代；独立本地包，未推送。
+
 ## 2026-10-27 03:33 | codex-composer-focus-restore | C3 跳转后自动恢复清单试验
 
-- 状态：实现、9 项针对性测试及 release 打包通过；真实焦点待用户测试。
+- 状态：实现、9 项针对性测试及 release 打包通过；随后用户确认真实焦点仍失败，继续 03:39 试验。
 - 需求与范围：用户要求打开并预填后自动重开浮窗；本轮先做可测试实现，不自动发送或增加权限。
 - 改动：URL 打开返回成功后等待 800 ms，非激活、非 key 恢复原先展开的清单；等待期间手动切换或新交接取消恢复。失败恢复草稿不变。
 - 验证与证据：9 项 CodexHandoffTests 通过，新增自动恢复可见且非 key、输入能力恢复、手动操作取消延迟恢复；release 构建、资源及 CLI --help 校验通过。验收包 `.local/releases/c3-restore-20261027/Next One.app`，日志在同目录；主程序 SHA-256 `a7874b927fabb576f24331fdc5d40e5af192c0fa8ead01020e841f29a3ea7a1d`。未正式签名公证。

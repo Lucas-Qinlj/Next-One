@@ -4,8 +4,17 @@ import TodoCore
 
 final class TaskPanel: NSPanel {
     var inputEnabled = true
-    override var canBecomeKey: Bool { inputEnabled }
+    var awaitingUserFocus = false
+    override var canBecomeKey: Bool { inputEnabled && !awaitingUserFocus }
     override var canBecomeMain: Bool { false }
+    override func sendEvent(_ event: NSEvent) {
+        if awaitingUserFocus, inputEnabled, !ignoresMouseEvents,
+           [.leftMouseDown, .rightMouseDown, .otherMouseDown].contains(event.type) {
+            awaitingUserFocus = false
+            makeKey()
+        }
+        super.sendEvent(event)
+    }
 }
 @MainActor final class FloatingController: NSObject {
     let model: AppModel
@@ -73,6 +82,7 @@ final class TaskPanel: NSPanel {
     @objc func recover() { geometry.fit(in: currentScreen, chooseDirection: true); layout(); ball.orderFrontRegardless(); savePreferences() }
     func toggle() {
         handoffRestoreTask?.cancel(); handoffRestoreTask = nil
+        panel.awaitingUserFocus = false
         if expanded { guard model.saveDraft() else { return }; panel.orderOut(nil) }
         else { geometry.fit(in: currentScreen, chooseDirection: true); layout(); panel.orderFrontRegardless() }
         expanded.toggle(); ball.orderFrontRegardless()
@@ -82,7 +92,7 @@ final class TaskPanel: NSPanel {
     func setExpandedForHandoff(_ value: Bool) {
         handoffRestoreTask?.cancel(); handoffRestoreTask = nil
         if value { panel.orderFrontRegardless() }
-        else { panel.orderOut(nil) }
+        else { panel.orderOut(nil); panel.awaitingUserFocus = false }
         expanded = value
         ball.orderFrontRegardless()
         updateLockHoverTracking()
@@ -94,9 +104,8 @@ final class TaskPanel: NSPanel {
             do { try await Task.sleep(for: .milliseconds(800)) } catch { return }
             guard let self, !self.expanded else { return }
             self.panel.makeFirstResponder(nil)
-            self.panel.inputEnabled = false
+            self.panel.awaitingUserFocus = true
             self.setExpandedForHandoff(true)
-            self.panel.inputEnabled = !self.model.locked
         }
     }
     func move(to point: CGPoint, start: Bool, end: Bool) {
@@ -187,7 +196,7 @@ final class TaskPanel: NSPanel {
     }
     @objc func lockAction() { setLocked(!model.locked) }
     @objc func toggleAction() { toggle() }
-    @objc func settingsAction() { guard model.saveDraft() else { return }; setLocked(false); model.showSettings(); if !expanded { toggle() }; panel.makeKeyAndOrderFront(nil) }
+    @objc func settingsAction() { guard model.saveDraft() else { return }; handoffRestoreTask?.cancel(); panel.awaitingUserFocus = false; setLocked(false); model.showSettings(); if !expanded { toggle() }; panel.makeKeyAndOrderFront(nil) }
     @objc func quitAction() { if model.saveDraft() { savePreferences(); NSApplication.shared.terminate(nil) } }
 }
 struct HeaderDragArea: NSViewRepresentable {

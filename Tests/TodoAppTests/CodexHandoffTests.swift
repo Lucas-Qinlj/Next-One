@@ -161,6 +161,8 @@ final class CodexHandoffTests: XCTestCase {
         XCTAssertTrue(controller.expanded)
         XCTAssertFalse(controller.panel.isKeyWindow)
         XCTAssertTrue(controller.panel.inputEnabled)
+        XCTAssertTrue(controller.panel.awaitingUserFocus)
+        XCTAssertFalse(controller.panel.canBecomeKey)
         controller.setExpandedForHandoff(false)
         controller.restoreAfterHandoff()
         controller.toggle() // User explicitly expands then collapses before the timer fires.
@@ -168,6 +170,37 @@ final class CodexHandoffTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(1000))
         XCTAssertFalse(controller.panel.isVisible)
         XCTAssertFalse(controller.expanded)
+    }
+
+    @MainActor func testRestoredPanelOnlyAcceptsFocusOnPointerDown() throws {
+        final class ClickView: NSView {
+            var clicks = 0
+            override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+            override func mouseDown(with event: NSEvent) { clicks += 1 }
+        }
+        let panel = TaskPanel(contentRect: NSRect(x: 100, y: 100, width: 160, height: 100),
+                              styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
+        let content = ClickView(frame: panel.contentRect(forFrameRect: panel.frame))
+        panel.contentView = content
+        panel.awaitingUserFocus = true
+        panel.orderFrontRegardless()
+        defer { panel.orderOut(nil) }
+        func event(_ type: NSEvent.EventType) throws -> NSEvent {
+            try XCTUnwrap(NSEvent.mouseEvent(with: type, location: NSPoint(x: 30, y: 30),
+                modifierFlags: [], timestamp: 0, windowNumber: panel.windowNumber, context: nil,
+                eventNumber: 1, clickCount: 1, pressure: 1))
+        }
+        panel.sendEvent(try event(.mouseMoved))
+        XCTAssertFalse(panel.canBecomeKey)
+        panel.inputEnabled = false
+        panel.sendEvent(try event(.leftMouseDown))
+        XCTAssertTrue(panel.awaitingUserFocus) // Locking must not be bypassed.
+        panel.inputEnabled = true
+        let before = content.clicks
+        panel.sendEvent(try event(.leftMouseDown))
+        XCTAssertFalse(panel.awaitingUserFocus)
+        XCTAssertTrue(panel.canBecomeKey)
+        XCTAssertEqual(content.clicks, before + 1) // The original click reaches its view once.
     }
 
     @MainActor func testSingleAndMultipleSourcePathsAndUnmatchedFallback() async throws {

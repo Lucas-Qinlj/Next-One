@@ -99,6 +99,8 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 ### Codex 焦点交接（C3）
 
+03:39：此前仅在显示瞬间禁用 key 的版本由用户确认失败。现用 `TaskPanel.awaitingUserFocus` 持续限制 `canBecomeKey`，直到自身 `sendEvent` 收到鼠标按下才清除并 makeKey，然后原样调用 super 分发一次；不新增全局监听或重放。输入锁定及穿透仍优先。球切换与设置入口解除等待；实际首次点击与 Codex 保焦待人工验收。
+
 03:33 自动恢复试验覆盖下文“成功保持收起”行为：系统接受 URL 后调用 `restoreAfterHandoff`，延迟 800 ms 以非 key 方式显示清单；不代表已收到 Codex 预填完成回执。手动 toggle 或新交接取消旧恢复任务。测试新增自动恢复可见但非 key、正常输入能力恢复、手动展开再收起不被延迟任务覆盖；实际 Codex 焦点由用户验收。
 
 `CodexHandoffSession.prepareOpen` 校验后交给 AppModel 暂存 session/URL 并关闭 sheet；根视图 `onDismiss` 调用 `finishCodexHandoff`，由 FloatingController 的 `setExpandedForHandoff(false)` 隐藏清单、保持球可见，再打开 URL。成功保持收起，失败恢复展开状态和同一 session；恢复展示不重新 reload，避免清掉目标选择和错误，重试仍重新校验。取消无 pending URL，不触发打开。没有额外延时、模拟输入或辅助功能权限。`CodexHandoffTests` 覆盖打开前隐藏、失败恢复草稿、重复回调及球展开行为；实际 Codex 输入焦点单独人工验收。
