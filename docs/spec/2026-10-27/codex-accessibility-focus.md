@@ -1,7 +1,7 @@
 # Codex 输入框辅助功能聚焦
 
 - 日期：2026-10-27
-- 状态：本地实现及匹配/交接自动测试通过，未实机验收
+- 状态：本地自动测试通过，但实机验收未通过；最新版用户确认第一次也无法聚焦，出现查找超时及无匹配提示
 - 需求来源：C3 隐藏后聚焦通过，但两轮自动恢复浮窗失败；用户要求采用权限方案，并在需要授权时跳转系统对应页面。
 - 关联：[原交接 Spec](codex-task-handoff.md)、[项目规范](../../../AGENTS.md)。
 
@@ -48,5 +48,7 @@
 官方依据：[信任检查与系统提示](https://developer.apple.com/documentation/applicationservices/1459186-axisprocesstrustedwithoptions)、[AXFocused 属性](https://developer.apple.com/documentation/applicationservices/kaxfocusedattribute)。权限提示异步发生，不将调用返回误认为用户已授权。
 
 ## 本地交付与用户验收步骤
+
+最新用户反馈：扩大到 4096 节点/64 层后，出现“等待 Codex 输入框超时”和“未找到与本次指令匹配的输入框”；用户明确第一次也无法聚焦。不再继续扩大阈值；实际编辑框属性和定位依据尚未确认。权限已授权不等于目标编辑框可被当前定位器识别。此前首次成功仅属于对应旧版和当次观察，不构成当前版本验收。以下保留旧包交付步骤，不代表推荐继续用失败版本。
 
 16 项交接、匹配及本地化测试通过；release 构建、包资源及 CLI --help 通过。包位于 `.local/releases/c3-accessibility-20261027/Next One.app`，日志同目录；尚未替换 Applications 版本或授予权限。用户先退出旧版，运行验收包，在设置开启“自动聚焦 Codex 输入框”，点击“前往授权”，在系统辅助功能页面开启运行的 Next One，再返回手动发起交接。系统未列出时可通过加号选择当前验收包；不同路径或后续替换可能需重新授权，不承诺本地 ad-hoc 构建跨版本授权稳定。
