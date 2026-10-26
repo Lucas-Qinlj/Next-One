@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:17 | codex-task-handoff | 首版仅支持已有 Codex 项目
+
+- 状态：用户确认范围调整，Spec 已同步；未实施。
+- 需求与范围：用户选择方案 2，首版暂缓无项目聊天，仅支持已有本机 Codex 项目。
+- 改动：移除聊天选项；未分类、无绑定路径和路径未匹配时选择已有项目；补充零项目处理、目标多目录选择、原路径与最终跳转目录区分，同步 AC03/AC05 及预验证结论。
+- 验证与证据：检查当前规则与验收条件一致性、相对链接及 git diff --check；纯文档不运行代码测试。
+- 未完成/阻塞/下一步：无项目入口不再阻塞首版；只读适配、完整消息及真实交互仍待实施验证。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)；main，仅本轮文档提交，不推送。
+
 ## 2026-10-27 02:13 | codex-task-handoff | 确认项目数据方案并核对聊天目录
 
 - 状态：项目列表读取方案已写入 Spec；指定聊天归属只读核对完成。
