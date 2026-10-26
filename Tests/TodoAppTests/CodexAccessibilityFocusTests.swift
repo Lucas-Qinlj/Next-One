@@ -3,6 +3,12 @@ import ApplicationServices
 @testable import TodoApp
 
 final class CodexAccessibilityFocusTests: XCTestCase {
+    func testAppFocusAloneDoesNotProveKeyboardOwnership() {
+        XCTAssertFalse(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: 34, appEditorMatches: true, systemEditorMatches: false, editorFocused: true))
+        XCTAssertFalse(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: nil, appEditorMatches: true, systemEditorMatches: true, editorFocused: true))
+        XCTAssertFalse(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: 12, appEditorMatches: true, systemEditorMatches: false, editorFocused: true))
+        XCTAssertTrue(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: 12, appEditorMatches: true, systemEditorMatches: true, editorFocused: true))
+    }
     @MainActor func testDelayedReadbackConfirmsWithoutAnotherFocusWrite() async {
         var reads = 0, pauses = 0
         let result = await CodexFocusReadback.confirm(check: { reads += 1; return reads == 3 },

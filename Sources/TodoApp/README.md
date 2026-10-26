@@ -99,6 +99,8 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 ### Codex 焦点交接（C3）
 
+04:06：`CodexFocusOutcome` 在设置页展示等待/确认/停止/失败。确认必须同时满足系统键盘应用 PID、系统输入元素、应用内部输入元素和 AXFocused 状态；只读取系统焦点身份，不读取其他应用内容。焦点仍属于 Next One 时可请求前台 Codex 的 AXFrontmost，再设置编辑框焦点；不覆盖第三方应用焦点。普通字符不取消，鼠标按下/Escape 仍取消。用户已明确纠正为没有切换窗口，不再把无提示直接归因为用户行为。
+
 重复交接诊断：`CodexFocusFailure` 区分查找、控件变更、权限及设置/读回阶段，设置页保留当前运行期间最后失败原因，不持久化 UI 文本。AX 写成功后 `CodexFocusReadback` 最多等待 300 ms 确认，不重复写；写前控件失效在原查找时限内重试，用户切换或取消即停。用户已报告首版权限方案首次成功、重复失败，实际根因待新版提示证据确认。
 
 `CodexHandoffSession.prepareOpen` 校验后交给 AppModel 暂存 session/URL 并关闭 sheet；根视图 `onDismiss` 调用 `finishCodexHandoff`，隐藏清单、保持球可见，再打开 URL。默认成功保持收起，失败恢复展开状态和同一 session；恢复展示不重新 reload，重试仍重新校验。取消无 pending URL，不触发打开。

@@ -328,3 +328,6 @@
 "Codex 页面发生变化，请重试。" = "The Codex page changed. Please retry.";
 "Codex 未接受聚焦请求，请手动点击。" = "Codex did not accept the focus request. Please click the input.";
 "未能确认输入框焦点，请手动点击。" = "Could not confirm input focus. Please click it manually.";
+"正在确认 Codex 输入焦点…" = "Checking Codex keyboard focus…";
+"已确认 Codex 的系统输入焦点。" = "System keyboard focus confirmed for Codex.";
+"聚焦流程已停止，未确认输入焦点。" = "Focus attempt stopped; keyboard focus was not confirmed.";

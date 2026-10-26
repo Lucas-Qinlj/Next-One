@@ -36,6 +36,7 @@ import TodoCore
         if opener(pending.url) {
             if codexAutoFocus {
                 window?.setExpandedForHandoff(wasExpanded)
+                window?.panel.makeFirstResponder(nil)
                 let prompt = URLComponents(url: pending.url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "prompt" }?.value ?? ""
                 codexFocus.start(prompt: prompt) { [weak self] reason in
                     self?.codexFocusFailure = reason.message

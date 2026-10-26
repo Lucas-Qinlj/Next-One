@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 04:06 | codex-system-focus | C3 系统键盘焦点核验与静默退出区分
+
+- 状态：用户重新确认没有点击或切换窗口、预填后输入无效且无黄色提示。已修正系统焦点核验缺口，自动检查通过；真实原因仍待实测。
+- 需求与范围：延续 C3 排查；撤回此前将失败归因于用户切换窗口的判断，不新增权限或发送行为。
+- 改动：成功条件增加系统 AXFocusedApplication 的 PID 和系统 AXFocusedUIElement 与目标一致；仅系统键盘焦点属于 Next One 自身、且 Codex 已是前台时尝试 AXFrontmost 交还，再设置输入框焦点。普通误落到 Next One 的字符不再被当作用户取消；鼠标操作、Escape 和应用切换仍停止。设置页保留等待、成功、停止或失败状态。
+- 验证与证据：20 项相关测试通过，新增“应用自报焦点不能证明系统键盘归属”的回归；release 构建、资源、CLI --help、四语格式检查通过。验收包 `.local/releases/c3-system-focus-20261027/Next One.app`；主程序 SHA-256 `c0ea9b73f19984666359276424a7b22cd6cc31264e2b23bf96cada7f82098d15`。未读取或操作真实 Codex UI，不将检查缺口断言为用户故障根因；未正式签名公证。
+- 未完成/阻塞/下一步：用户验证新版输入及设置页最终状态；临时构建身份变化可能需对运行包重新授权。安装版未替换。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-accessibility-focus.md)；main，小修复；不推送或发布。
+
 ## 2026-10-27 03:57 | codex-accessibility-repeat | C3 重复交接时序与失败区分
 
 - 状态：用户反馈首次成功、同一待办后续失败且有黄色提示；根因未确定。时序修正与分支提示已实现，19 项测试及 release 打包通过，待人工复验。

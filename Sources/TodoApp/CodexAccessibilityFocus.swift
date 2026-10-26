@@ -40,6 +40,10 @@ enum CodexFocusFailure: String {
 }
 
 enum CodexFocusReadback {
+    static func ownsKeyboard(targetPID: pid_t, systemPID: pid_t?, appEditorMatches: Bool,
+                             systemEditorMatches: Bool, editorFocused: Bool) -> Bool {
+        systemPID == targetPID && appEditorMatches && systemEditorMatches && editorFocused
+    }
     // AX writes may be acknowledged before the focused-element readback catches up.
     @MainActor static func confirm(check: () -> Bool, stillValid: () -> Bool,
                                   pause: () async throws -> Void = { try await Task.sleep(for: .milliseconds(100)) }) async -> Bool {
@@ -105,32 +109,74 @@ private enum CodexAX {
     static func requestFocus(_ match: Match, prompt: String) -> CodexFocusFailure? {
         guard let window = element(value(match.app, kAXFocusedWindowAttribute)), CFEqual(window, match.window),
               matches(match.editor, prompt: prompt) else { return .changed }
+        let system = AXUIElementCreateSystemWide()
+        AXUIElementSetMessagingTimeout(system, 0.05)
+        if let inputApp = element(value(system, kAXFocusedApplicationAttribute)), !CFEqual(inputApp, match.app) {
+            // The nonactivating panel may still own keyboard input although Codex is frontmost.
+            var inputPID: pid_t = 0
+            guard AXUIElementGetPid(inputApp, &inputPID) == .success,
+                  inputPID == ProcessInfo.processInfo.processIdentifier else { return .changed }
+            guard AXUIElementSetAttributeValue(match.app, kAXFrontmostAttribute as CFString, kCFBooleanTrue) == .success else { return .writeRejected }
+        }
         return AXUIElementSetAttributeValue(match.editor, kAXFocusedAttribute as CFString, kCFBooleanTrue) == .success ? nil : .writeRejected
     }
     static func isFocused(_ match: Match) -> Bool {
         guard let focused = element(value(match.app, kAXFocusedUIElementAttribute)) else { return false }
-        return CFEqual(focused, match.editor) && (value(match.editor, kAXFocusedAttribute) as? Bool) == true
+        let system = AXUIElementCreateSystemWide()
+        AXUIElementSetMessagingTimeout(system, 0.05)
+        guard let inputApp = element(value(system, kAXFocusedApplicationAttribute)),
+              let input = element(value(system, kAXFocusedUIElementAttribute)) else { return false }
+        var targetPID: pid_t = 0, systemPID: pid_t = 0
+        guard AXUIElementGetPid(match.app, &targetPID) == .success,
+              AXUIElementGetPid(inputApp, &systemPID) == .success else { return false }
+        return CodexFocusReadback.ownsKeyboard(targetPID: targetPID, systemPID: systemPID,
+            appEditorMatches: CFEqual(focused, match.editor), systemEditorMatches: CFEqual(input, match.editor),
+            editorFocused: (value(match.editor, kAXFocusedAttribute) as? Bool) == true)
     }
 }
 
-@MainActor final class CodexAccessibilityFocus {
+enum CodexFocusOutcome: Equatable {
+    case idle, waiting, confirmed, stopped, failed(CodexFocusFailure)
+    @MainActor var message: String? {
+        switch self {
+        case .idle: return nil
+        case .waiting: return L("正在确认 Codex 输入焦点…")
+        case .confirmed: return L("已确认 Codex 的系统输入焦点。")
+        case .stopped: return L("聚焦流程已停止，未确认输入焦点。")
+        case .failed(let reason): return reason.message
+        }
+    }
+}
+
+@MainActor @Observable final class CodexAccessibilityFocus {
+    private(set) var outcome = CodexFocusOutcome.idle
+    @ObservationIgnored
     private var task: Task<Void, Never>?
+    @ObservationIgnored
     private var inputMonitor: Any?
+    @ObservationIgnored
     private var generation = UUID()
     func cancel() {
+        if outcome == .waiting { outcome = .stopped }
         generation = UUID()
         task?.cancel(); task = nil
         if let inputMonitor { NSEvent.removeMonitor(inputMonitor) }
         inputMonitor = nil
     }
-    func start(prompt: String, failure: @escaping (CodexFocusFailure) -> Void) {
+    func start(prompt: String, failure onFailure: @escaping (CodexFocusFailure) -> Void) {
         cancel()
+        outcome = .waiting
+        let failure: (CodexFocusFailure) -> Void = { [weak self] reason in
+            self?.outcome = .failed(reason)
+            onFailure(reason)
+        }
         guard CodexFocusPermission.granted else { failure(.permission); return }
         guard !prompt.isEmpty else { failure(.noMatch); return }
         let generation = generation
         let initialFrontPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
         inputMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown, .keyDown]) { [weak self] event in
-            self?.cancel()
+            // A character routed to the panel can be the focus bug, not a deliberate cancellation.
+            if event.type != .keyDown || event.keyCode == 53 { self?.cancel() }
             return event
         }
         task = Task { [weak self] in
@@ -158,6 +204,7 @@ private enum CodexAX {
                             })
                             guard !Task.isCancelled, NSWorkspace.shared.frontmostApplication?.processIdentifier == pid else { return }
                             if !confirmed { failure(CodexFocusPermission.granted ? .unconfirmed : .permission) }
+                            else { self?.outcome = .confirmed }
                             return // Never re-write after an acknowledged focus request.
                         }
                     }
@@ -189,8 +236,8 @@ struct CodexFocusSettingsView: View {
                     Spacer()
                     Button(L("前往授权")) { CodexFocusPermission.openSettings() }
                 }
-                if let failure = model.codexFocusFailure {
-                    Text(failure).font(.caption).foregroundStyle(.secondary)
+                if let outcome = model.codexFocus.outcome.message {
+                    Text(outcome).font(.caption).foregroundStyle(.secondary)
                 }
             }
         }
