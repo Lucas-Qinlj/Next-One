@@ -163,6 +163,8 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | 面向 Agent 和脚本的结构化接口 |
 | [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex 读取和更新待办的约定 |
 
+本机试装可执行 `./scripts/package-dmg.sh`，生成可拖入 Applications 的 DMG 和 SHA-256 校验文件，位于 `.local/releases/`。详见[本机安装说明](../distribution/local-install.md)。试装包尚未进行 Developer ID 签名或 Apple 公证。
+
 ## 当前状态与限制
 
 原生应用和 CLI 已实现，并在 Apple Silicon 上构建运行。目前仍是早期本地开发版本，尚未通过全部验收场景。

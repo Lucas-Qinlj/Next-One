@@ -163,6 +163,8 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent とスクリプト用の構造化インターフェース |
 | [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex によるタスクの読み取り・更新の取り決め |
 
+ローカルで試すには `./scripts/package-dmg.sh` を実行してください。Applications にドラッグしてインストールする DMG と SHA-256 チェックサムが `.local/releases/` に生成されます。[ローカルインストール手順](../distribution/local-install.md)（中国語）を参照してください。この試用版は Developer ID 署名・公証を行っていません。
+
 ## 現在の状態と制限
 
 ネイティブアプリと CLI は実装済みで、Apple Silicon 上でビルド・実行しています。初期のローカル開発版であり、すべての受け入れシナリオを通過したわけではありません。

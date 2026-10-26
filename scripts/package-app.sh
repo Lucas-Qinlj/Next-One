@@ -3,20 +3,23 @@
 set -euo pipefail
 cd "${0:A:h:h}"
 configuration=${1:-debug}
-case "$configuration" in debug|release) ;; *) print -u2 "Usage: $0 [debug|release]"; exit 2 ;; esac
+case "$configuration" in debug|release) ;; *) print -u2 "Usage: $0 [debug|release] [output.app]"; exit 2 ;; esac
+app_path=${2:-.build/TodoAI.app}
+app_path=${app_path:A}
 swift build -c "$configuration"
-mkdir -p .build/TodoAI.app/Contents/{MacOS,Helpers,Resources/CodexIntegration}
-cp ".build/$configuration/TodoAI" .build/TodoAI.app/Contents/MacOS/TodoAI.new
-mv -f .build/TodoAI.app/Contents/MacOS/TodoAI.new .build/TodoAI.app/Contents/MacOS/TodoAI
-cp ".build/$configuration/todo" .build/TodoAI.app/Contents/Helpers/todo.new
-mv -f .build/TodoAI.app/Contents/Helpers/todo.new .build/TodoAI.app/Contents/Helpers/todo
+mkdir -p "$app_path"/Contents/{MacOS,Helpers,Resources/CodexIntegration}
+cp ".build/$configuration/TodoAI" "$app_path"/Contents/MacOS/TodoAI.new
+mv -f "$app_path"/Contents/MacOS/TodoAI.new "$app_path"/Contents/MacOS/TodoAI
+cp ".build/$configuration/todo" "$app_path"/Contents/Helpers/todo.new
+mv -f "$app_path"/Contents/Helpers/todo.new "$app_path"/Contents/Helpers/todo
 # SwiftPM resolves Bundle.module at the root of the main application bundle.
-cp -R ".build/$configuration/TodoAI_TodoCore.bundle" .build/TodoAI.app/
+ditto ".build/$configuration/TodoAI_TodoCore.bundle" "$app_path"/TodoAI_TodoCore.bundle
 # Copy the complete source skill into bundle-owned resources, including references.
-python3 - <<'COPY'
+python3 - "$app_path" <<'COPY'
 from pathlib import Path
 import shutil
-root = Path('.build/TodoAI.app/Contents/Resources/CodexIntegration')
+import sys
+root = Path(sys.argv[1]) / 'Contents/Resources/CodexIntegration'
 staging = root / 'todo-ai.new'
 if staging.exists(): shutil.rmtree(staging)
 shutil.copytree('Skills/todo-ai', staging)
@@ -24,7 +27,7 @@ target = root / 'todo-ai'
 if target.exists(): shutil.rmtree(target)
 staging.rename(target)
 COPY
-cat > .build/TodoAI.app/Contents/Info.plist <<'PLIST'
+cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>

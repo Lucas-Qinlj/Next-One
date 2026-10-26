@@ -168,6 +168,8 @@ The release command creates an optimized local app bundle at `.build/TodoAI.app`
 | [TodoCLI](Sources/TodoCLI/README.md) | Structured local interface for agents and scripts |
 | [Skills/todo-ai](Skills/todo-ai/SKILL.md) | Codex task-reading and update conventions |
 
+For a local drag-to-Applications installer, run `./scripts/package-dmg.sh`. The DMG and SHA-256 checksum are written to `.local/releases/`; see the [local installation guide](docs/distribution/local-install.md) (Chinese). This trial package is not Developer ID signed or notarized.
+
 ## Current status and limitations
 
 The native app and CLI are implemented and have been built and run on Apple Silicon. This is an early local development version; not every acceptance scenario has passed.

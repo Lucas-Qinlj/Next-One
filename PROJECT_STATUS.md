@@ -7,6 +7,14 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 本机 DMG 试装包（2026-10-26）
+
+- 用户要求制作安装包在当前电脑试装；交付 0.1.0 本地试装版（build 1、arm64、源码 `8346817`），产物 `.local/releases/Todo-AI-0.1.0-local-arm64-8346817.dmg`，约 1.2 MB，附 SHA-256 校验文件。未进行 Developer ID 签名、Apple 公证或对外发布。
+- 新增 `scripts/package-dmg.sh`：复用 release 构建、独立临时应用输出、Applications 快捷方式、中英安装说明、DMG 校验与 SHA-256；拒绝同名产物覆盖。`package-app.sh` 增加可选输出路径，默认行为保持不变，制作安装包不覆盖现用开发应用。四语 README 增加入口，详见[本机安装说明](docs/distribution/local-install.md)。
+- 验证：release 构建成功，脚本语法检查通过，最终脚本完整运行退出 0；DMG CRC 校验、挂载、复制、Applications 符号链接及 SHA-256 检查通过。最终映像内应用文件哈希与已实际启动检查的副本一致。
+- 从 DMG 复制到含空格的隔离安装目录，从 `/` 启动成功；原生悬浮球与设置正常，四语言选项存在，中英文切换及安装指令实际加载正常。四套语言资源、完整 Skill references 齐全；包内 CLI --help 与启动生成的 CLI project list 真实调用通过。
+- 未将应用安装到 Applications，留给用户手动试装；未替换现用开发版、修改真实待办或全局 Skill。隔离验证实例已退出，验证映像已推出。正式分发、其他机器/架构、Gatekeeper 下载路径和历史待验收窗口组合不计为通过。本轮只提交脚本与文档，不提交生成的二进制，不推送。
+
 ## 悬浮球首次按下拖动修复（2026-10-26）
 
 - 用户反馈其他软件有焦点时必须第二次按住球才能移动。`BallView` 原来仅声明键盘 first responder，缺少 `acceptsFirstMouse`；补充返回 true，与现有任务拖动视图的处理一致，保留原有 4 pt 阈值、联动几何及单击/右键行为。

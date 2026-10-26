@@ -163,6 +163,8 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent와 스크립트를 위한 구조화된 인터페이스 |
 | [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex의 할 일 읽기와 업데이트 규칙 |
 
+로컬 시험 설치는 `./scripts/package-dmg.sh`로 만들 수 있습니다. Applications로 드래그해 설치하는 DMG와 SHA-256 체크섬이 `.local/releases/`에 생성됩니다. [로컬 설치 안내](../distribution/local-install.md)(중국어)를 참고하세요. 이 시험판은 Developer ID 서명이나 공증을 받지 않았습니다.
+
 ## 현재 상태와 제한 사항
 
 네이티브 앱과 CLI는 구현되었으며 Apple Silicon에서 빌드하고 실행했습니다. 초기 로컬 개발 버전으로, 모든 인수 시나리오를 통과한 상태는 아닙니다.
