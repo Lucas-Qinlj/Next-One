@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:49 | codex-task-handoff | Codex 接口预验证
+
+- 状态：官方契约与本机协议核对完成，桌面交互验证受工具限制。
+- 需求与范围：用户授权提前验证 B9 所需 Codex 接口；不开始产品开发、不发送测试消息。
+- 改动：新增接口预验证记录，同步 Spec 授权及已验证/未验证边界。
+- 验证与证据：CLI 0.144.1；生成 experimental Schema，检查 122 个请求方法与 thread/start、turn/start 参数；未发现桌面项目列表方法。官方确认深链接仅预填。cua.getApp 对 Codex 返回安全限制拒绝，未绕过。
+- 未完成/阻塞/下一步：需人工观察新会话预填、项目归属和无项目聊天；原生应用读取桌面项目列表接口仍未找到。未创建会话、未发送消息、未改配置。
+- 关联文档与 Git 状态：[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)、[Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅提交相关文档，不推送；本地 Schema 位于 .local/codex-handoff-probe/。
+
 ## 2026-10-27 01:44 | codex-task-handoff | 简化 B9 上下文格式
 
 - 状态：Spec 修订完成，未实施。
