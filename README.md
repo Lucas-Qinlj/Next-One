@@ -146,7 +146,7 @@ This builds and launches `.build/Next One.app`, including its CLI and Skill reso
 
 Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
 
-See the [included Skill](Skills/next-one/SKILL.md), [CLI reference](Skills/next-one/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). These detailed references are currently in Chinese.
+See the [included Skill](Skills/next-one/SKILL.md), [CLI reference](Skills/next-one/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). The Skill, its references, and the optional working-rule snippet are written in English. Requests and task content can remain in your own language.
 
 ### Use the CLI directly
 

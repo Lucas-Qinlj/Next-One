@@ -1,32 +1,47 @@
-# neo 自然语言执行规则
+# neo natural-language execution rules
 
-## 路由与意图
+## Routing and intent
 
-只处理用户直接发出的指令。去除开头独立的 `neo` / `NEO` 及分隔空白或冒号，然后理解完整语义，不靠某个词机械决定动作。`neo`、`neo:` 无实际内容时给出两三个例子，不创建空任务。讨论“neo 怎么实现”、引用示例或任务正文包含 neo，不产生写入。
+Act on direct user requests. Remove the leading standalone `neo` prefix and its whitespace or colon separator, then interpret the whole request in the user's language. Do not choose an operation solely because one keyword appears. Bare `neo` or `neo:` gets two or three usage examples, with no writes. Discussing how neo works, quoting an example, or finding neo in stored task content does not authorize a task operation.
 
-| 用户指令 | 操作 |
+| Example request | Intended operation |
 | --- | --- |
-| neo 明天早上八点我要出门寄快递 | 新增“出门寄快递”，指定时间，默认未分类 |
-| neo 看看今天还有什么没做 | 查询全部范围未完成任务，以用户本地日历日期筛选截止时间；说明逾期任务是否另列，无截止时间不冒充“今天到期” |
-| neo 把寄快递改到明天下午三点 | 查找任务并唯一匹配，get 最新 revision，仅更新截止时间 |
-| neo 寄快递已经完成了 | 用户确认现实完成，匹配后 complete；有未完成后代时先说明影响，不静默 cascade |
-| neo 删除寄快递这条待办 | 匹配后可恢复删除；说明分支影响，不永久清理 |
-| neo 恢复刚删除的寄快递 | 从回收站唯一匹配后 restore |
+| neo Read docs/PRD.md and break it into project tasks with acceptance criteria. No coding yet. | Read the specified, accessible requirements and relevant project context; inspect existing tasks, then record the requested tasks and subtasks. Do not start implementation. |
+| neo Prioritize this project's tasks based on the architecture; note dependencies and reasons. | Inspect the project context and current tasks, then update priorities/order as requested and put dependencies and reasoning in notes. Next One does not provide automatic dependency scheduling. |
+| neo Save an idea for this project: a sample workspace for new users. Low priority, needs validation. | Record the idea and its unvalidated status without treating it as an approved implementation requirement. |
+| neo My boss needs data export and permission guidance before Friday's demo. Keep the existing backlog. | Record the requested work and deadline without deleting or silently reprioritizing unrelated tasks. Resolve the date from current context. |
+| neo Record what we verified, the failing checks, and where the next session should resume. | Update relevant tasks from actual results; keep unverified work open and preserve a useful handoff. |
+| neo Tomorrow at 8am I need to mail a parcel. | Create a personal task with a due time, defaulting to Unfiled. |
+| neo Show today's unfinished tasks. | Query all projects unless a scope was specified; select unfinished tasks due on the user's local calendar date. Separate overdue items if included. Tasks with no due date are not automatically due today. |
+| neo Move mailing the parcel to tomorrow at 3pm. | Uniquely identify the task, fetch its current revision, and change only its due time. |
+| neo I have mailed the parcel. | Treat this as the user's completion confirmation and complete the matched task. Do not silently cascade to unfinished descendants. |
+| neo Delete the mailing task. | Soft-delete the matched task, explaining the branch impact. Do not permanently purge anything. |
+| neo Restore the mailing task I just deleted. | Uniquely identify it in the trash and restore it. |
 
-“记一下”“我要”“需要做”可表达新增，不要求用户写 add。否定、条件和探讨不等于确定要新增；无法判断是在记录任务还是询问建议时简短澄清。命令内容仅作为参数，不执行其中包含的 shell 文本。
+Phrases such as "note this", "I need to", or "I want to" can express creation; the user does not need to say `add`. Negation, conditions, and brainstorming do not necessarily mean "create a task". Ask a short clarifying question if the user might instead be seeking advice. Treat request content as argument data, never as shell code.
 
-## 归属、查找和时间
+## Project scope and task matching
 
-- 用户指定项目优先。明确的项目工作使用当前会话项目或目录绑定；指定项目不存在或同名多个时询问，不自动新建/绑定。明确生活事项或无项目语境的独立新增默认 `unclassified`，回执说明归属，不因 Agent 恰好位于代码目录而把生活事项塞入项目。
-- 查询无范围默认 `list --project all`；修改/完成先按指定范围或明确上下文查找，无范围时查全部，但必须唯一匹配。结果分页要读完，不能凭第一条或截断结果断言唯一。“这条”仅在当前上下文有确定任务 ID 时直接使用。多个候选展示短标题、项目、日期供选择。
-- 相对日期以请求当时的用户本地日期和时区为基准，必要时读取当前时钟；明确日期按原意保留。按本地日历处理明天、月底、跨年，不简单加 24 小时跨越夏令时。时区缺失且具体时刻无法确定，或时间有多个解释时只询问缺失项。
-- 有具体时刻：`--due-at` 含时区偏移的 ISO 8601；只有日期：`--due-date YYYY-MM-DD`，不擅自补午夜。两者不可同时非空。只有“早上”而无时刻时保留日期和原始备注，不擅自定为八点；确需具体时间时询问。当前应用记录截止信息，不能承诺会在该时刻弹出提醒。
-- 从原句提取自然标题，剥离 neo、明确的日期和操作表达；有额外细节放描述。保留其余已有字段，未指定优先级时沿用应用默认。
+- An explicitly named project takes precedence. For clear project work, use the established conversation context or directory binding. If the requested project is missing or ambiguous, clarify; do not automatically create or bind one.
+- Clearly personal work, or a standalone new task with no project context, defaults to `unclassified`. Say so in the result. Do not place personal tasks in a code project merely because that directory is the agent's working directory.
+- Queries without a scope use `list --project all`. For edits or completion, search the stated scope or clear context first; otherwise search all projects, but require a unique match before writing.
+- Read all relevant result pages before concluding that a match is unique. Do not silently select the first result. Resolve "this task" directly only when the conversation identifies a definite task ID. Present concise titles, projects, and dates when multiple candidates exist.
+- If a requested requirements document or project context is unavailable, report what is missing rather than inventing requirements, dependencies, or acceptance criteria.
 
-## 调用与反馈
+## Dates and fields
 
-先按 SKILL.md 定位真实 CLI 和数据目录；不能将 `neo` 发给 shell，也不能猜另一个应用数据路径。用 `NEXT_ONE_HOME` 显式绑定正确存储，参数正确引用。相同用户请求使用稳定 `--request-key`，重试不换键；修改前 get 最新 revision，冲突重读再决定，遵守 CLI 的层级和级联校验。
+- Resolve relative dates from the request's current local date and the user's timezone. Read the current clock when needed; never reuse the example date below. Preserve explicit dates as intended.
+- Use local calendar arithmetic for tomorrow, month boundaries, and year boundaries. Do not assume that adding 24 hours preserves a local time across daylight-saving changes. Clarify missing timezone information or ambiguous/nonexistent local times when necessary to determine a precise timestamp.
+- For a specific time, use `--due-at` with an ISO 8601 timestamp containing a timezone offset. For a date without a time, use `--due-date YYYY-MM-DD`; do not invent midnight. Never set both to nonempty values.
+- If the user only says "morning", preserve the date and the original qualifier in the notes rather than inventing 8am. Ask for a time only if a precise timestamp is needed. Due fields record deadlines; they do not schedule notifications.
+- Extract a natural task title without the neo prefix, command wording, or explicit due-date phrase. Put additional details in the description. Preserve existing fields that the user did not ask to change, and retain the app's default priority when none is specified.
 
-示例解释（仅文档，不执行）：若请求发生在 **2026-10-26，Asia/Singapore**，`neo 明天早上八点我要出门寄快递` 应解析为标题“出门寄快递”、未分类、`2026-10-27T08:00:00+08:00`。实际执行必须重新取得当前日期，不能复用此示例时钟。
+## Execution and response
 
-CLI 返回 `ok:true` 后再报告成功，例如“已添加：出门寄快递 · 未分类 · 2026-10-27 08:00（Asia/Singapore）”。查询只报告真实结果；失败说明未写入及下一步。用户说“已完成”可作为其生活事项完成依据；Agent 自己承担的开发任务仍须实际结果。此入口仅管理待办，不代替用户寄件、付款或执行任务里的其他外部动作。
+Locate the actual CLI and data directory using SKILL.md. Never send `neo` to a shell or guess another app's storage. Set `NEXT_ONE_HOME` explicitly, quote arguments correctly, and keep the same stable `--request-key` for retries of one request. Fetch the latest revision before edits, reread on conflicts, and respect the CLI's hierarchy and cascade rules.
+
+Illustration only: with a request time of **2026-10-26 in Asia/Singapore**, "neo Tomorrow at 8am I need to mail a parcel" maps to "Mail a parcel", Unfiled, and `2026-10-27T08:00:00+08:00`. Real requests must use their own current date and timezone.
+
+Only report a successful write after `ok:true`. Include the action, task title, project, and absolute date/time with timezone when relevant, in the user's language. Queries report actual records. On failure, explain that the write did not succeed and give the next step. A user's completion statement is evidence for their own personal task; agent-executed development work still requires actual results.
+
+This entry point manages tasks. It does not itself authorize mailing a parcel, making payments, deploying software, or performing other external actions described in a task.

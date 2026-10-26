@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 15:32 | english-skill | Next One Skill 全英文说明
+
+- 状态：英文文档、接口核对和现用内置资源更新完成。
+- 需求与范围：用户要求 Next One Skill 全部使用准确英文；保留多语言用户请求和原有操作约束。
+- 改动：SKILL.md、references/neo.md、references/cli.md 及可选持续规则全部改为英文，四语 README 更新语言说明；核对 CLI 参数、返回结构、存储渠道及 group 行为，移除不符合实现的未完成状态限制。neo 参考补充现有 Vibe Coding 场景，未新增应用能力。
+- 验证与证据：Skill frontmatter 校验、全文英文与引用检查通过；与 CLI/Store 实现交叉核对。release 打包通过，包内文档及 LICENSE/NOTICE 与源码一致；现用应用内置 Skill 已备份到 .local/backups/before-english-skill-2026-10-26/ 并更新，正常重启后 current 导出文档与源码逐文件一致。无业务代码变更，不重复运行无关业务测试。
+- 未完成/阻塞/下一步：不自动覆盖已有全局 Skill；已发布 v0.1.0-preview.1 的安装包仍含旧版中文 Skill，不悄悄替换已发布附件。
+- 关联文档与 Git 状态：[Skill](Skills/next-one/SKILL.md)、[neo 规则](Skills/next-one/references/neo.md)、[CLI 参考](Skills/next-one/references/cli.md)；main，提交并同步 GitHub。
+
 ## 2026-10-26 15:28 | readme-logo | README 标题上方展示 Logo
 
 - 状态：已完成。

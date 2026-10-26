@@ -139,7 +139,7 @@ CLI と Skill を含む `.build/Next One.app` をビルドして起動します�
 
 コピーしただけではインストールされません。アプリの起動時に連携リソースを自身のデータディレクトリへ用意しますが、グローバル Skill や Codex 設定は変更しません。インストール後の自動検出は、新しい対象セッションでの検証が必要です。
 
-[同梱 Skill](../../Skills/next-one/SKILL.md) · [CLI リファレンス](../../Skills/next-one/references/cli.md) · [任意の作業ルール](../codex-rules-snippet.md)。これらの詳細資料は現在、中国語で提供しています。
+[同梱 Skill](../../Skills/next-one/SKILL.md) · [CLI リファレンス](../../Skills/next-one/references/cli.md) · [任意の作業ルール](../codex-rules-snippet.md)。Skill、CLI・neo の参考文書、任意の作業ルールは英語です。依頼とタスク内容は利用者の言語のまま扱えます。
 
 個人の用事はフォルダを紐づけず未分類に記録できます。更新した Skill を認識したら `neo` を使ってください。認識されない場合は Agent のセッションを更新または再起動します。
 

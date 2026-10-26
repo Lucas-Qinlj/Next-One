@@ -139,7 +139,7 @@ CLI와 Skill 리소스를 포함한 `.build/Next One.app`을 빌드하고 실행
 
 지시문을 복사하는 것만으로 설치되지는 않습니다. 앱 시작 시 자체 데이터 디렉터리에 연동 리소스를 준비하지만, 전역 Skill이나 Codex 설정은 바꾸지 않습니다. 설치 후 자동 검색은 새로운 대상 세션에서 검증해야 합니다.
 
-[포함된 Skill](../../Skills/next-one/SKILL.md) · [CLI 참고 문서](../../Skills/next-one/references/cli.md) · [선택적 작업 규칙](../codex-rules-snippet.md). 이 상세 문서들은 현재 중국어로 제공됩니다.
+[포함된 Skill](../../Skills/next-one/SKILL.md) · [CLI 참고 문서](../../Skills/next-one/references/cli.md) · [선택적 작업 규칙](../codex-rules-snippet.md). Skill, CLI·neo 참고 문서와 선택적 작업 규칙은 영어로 작성됩니다. 요청과 작업 내용은 사용자 언어를 그대로 사용할 수 있습니다.
 
 개인적인 일은 폴더 연결 없이 미분류에 기록할 수 있습니다. 업데이트한 Skill이 인식되면 `neo`를 사용하세요. 인식되지 않으면 Agent 세션을 새로 고치거나 다시 시작하세요.
 

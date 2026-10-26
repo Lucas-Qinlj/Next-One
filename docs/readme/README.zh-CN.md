@@ -141,7 +141,7 @@ cd Next-One
 
 仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
 
-详细说明：[内置 Skill](../../Skills/next-one/SKILL.md) · [CLI 接口](../../Skills/next-one/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。这些详细参考文档当前以中文提供。
+详细说明：[内置 Skill](../../Skills/next-one/SKILL.md) · [CLI 接口](../../Skills/next-one/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。Skill、CLI/neo 参考文档及可选持续规则均使用英文编写；用户请求与任务内容仍可使用中文等语言。
 
 ### 直接使用 CLI
 
