@@ -10,6 +10,7 @@ import TodoCore
     var codexHandoff: CodexHandoffSession?
     var pendingCodexHandoff: (session: CodexHandoffSession, url: URL)?
     var codexAutoFocus = false
+    var codexFocusFailure: String?
     let codexFocus = CodexAccessibilityFocus()
 
     func prepareCodexHandoff(_ session: CodexHandoffSession,
@@ -36,8 +37,9 @@ import TodoCore
             if codexAutoFocus {
                 window?.setExpandedForHandoff(wasExpanded)
                 let prompt = URLComponents(url: pending.url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "prompt" }?.value ?? ""
-                codexFocus.start(prompt: prompt) { [weak self] in
-                    self?.notify(L("未能聚焦 Codex 输入框，请手动点击。"), kind: .warning)
+                codexFocus.start(prompt: prompt) { [weak self] reason in
+                    self?.codexFocusFailure = reason.message
+                    self?.notify(reason.message, kind: .warning)
                 }
             }
             return
@@ -50,6 +52,7 @@ import TodoCore
 
     func beginCodexHandoff(_ item: TodoItem) {
         codexFocus.cancel()
+        codexFocusFailure = nil
         guard saveDraft(), codexHandoff == nil, pendingCodexHandoff == nil else { return }
         do { codexHandoff = CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL()) }
         catch { report(error) }

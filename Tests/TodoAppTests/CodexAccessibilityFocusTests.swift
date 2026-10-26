@@ -3,6 +3,33 @@ import ApplicationServices
 @testable import TodoApp
 
 final class CodexAccessibilityFocusTests: XCTestCase {
+    @MainActor func testDelayedReadbackConfirmsWithoutAnotherFocusWrite() async {
+        var reads = 0, pauses = 0
+        let result = await CodexFocusReadback.confirm(check: { reads += 1; return reads == 3 },
+            stillValid: { true }, pause: { pauses += 1 })
+        XCTAssertTrue(result)
+        XCTAssertEqual(reads, 3)
+        XCTAssertEqual(pauses, 2)
+    }
+    @MainActor func testReadbackStopsWhenUserLeavesOrPermissionChanges() async {
+        var valid = true, reads = 0
+        let result = await CodexFocusReadback.confirm(check: { reads += 1; return false },
+            stillValid: { valid }, pause: { valid = false })
+        XCTAssertFalse(result)
+        XCTAssertEqual(reads, 1)
+    }
+    @MainActor func testReadbackIsBoundedAndCancellationStopsIt() async {
+        var reads = 0
+        let result = await CodexFocusReadback.confirm(check: { reads += 1; return false },
+            stillValid: { true }, pause: {})
+        XCTAssertFalse(result)
+        XCTAssertEqual(reads, 4)
+        reads = 0
+        let cancelled = await CodexFocusReadback.confirm(check: { reads += 1; return false },
+            stillValid: { true }, pause: { throw CancellationError() })
+        XCTAssertFalse(cancelled)
+        XCTAssertEqual(reads, 1)
+    }
     func testOnlyCompleteEditablePromptMatches() {
         let prompt = "<neo>\nC3 Example\n</neo>\n\nReview only"
         XCTAssertTrue(CodexFocusMatch.matches(role: kAXTextAreaRole, value: prompt, enabled: true, focusSettable: true, prompt: prompt))

@@ -99,6 +99,8 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 ### Codex 焦点交接（C3）
 
+重复交接诊断：`CodexFocusFailure` 区分查找、控件变更、权限及设置/读回阶段，设置页保留当前运行期间最后失败原因，不持久化 UI 文本。AX 写成功后 `CodexFocusReadback` 最多等待 300 ms 确认，不重复写；写前控件失效在原查找时限内重试，用户切换或取消即停。用户已报告首版权限方案首次成功、重复失败，实际根因待新版提示证据确认。
+
 `CodexHandoffSession.prepareOpen` 校验后交给 AppModel 暂存 session/URL 并关闭 sheet；根视图 `onDismiss` 调用 `finishCodexHandoff`，隐藏清单、保持球可见，再打开 URL。默认成功保持收起，失败恢复展开状态和同一 session；恢复展示不重新 reload，重试仍重新校验。取消无 pending URL，不触发打开。
 
 两轮无权限自动恢复方案实机失败，已移除。可选 `codexAutoFocus` 存在 window.json，默认关闭。开启后缺权限时保留草稿并提供“前往授权”；系统信任提示与辅助功能设置页由按钮触发，不自动修改授权。打开成功后恢复清单，`CodexAccessibilityFocus` 限时匹配前台 Codex 焦点窗口中完整 prompt 相符的唯一编辑框，设置 AXFocused 并读回；不点击、不发送、不记录文本。自己的鼠标/键盘操作、新交接或切到其他应用取消；失败用底部提示告知手动点击。匹配逻辑及权限阻断由自动测试覆盖，真实 Codex 控件暴露、授权与焦点单独人工验收。见[辅助功能 Spec](../../docs/spec/2026-10-27/codex-accessibility-focus.md)。

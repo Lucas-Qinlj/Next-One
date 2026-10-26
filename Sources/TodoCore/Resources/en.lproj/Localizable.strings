@@ -321,3 +321,10 @@
 "前往授权" = "Open permission settings";
 "请开启 Next One 的辅助功能权限，返回后重试。" = "Allow Accessibility for Next One, then return and retry.";
 "未能聚焦 Codex 输入框，请手动点击。" = "Could not focus the Codex input. Please click it manually.";
+"Codex 页面尚未就绪，请重试。" = "The Codex page is not ready. Please retry.";
+"未能完成输入框查找，请手动点击。" = "Could not finish finding the input. Please click it manually.";
+"未找到与本次指令匹配的输入框，请手动点击。" = "No input matching this prompt was found. Please click it manually.";
+"找到多个匹配输入框，请手动选择。" = "Multiple matching inputs were found. Please choose manually.";
+"Codex 页面发生变化，请重试。" = "The Codex page changed. Please retry.";
+"Codex 未接受聚焦请求，请手动点击。" = "Codex did not accept the focus request. Please click the input.";
+"未能确认输入框焦点，请手动点击。" = "Could not confirm input focus. Please click it manually.";
