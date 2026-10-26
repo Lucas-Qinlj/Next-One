@@ -23,7 +23,6 @@ import SwiftUI
             .onChange(of: session.error) { [weak self] in self?.resizeToFit() }
         )
         resizeToFit()
-        window.center()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
@@ -36,10 +35,31 @@ import SwiftUI
             guard size.width > 0, size.height > 0 else { return }
             let top = window.frame.maxY
             window.setContentSize(size)
-            window.setFrameOrigin(NSPoint(x: window.frame.minX, y: top - window.frame.height))
+            let origin = NSPoint(x: window.frame.minX, y: top - window.frame.height)
+            window.setFrameOrigin(Self.clamped(origin, size: window.frame.size, screen: self?.placementScreen ?? window.screen?.visibleFrame ?? window.frame))
         }
     }
+    private var placementScreen: NSRect {
+        model?.window?.panel.screen?.visibleFrame ?? NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1200, height: 800)
+    }
+    static func nearbyOrigin(size: NSSize, panel: NSRect, screen: NSRect) -> NSPoint {
+        let right = panel.maxX + 12
+        let left = panel.minX - 12 - size.width
+        let x: CGFloat
+        if right + size.width <= screen.maxX - 8 { x = right }
+        else if left >= screen.minX + 8 { x = left }
+        else { x = screen.maxX - panel.maxX >= panel.minX - screen.minX ? right : left }
+        return clamped(NSPoint(x: x, y: panel.maxY - size.height), size: size, screen: screen)
+    }
+    private static func clamped(_ origin: NSPoint, size: NSSize, screen: NSRect) -> NSPoint {
+        let safe = screen.insetBy(dx: 8, dy: 8)
+        return NSPoint(x: min(max(origin.x, safe.minX), max(safe.minX, safe.maxX - size.width)),
+                       y: min(max(origin.y, safe.minY), max(safe.minY, safe.maxY - size.height)))
+    }
     func present() {
+        if let window, let panel = model?.window?.panel {
+            window.setFrameOrigin(Self.nearbyOrigin(size: window.frame.size, panel: panel.frame, screen: placementScreen))
+        } else { window?.center() }
         resizeToFit()
         NSApp.activate()
         window?.makeKeyAndOrderFront(nil)

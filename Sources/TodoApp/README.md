@@ -99,6 +99,8 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 ### Codex 交接窗口（C3）
 
+窗口显示时 `nearbyOrigin` 按来源清单所在屏幕选择右侧/左侧，间距 12 pt、顶部对齐，位置约束于 visibleFrame 内侧 8 pt；尺寸改变保留顶部并重新限位。无来源面板时才居中。几何检查包含负坐标副屏和窄屏，不冒充实际多屏验收。
+
 `AppModel.presentCodexHandoff` 保持单个 `CodexHandoffWindow`（普通 NSWindow），复用原 `CodexHandoffView`。窗口主动激活供用户输入，按内容调整高度；重复入口提到前面，不替换草稿。关闭或取消设置 session.cancelled，并清除模型持有的窗口；异步准备完成仍复查 session 身份，已关闭窗口不能再打开 Codex。
 
 `openCodexHandoff` 校验后暂时禁止清单成为 key，隐藏普通交接窗口并调用 NSWorkspace.open；清单和球一直可见。成功销毁交接窗口，失败重新显示同一个窗口及草稿。随后恢复面板输入能力（尊重 locked），不再次激活 Next One。没有额外延时、AX 查找或自动发送；失败的辅助功能方案已退役，系统授权不自动撤销。

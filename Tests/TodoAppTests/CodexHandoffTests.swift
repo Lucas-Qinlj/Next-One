@@ -5,6 +5,20 @@ import TodoCore
 @testable import TodoApp
 
 final class CodexHandoffTests: XCTestCase {
+    @MainActor func testHandoffPlacementStaysNearPanelOnItsScreen() {
+        let size = NSSize(width: 360, height: 350)
+        let screen = NSRect(x: -1440, y: 100, width: 1440, height: 900)
+        let leftPanel = NSRect(x: -1400, y: 500, width: 430, height: 450)
+        let right = CodexHandoffWindow.nearbyOrigin(size: size, panel: leftPanel, screen: screen)
+        XCTAssertEqual(right.x, leftPanel.maxX + 12)
+        XCTAssertEqual(right.y + size.height, leftPanel.maxY)
+        let rightPanel = NSRect(x: -460, y: 110, width: 430, height: 450)
+        let left = CodexHandoffWindow.nearbyOrigin(size: size, panel: rightPanel, screen: screen)
+        XCTAssertEqual(left.x + size.width, rightPanel.minX - 12)
+        let narrow = NSRect(x: 0, y: 0, width: 650, height: 500)
+        let origin = CodexHandoffWindow.nearbyOrigin(size: size, panel: NSRect(x: 200, y: 0, width: 430, height: 450), screen: narrow)
+        XCTAssertTrue(narrow.insetBy(dx: 8, dy: 8).contains(NSRect(origin: origin, size: size)))
+    }
     var root: URL!
     var database: URL { root.appendingPathComponent("codex.sqlite") }
     override func setUpWithError() throws {
