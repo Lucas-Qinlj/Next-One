@@ -1,58 +1,177 @@
+<div align="center">
+
 # Todo-AI
 
-本地 macOS 悬浮待办。SwiftUI 清单、AppKit 双窗口、系统 SQLite；应用和 `todo` CLI 共用业务规则。支持项目目录绑定、十层任务、状态/优先级/颜色/截止时间、图片与视频附件、背景透明度和锁定穿透。
+**One task list. Shared context. You and your coding agent.**
 
-当前为本机开发版本，最低目标 macOS 14，已在 macOS 26.5.1 / Apple Silicon 构建和运行。**部分窗口与跨会话验收待实机确认**，见 [验收报告](docs/acceptance/macos-floating-todo.md)。未签名公证分发、未安装全局 Skill、未启用登录启动。
+A local macOS floating todo app for vibe coding—keep plans, progress, and next steps visible while you build with AI.
 
-## 启动
+**English** · [简体中文](docs/readme/README.zh-CN.md) · [日本語](docs/readme/README.ja.md) · [한국어](docs/readme/README.ko.md)
 
-需要 Xcode 或对应 Swift 工具链；无第三方运行依赖。在项目根目录执行：
+macOS 14+ · SwiftUI + AppKit · Local storage · Codex Skill + CLI
+
+</div>
+
+## Why Todo-AI?
+
+Coding with AI moves fast. Keeping track of the work often doesn't.
+
+A follow-up gets buried in a chat. A new session needs the same explanation again. Your own checklist and the agent's understanding drift apart. Switching projects makes it harder to remember what was actually finished and what still needs checking.
+
+**Todo-AI gives you and your coding agent one persistent, project-aware task list to maintain together.** You work in a small floating app; the agent reads and updates the same local data through a CLI. Keep the goal, progress, acceptance criteria, and unfinished work attached to the task, ready for the next session to read.
+
+It is built for solo developers, indie makers, and anyone who builds software through conversation with coding agents. The included integration targets **Codex**; other local agents can use the documented CLI, but dedicated integrations have not been verified.
+
+## A look inside
+
+<table>
+<tr>
+<th align="left">Keep the work in view</th>
+<th align="left">Leave context with the task</th>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/screenshots/task-list.jpg" alt="Todo-AI floating list with two project groups, nested tasks, progress and priority labels" width="480"></td>
+<td width="50%"><img src="docs/assets/screenshots/task-detail.jpg" alt="Todo-AI task details with a goal, progress notes, next steps, status and subtasks" width="480"></td>
+</tr>
+</table>
+
+Actual macOS app captures with fictional demo tasks. The current app interface is in Chinese; these four README languages do not imply four-language app localization.
+
+## Highlights
+
+| Feature | What it helps you do |
+| --- | --- |
+| **Shared human–agent context** | Read and edit the same tasks from the app and CLI. Agent writes appear in the running app; the CLI also works while the app is closed. |
+| **Project-aware handoffs** | Bind folders to projects and retrieve the right context from the working directory. Explicitly bind additional worktrees to the same project. |
+| **A floating checklist** | Expand or collapse from a floating ball, move and resize the panel, pin it above other windows, and adjust background opacity. |
+| **Tasks that keep their context** | Organize up to ten levels of subtasks, with descriptions, status, priority, color, and a due date or time. |
+| **Flexible organization** | Collapse project groups, reorder tasks and groups, move branches, and group unclassified tasks into a project. |
+| **Autosave with conflict handling** | Details save after editing pauses. Different-field changes can merge; conflicting edits keep your draft and ask you to resolve them. |
+| **References and recovery** | Attach images and videos as managed local copies, up to 100 MB per file. Restore deleted tasks and attachments from the trash. |
+| **Local by design** | SwiftUI, AppKit, and system SQLite. No Todo-AI account, cloud backend, or additional AI API key required. |
+
+Lock mode makes the panel ignore mouse input while the floating ball remains available to unlock it. Some cross-app and desktop combinations still need manual validation; see [current limitations](#current-status-and-limitations).
+
+## How you and the agent work together
+
+1. **Capture the work.** Create a project, bind its folder, and add the goal, constraints, and acceptance criteria.
+2. **Start with context.** Ask Codex to read that project's open tasks before making changes.
+3. **Keep progress shared.** Edit priorities and notes in the app while the agent records actual progress through the CLI.
+4. **Leave a useful handoff.** Record completed work and remaining checks in the task. A later local session can read the same list instead of reconstructing it from chat history.
+
+After setting up the integration, try a request like:
+
+> Read this project's Todo-AI tasks. Work on the onboarding flow, record confirmed follow-up work as subtasks, and update progress based on what you actually verify. Preserve my existing notes.
+
+The app and agent use one business-rule layer and one local store:
+
+```text
+You ─────────── macOS app ──────┐
+                               ├── Shared validation ── Local tasks + attachments
+Coding agent ── Skill / CLI ────┘
+```
+
+This is explicit collaboration: Todo-AI does not listen to every chat, run agents in the background, or automatically synchronize remote environments.
+
+## Quick start
+
+### Build and run
+
+Requirements: **macOS 14 or later**, a **Swift 6.0+ toolchain** (such as a compatible Xcode installation), and Python 3 for the packaging script. There are no third-party runtime dependencies.
 
 ```sh
+git clone https://github.com/Lucas-Qinlj/Todo-AI.git
+cd Todo-AI
 ./scripts/run.sh
 ```
 
-脚本构建含 CLI 和 Skill 的本地开发应用包并启动；产物在 `.build/TodoAI.app`，不安装到 Applications。单击球展开/收起，拖球移动；右键球可锁定、解锁、打开设置或退出。菜单栏可找回球，应用菜单支持 ⌘B 找回、⌘T 展开/收起、⌘, 设置、⌘Q 退出。三个非锚定角用于缩放，邻角单维度、对角双维度。
+This builds and launches `.build/TodoAI.app`, including its CLI and Skill resources. It does not install the app into Applications. This is a local development build, not a signed and notarized distribution.
 
-详情点“保存更改”，切页、锁定与正常退出前也会保存；冲突会保留草稿，需要重新读取后处理。任务/附件删除可恢复，保留期无限，不自动清理。附件原文件可移动；导入成功的副本留在应用目录中。视频播放能力依赖系统默认媒体应用。
+- Click the floating ball to show or hide the list; drag it to move the app.
+- Use **+** to add a task, and click a task title to edit its details. Changes autosave.
+- Open **Settings (设置)** to bind a project folder and find **Codex integration (Codex 接入)**.
+- Right-click the ball to lock, unlock, or quit. The menu-bar entry can bring the ball back into view.
+- Shortcuts: `⌘B` recover the ball, `⌘T` toggle the list, `⌘,` open Settings, `⌘Q` quit.
 
-默认数据在 `~/Library/Application Support/Todo-AI`。测试必须隔离：
+### Connect Codex
+
+1. Launch Todo-AI and open **Settings → Codex integration**.
+2. Copy the installation instruction and send it in a **local Codex session on the same Mac**. The instruction asks that session to install the bundled Skill, preserve existing customization, and verify the CLI using read-only commands.
+3. Bind your project folder, then ask Codex to read its Todo-AI context. Additional worktree folders must be explicitly bound.
+
+Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
+
+See the [included Skill](Skills/todo-ai/SKILL.md), [CLI reference](Skills/todo-ai/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). These detailed references are currently in Chinese.
+
+### Use the CLI directly
+
+Run these from the repository root after building:
 
 ```sh
-TODO_AI_HOME="$PWD/.local/my-test" ./scripts/run.sh
-TODO_AI_HOME="$PWD/.local/my-test" .build/debug/todo project list
-```
-
-同一数据目录使用一个 UI 实例；CLI 可以并发调用。退出 UI 后再切换不同的 `TODO_AI_HOME`。不要直接编辑数据库；备份时退出 UI 并停止 CLI 写入，复制整个数据目录（包括 SQLite、WAL 和附件）。
-
-## CLI 与 Codex
-
-```sh
-swift build
 .build/debug/todo --help
 .build/debug/todo project bind --path "$PWD" --name Todo-AI
 .build/debug/todo context --cwd "$PWD" --json
 ```
 
-项目内 Skill：[Skills/todo-ai/SKILL.md](Skills/todo-ai/SKILL.md)。完整接口：[CLI v1](Skills/todo-ai/references/cli.md)。可选持续规则：[规则片段](docs/codex-rules-snippet.md)。它们没有自动安装；不会监听全部聊天或提供远程同步。
+The bind command creates or associates a project with this checkout. For another project, supply its directory instead. Commands return structured JSON; failures return an error code and a nonzero exit status.
 
-## 验证
+Updates require the task's latest `revision`. Creation supports stable request keys to avoid duplicates on retries. Both interfaces enforce the same hierarchy, project, and status rules—agents should use the CLI, never edit the database directly.
+
+## Data and privacy
+
+- Tasks, attachments, window preferences, and prepared integration resources live in `~/Library/Application Support/Todo-AI` by default.
+- Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
+- Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
+- Todo-AI does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
+- To back up, quit the UI and stop CLI writes, then copy the entire data directory, including SQLite/WAL files and attachments.
+
+For an isolated demo or test, use the **same** `TODO_AI_HOME` for both app and CLI:
 
 ```sh
-swift test
-python3 scripts/cli-smoke.py
+TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+# In another terminal, from the same repository:
+TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
 ```
 
-前者覆盖共享业务规则、数据库并发和几何；后者通过真实 CLI 子进程验证 JSON、版本冲突、幂等、事务及文本转义。均使用临时数据，不改真实待办。窗口、锁定穿透和 Codex 行为证据单独记录，不能由单元测试替代。
+Use one UI instance per data directory; CLI calls can run concurrently.
 
-- [产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)
-- [项目状态](PROJECT_STATUS.md)
-- [数据核心](Sources/TodoCore/README.md) · [窗口与界面](Sources/TodoApp/README.md) · [本地接口](Sources/TodoCLI/README.md)
+## Development
 
-## 接入资源与可移植应用包
+```sh
+swift build
+swift test
+python3 scripts/cli-smoke.py
+python3 scripts/drag-cli-smoke.py
+./scripts/package-app.sh release
+```
 
-`./scripts/package-app.sh debug`（或 `release`）生成 `.build/TodoAI.app`，包含应用程序、`Contents/Helpers/todo` 和完整 Skill 资源。本地启动使用 `./scripts/run.sh`；不要只复制裸可执行文件。
+The release command creates an optimized local app bundle at `.build/TodoAI.app`; it does not sign, notarize, install, or publish it. Keep the complete bundle, including its CLI and Skill resources.
 
-应用启动时，接入文件自动准备到当前用户数据目录的 `integration/current/`：`bin/todo` 和 `skills/todo-ai/SKILL.md`（包括 references）。默认数据目录由系统生成，为 `~/Library/Application Support/Todo-AI`；`TODO_AI_HOME` 可用于隔离测试。版本内容先完整校验再原子切换 current 链接，旧版本保留；不会覆盖正在执行的 CLI、真实待办或用户级 Skill。
+| Area | Responsibility |
+| --- | --- |
+| [TodoCore](Sources/TodoCore/README.md) | Persistence, transactions, task rules, and conflict checks |
+| [TodoApp](Sources/TodoApp/README.md) | Floating windows, task UI, and local integration preparation |
+| [TodoCLI](Sources/TodoCLI/README.md) | Structured local interface for agents and scripts |
+| [Skills/todo-ai](Skills/todo-ai/SKILL.md) | Codex task-reading and update conventions |
 
-设置里的复制指令使用上述实际路径，可在源码目录不存在时工作。该能力已在本机移动应用包及模拟用户目录中验证，不代表完成签名、公证、跨架构或另一台 Mac 的正式分发验证。
+## Current status and limitations
+
+The native app and CLI are implemented and have been built and run on Apple Silicon. This is an early local development version; not every acceptance scenario has passed.
+
+- Signed/notarized downloads, cross-machine distribution, and cross-architecture validation are not complete.
+- Full validation of click-through input reaching other apps, multi-display changes, Spaces, full-screen apps, and Stage Manager remains incomplete.
+- Some media interactions and fresh-session Skill discovery still need end-to-end checks.
+- There is no cloud sync, team workspace, or guaranteed remote-agent access to this Mac's data.
+- The pixel-aquarium experiment under `docs/` is a separate prototype, not a feature of the native app.
+
+See [project status](PROJECT_STATUS.md), the [acceptance report](docs/acceptance/macos-floating-todo.md), and the [product specification](docs/spec/2026-10-24/macos-floating-todo.md) for evidence and remaining work.
+
+## Contributing
+
+Bug reports, reproducible examples, documentation improvements, and focused changes are welcome. For bugs, include your macOS version, build steps, expected behavior, and actual behavior. Use demo data and remove private tasks, paths, and credentials from reports.
+
+Before making changes, read [AGENTS.md](AGENTS.md) and the relevant specification. Keep the product focused on a simple, local workflow for one person and their coding agent. Verify behavior changes with the relevant tests and real macOS interaction where needed.
+
+## License
+
+A license has not yet been selected; this repository currently has no `LICENSE` file. An open-source license needs to be added before the project is presented as licensed open-source software.

@@ -7,6 +7,14 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## README 与公开展示准备（2026-10-26）
+
+- 用户要求面向 Vibe Coding 用户整理项目介绍。根 README 改为英文默认，新增[简体中文](docs/readme/README.zh-CN.md)、[日文](docs/readme/README.ja.md)、[韩文](docs/readme/README.ko.md)，四语互链，覆盖痛点、人与 Agent 共享上下文、功能、接入、源码启动、数据隐私、开发和已知限制。
+- 当前源码本地打包成功；独立演示数据通过 CLI 创建，真实原生应用截图纳入 [screenshots](docs/assets/screenshots/README.md)。未改真实待办、生产源码或全局 Skill；没有将鱼缸原型描述为原生功能。
+- 修正旧 README 的手动保存说明，按现有实现写为自动保存及冲突处理。明确 UI 当前中文、Codex 为内置接入、其他 Agent 仅可使用 CLI，未声称四语 UI 或全面验证。
+- GitHub 连接只读确认账户 Lucas-Qinlj；本轮维护本地文档，没有推送或更改仓库可见性。仓库尚无 LICENSE，许可证与正式公开发布需另行明确。
+- 验证：四语文档本地链接、图片引用、结构与命令一致性检查；截图逐张视觉检查。纯文档任务，不重复执行业务测试，也不把本次打包/截图当作全部产品验收。
+
 ## 设计完成 / 尚未实施
 
 - 像素鱼缸第二版（2026-10-25）：用户提供五张实拍参考，并确认“保留像素风，空间和运动更真实”。完成[详细设计](docs/design/2026-10-25/pixel-aquarium-scene-design.md)与[公开项目/原生能力比较](docs/research/2026-10-25/aquarium-rendering-options.md)，同步[功能 Spec](docs/spec/2026-10-25/pixel-aquarium.md)。方案覆盖三套候选景观、前中后水层、局部遮挡、叶隙、实体避让、换层、鱼体/水草/水光动作、素材拆分、原生集成和 V01–V13 验收。建议 SpriteKit + GameplayKit，尚未采纳或实施；本轮只做文档和本地参考归档，未安装依赖、重做素材、修改旧原型或真实数据。新版视觉/性能未验证。

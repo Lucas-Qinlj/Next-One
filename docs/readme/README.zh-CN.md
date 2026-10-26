@@ -1,0 +1,172 @@
+<div align="center">
+
+# Todo-AI
+
+**你和 Coding Agent，共同维护一份待办上下文。**
+
+为 Vibe Coding 而生的本地 macOS 悬浮待办，让计划、进度和下一步始终在眼前。
+
+[English](../../README.md) · **简体中文** · [日本語](README.ja.md) · [한국어](README.ko.md)
+
+macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
+
+</div>
+
+## 为什么需要 Todo-AI？
+
+和 AI 一起写代码很快，但跟上项目进度并不总是那么容易。
+
+“这个以后再做”埋进了聊天记录；换一个会话，又要重新解释背景；你自己的清单和 Agent 理解的进度逐渐脱节；几个项目来回切换后，很难记清哪些真正完成了，哪些还需要验证。
+
+**Todo-AI 让你与 Coding Agent 共同维护一份持久化、按项目组织的待办。** 你在悬浮应用里查看和编辑，Agent 通过 CLI 读写同一份本地数据。目标、进度、验收条件和剩余工作都留在任务里，下次会话可以直接读取。
+
+它面向独立开发者、个人创作者，以及通过与 Coding Agent 对话来构建软件的人。目前内置 **Codex** 接入；其他本地 Agent 可以使用公开的 CLI 接口，但尚未验证专用集成。
+
+## 界面预览
+
+<table>
+<tr><th align="left">工作进度，随时可见</th><th align="left">上下文，留在任务里</th></tr>
+<tr>
+<td width="50%"><img src="../assets/screenshots/task-list.jpg" alt="真实悬浮清单：项目分组、分层待办、完成进度和优先级" width="480"></td>
+<td width="50%"><img src="../assets/screenshots/task-detail.jpg" alt="真实任务详情：目标、已完成工作、下一步、状态和子任务" width="480"></td>
+</tr>
+</table>
+
+截图来自实际运行的 macOS 应用，使用虚构演示任务。当前应用界面为中文；四语 README 不代表应用已提供四语界面。
+
+## 主要功能与亮点
+
+| 功能 | 带来的价值 |
+| --- | --- |
+| **人与 Agent 共用上下文** | 应用和 CLI 读写同一份待办。Agent 的更新会显示在运行中的应用里；应用关闭时 CLI 仍可工作。 |
+| **按项目接续工作** | 绑定项目文件夹，根据工作目录读取对应任务；同一项目的其他 worktree 可显式追加绑定。 |
+| **轻量悬浮清单** | 悬浮球一键展开收起，支持移动、缩放、置顶和背景透明度调整。 |
+| **任务承载完整背景** | 最多十层子任务，支持描述、状态、优先级、颜色及截止日期或时间。 |
+| **灵活整理** | 折叠项目组，拖动任务与项目排序，移动整条分支，将未分类待办合并成项目。 |
+| **自动保存与冲突保护** | 停止编辑后自动保存；不同字段的修改可以合并，同字段冲突保留草稿并请求处理。 |
+| **参考资料与恢复** | 图片和视频保存为本地托管副本，单文件最大 100 MB；删除的任务和附件可以恢复。 |
+| **本地优先** | SwiftUI、AppKit 与系统 SQLite，无需 Todo-AI 账号、云端后端或额外 AI API Key。 |
+
+锁定模式让面板忽略鼠标输入，悬浮球仍可用于解锁。部分跨应用与桌面组合还需要人工验证，见下方“当前状态与限制”。
+
+## 你与 Agent 如何一起工作
+
+1. **记录目标。** 创建项目、绑定目录，写下目标、约束和验收条件。
+2. **带着上下文开工。** 让 Codex 先读取当前项目未完成的任务。
+3. **共同维护进度。** 你在应用里调整优先级和备注，Agent 通过 CLI 记录真实进展。
+4. **留下可接续的交接。** 把完成结果与待验证事项写回任务。后续本机会话可以读取同一份清单，不必从聊天中重新整理。
+
+完成接入后，可以这样说：
+
+> 先读取当前项目的 Todo-AI 待办，继续开发新用户引导流程。把明确的后续工作记成子任务，根据实际验证结果更新进度，保留我已有的备注。
+
+```text
+你 ───────── macOS 应用 ────┐
+                           ├── 共享业务校验 ── 本地待办与附件
+Coding Agent ─ Skill / CLI ─┘
+```
+
+这是明确指令驱动的协作：Todo-AI 不监听全部聊天，不在后台运行 Agent，也不自动同步远程环境。
+
+## 快速开始
+
+### 从源码构建并运行
+
+需要 **macOS 14 或更高版本**、**Swift 6.0+ 工具链**（例如兼容的 Xcode）以及打包脚本使用的 Python 3。没有第三方运行依赖。
+
+```sh
+git clone https://github.com/Lucas-Qinlj/Todo-AI.git
+cd Todo-AI
+./scripts/run.sh
+```
+
+脚本构建并启动 `.build/TodoAI.app`，包含 CLI 与 Skill 资源，不安装到 Applications。这是本地开发构建，尚非签名、公证后的分发版。
+
+- 单击悬浮球展开或收起，拖动球移动窗口。
+- 点击 **+** 新建任务，点击任务标题编辑详情，修改自动保存。
+- 在 **设置** 中绑定项目文件夹，并找到 **Codex 接入**。
+- 右键球可以锁定、解锁或退出；菜单栏入口可以找回悬浮球。
+- 快捷键：`⌘B` 找回球、`⌘T` 展开/收起、`⌘,` 设置、`⌘Q` 退出。
+
+### 接入 Codex
+
+1. 启动 Todo-AI，打开 **设置 → Codex 接入**。
+2. 复制安装指令，发送到**同一台 Mac 上的本地 Codex 会话**。指令要求该会话安装应用携带的 Skill，保留已有自定义内容，并通过只读命令验证 CLI。
+3. 绑定项目目录后，让 Codex 读取项目的 Todo-AI 上下文；额外 worktree 需要显式绑定。
+
+仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
+
+详细说明：[内置 Skill](../../Skills/todo-ai/SKILL.md) · [CLI 接口](../../Skills/todo-ai/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。这些详细参考文档当前以中文提供。
+
+### 直接使用 CLI
+
+构建后在仓库根目录执行：
+
+```sh
+.build/debug/todo --help
+.build/debug/todo project bind --path "$PWD" --name Todo-AI
+.build/debug/todo context --cwd "$PWD" --json
+```
+
+绑定命令为当前仓库目录创建或关联项目；绑定其他项目时改用其目录。命令返回结构化 JSON，失败返回明确错误码和非零退出状态。
+
+更新需要任务最新的 `revision`，创建支持稳定请求键以避免重试产生重复任务。两种入口遵守同一套层级、项目与状态规则；Agent 应使用 CLI，不直接编辑数据库。
+
+## 数据与隐私
+
+- 默认数据目录为 `~/Library/Application Support/Todo-AI`，保存待办、附件、窗口偏好与已准备的接入资源。
+- 附件导入时复制到托管目录，原文件移动不会影响副本；视频播放依赖系统默认媒体应用。
+- 已删除的任务和附件可恢复，不自动清空回收站。
+- Todo-AI 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。
+- 备份前退出 UI 并停止 CLI 写入，再复制完整数据目录，包括 SQLite/WAL 文件和附件。
+
+演示或测试使用隔离目录，应用与 CLI 必须设置**相同的** `TODO_AI_HOME`：
+
+```sh
+TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+# 在另一个终端中，进入同一仓库后执行：
+TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
+```
+
+同一数据目录只运行一个 UI 实例；CLI 可并发调用。
+
+## 开发
+
+```sh
+swift build
+swift test
+python3 scripts/cli-smoke.py
+python3 scripts/drag-cli-smoke.py
+./scripts/package-app.sh release
+```
+
+最后一条命令生成优化后的本地应用包 `.build/TodoAI.app`，不会签名、公证、安装或发布。移动时保留完整应用包及其中的 CLI、Skill 资源。
+
+| 模块 | 职责 |
+| --- | --- |
+| [TodoCore](../../Sources/TodoCore/README.md) | 持久化、事务、任务规则与冲突校验 |
+| [TodoApp](../../Sources/TodoApp/README.md) | 悬浮窗口、任务界面与本地接入资源准备 |
+| [TodoCLI](../../Sources/TodoCLI/README.md) | 面向 Agent 和脚本的结构化接口 |
+| [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex 读取和更新待办的约定 |
+
+## 当前状态与限制
+
+原生应用和 CLI 已实现，并在 Apple Silicon 上构建运行。目前仍是早期本地开发版本，尚未通过全部验收场景。
+
+- 签名公证下载包、跨机器分发及跨架构验证尚未完成。
+- 背后应用实际接收穿透输入、多显示器变化、Spaces、全屏与 Stage Manager 尚未完成全面验证。
+- 部分媒体交互及新会话发现 Skill 仍需端到端检查。
+- 不提供云同步、多人工作区或远程 Agent 自动访问本机数据的保证。
+- `docs/` 下的像素鱼缸实验是独立原型，不是原生应用已有功能。
+
+实际证据及剩余工作见[项目状态](../../PROJECT_STATUS.md)、[验收报告](../acceptance/macos-floating-todo.md)与[产品 Spec](../spec/2026-10-24/macos-floating-todo.md)。
+
+## 参与贡献
+
+欢迎提交问题复现、文档改进和范围清晰的修改。反馈问题时提供 macOS 版本、构建步骤、预期与实际结果，使用演示数据，并移除私人待办、路径和凭据。
+
+修改前阅读 [AGENTS.md](../../AGENTS.md) 和相关 Spec。保持产品面向单人、本机以及人与 Coding Agent 协作的简单方向；行为变化按需验证相关测试和真实 macOS 交互。
+
+## 许可证
+
+许可证尚未选定，仓库目前没有 `LICENSE` 文件。正式以开源软件发布前，需要补充明确的开源许可证。
