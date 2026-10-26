@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:02 | codex-task-handoff | 无项目聊天入口专项调研
+
+- 状态：公开资料和源码调研完成，未找到满足无项目+预填的原生外部入口。
+- 需求与范围：用户反馈显式空 path 也无效，并明确授权一个子代理查官方开源实现；仅调研。
+- 改动：更新预验证记录与 Spec，记录空路径失败、独立聊天快捷键和开源桌面启动器证据。
+- 验证与证据：子代理检查官方仓库 c21153b 的 CLI desktop_app：mac.rs 构造带 path 深链接，未找到桌面接收路由；官方文档未列 projectless 参数，快捷键为人工入口。文档链接结构及差异检查；未创建/发送会话或操作 Codex UI。
+- 未完成/阻塞/下一步：无项目聊天接口仍阻塞；项目列表来源另待解决。手动独立聊天+粘贴或暂缓该选项仅为替代建议，未更改范围。
+- 关联文档与 Git 状态：[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)、[Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅本轮文档提交，不推送。
+
 ## 2026-10-27 01:56 | codex-task-handoff | 用户跨项目深链接验证
 
 - 状态：已有项目切换与两行预填经用户手测确认；无项目聊天仍未解决。

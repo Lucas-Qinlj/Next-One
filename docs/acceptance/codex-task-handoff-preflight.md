@@ -12,7 +12,7 @@
 | 打开新页面并预填 | 官方 deep-links 文档列出 threads/new、prompt、path | 用户截图确认测试文本及换行预填；完整消息仍待测 |
 | 自动发送 | 官方明确 prompt 只预填 | 深链接不支持自动发送，符合首版用户手动发送方案 |
 | 项目路径 | 官方 path 为本机绝对目录 | 用户从其他项目点击带 path 入口后返回 Next One；此已有项目切换通过 |
-| 无项目聊天 | 文档未提供明确的 projectless 查询参数 | 用户从其他项目点击不带 path 入口仍在原项目；不能用省略 path 实现无项目聊天 |
+| 无项目聊天 | 文档未提供明确的 projectless 查询参数 | 用户从其他项目点击不带 path 入口仍在原项目；省略 path 和显式空 path 均未实现无项目聊天 |
 | 原生应用读取桌面项目列表 | 本机 CLI 0.144.1 的 experimental ClientRequest Schema 共 122 个请求方法，未发现项目/工作目录列表方法 | 已检查接口中未找到；不代表所有其他接口都不存在 |
 | 自动创建/运行协议 | Schema 有 thread/start 和 turn/start；前者有 cwd/runtimeWorkspaceRoots 等字段，无 projectId | 协议存在，不等于桌面项目归属与页面导航支持；本轮未调用 |
 | Codex 桌面 UI 读取与验证 | cua.getApp('com.openai.codex') 返回明确拒绝 | 无法自动观察页面、输入框、焦点，不绕过限制 |
@@ -55,9 +55,22 @@ codex app-server generate-json-schema --experimental --out .local/codex-handoff-
 
 - 带 Todo-AI 目录 path 的第二入口返回 Next One，截图显示 Next One／此计算机。
 - 不带 path 的第一入口仍在另一个项目，截图显示 customer-acquisition／此计算机。
+- 用户随后测试显式 `path=`，明确反馈仍不行；不将空字符串作为清除项目的方案。
 - 两张截图均显示输入框中的 `B9 interface probe` 和下一行 `line 2`。
 
 结论：当前安装环境支持显式 path 切换到已有 Next One 项目，并支持这段两行文本预填；省略 path 会沿用当前项目，不能实现 Spec 的无项目“聊天”。截图仅证明输入框预填与显示的项目，不证明消息已发送、任务已执行或持久化会话已创建。不推断未知目录行为、冷启动、全量附件文本或所有项目均已通过。
+
+## 无项目入口专项调研
+
+用户明确授权一个子代理进行只读调研。结论限于检查过的官方文档与公开仓库，不宣称任何版本都不存在其他入口。
+
+- 官方 [Open Source](https://learn.chatgpt.com/docs/open-source) 列出 CLI、SDK、App Server 等组件；不能把这些开源组件等同于桌面应用完整 UI/路由源码。
+- 官方 [Commands](https://learn.chatgpt.com/docs/reference/commands#keyboard-shortcuts) 提供 New standalone chat 的 macOS 快捷键 `⌘⌥O`；这是人工界面入口，不是本项目可直接调用的公开 URL。
+- Deep links 文档只列 prompt/path/originUrl，未声明 standalone/projectless 参数；结合用户实测，省略或留空 path 都不能满足需求。
+- 子代理检查官方仓库 commit `c21153bd920a514809e58d9bd10326267ab2ca36`：[mac.rs 第 151–156 行](https://github.com/openai/codex/blob/c21153bd920a514809e58d9bd10326267ab2ca36/codex-rs/cli/src/desktop_app/mac.rs#L151) 只构造带 path 的 `codex://threads/new` URL；[app_cmd.rs](https://github.com/openai/codex/blob/c21153bd920a514809e58d9bd10326267ab2ca36/codex-rs/cli/src/app_cmd.rs#L5-L19) 的 PATH 默认为当前目录，并规范化后打开。这不是桌面 URL 接收器，不能据此推导隐藏清除参数。
+- 本次公开源码检索没有找到桌面深链接接收/路由实现；没有得到可推荐给 Next One 原生应用的 projectless+prompt 外部入口。
+
+建议保持无项目功能为接口阻塞，不降低验收。可选替代需用户决定：由用户手动打开独立聊天并粘贴上下文，或首版暂不提供“聊天”选项。两者均未被本轮自动采纳；不模拟快捷键绕过 Codex UI 工具限制，不把 App Server cwd 为空当作无项目桌面会话的证明。
 
 ## 下一步与决策边界
 
