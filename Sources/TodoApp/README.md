@@ -97,16 +97,10 @@ Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源
 
 验证：`swift test --filter CodexHandoffTests`；另运行 LocalizationTests 和 ScrollbarLayoutTests。真实窗口与 Codex 端验证边界见[验收记录](../../docs/acceptance/codex-task-handoff.md)，规则见[Spec](../../docs/spec/2026-10-27/codex-task-handoff.md)。
 
-### Codex 焦点交接（C3）
+### Codex 交接窗口（C3）
 
-04:19：用户确认第二次打开命中范围上限，当前上限改为 4096 节点/64 层、单轮 3 秒，总窗口仍为 8 秒；覆盖下文旧预算。输入框缺少 AXWindow 时检查有界 AXParent 链，查找与写焦点前都核对归属，不按窗口标题匹配。
+`AppModel.presentCodexHandoff` 保持单个 `CodexHandoffWindow`（普通 NSWindow），复用原 `CodexHandoffView`。窗口主动激活供用户输入，按内容调整高度；重复入口提到前面，不替换草稿。关闭或取消设置 session.cancelled，并清除模型持有的窗口；异步准备完成仍复查 session 身份，已关闭窗口不能再打开 Codex。
 
-04:14：查找优先读取 Codex 应用的 AXFocusedUIElement，必须确认 AXWindow 属于当前窗口且完整 prompt 匹配；仅用于定位，成功仍需系统键盘焦点核验。未命中则有限遍历，每轮约 1 秒，总窗口 8 秒、轮间隔 300 ms；分别报告超时、节点/深度上限及读取错误，不放大节点预算。
+`openCodexHandoff` 校验后暂时禁止清单成为 key，隐藏普通交接窗口并调用 NSWorkspace.open；清单和球一直可见。成功销毁交接窗口，失败重新显示同一个窗口及草稿。随后恢复面板输入能力（尊重 locked），不再次激活 Next One。没有额外延时、AX 查找或自动发送；失败的辅助功能方案已退役，系统授权不自动撤销。
 
-04:06：`CodexFocusOutcome` 在设置页展示等待/确认/停止/失败。确认必须同时满足系统键盘应用 PID、系统输入元素、应用内部输入元素和 AXFocused 状态；只读取系统焦点身份，不读取其他应用内容。焦点仍属于 Next One 时可请求前台 Codex 的 AXFrontmost，再设置编辑框焦点；不覆盖第三方应用焦点。普通字符不取消，鼠标按下/Escape 仍取消。用户已明确纠正为没有切换窗口，不再把无提示直接归因为用户行为。
-
-重复交接诊断：`CodexFocusFailure` 区分查找、控件变更、权限及设置/读回阶段，设置页保留当前运行期间最后失败原因，不持久化 UI 文本。AX 写成功后 `CodexFocusReadback` 最多等待 300 ms 确认，不重复写；写前控件失效在原查找时限内重试，用户切换或取消即停。用户已报告首版权限方案首次成功、重复失败，实际根因待新版提示证据确认。
-
-`CodexHandoffSession.prepareOpen` 校验后交给 AppModel 暂存 session/URL 并关闭 sheet；根视图 `onDismiss` 调用 `finishCodexHandoff`，隐藏清单、保持球可见，再打开 URL。默认成功保持收起，失败恢复展开状态和同一 session；恢复展示不重新 reload，重试仍重新校验。取消无 pending URL，不触发打开。
-
-两轮无权限自动恢复方案实机失败，已移除。可选 `codexAutoFocus` 存在 window.json，默认关闭。开启后缺权限时保留草稿并提供“前往授权”；系统信任提示与辅助功能设置页由按钮触发，不自动修改授权。打开成功后恢复清单，`CodexAccessibilityFocus` 限时匹配前台 Codex 焦点窗口中完整 prompt 相符的唯一编辑框，设置 AXFocused 并读回；不点击、不发送、不记录文本。自己的鼠标/键盘操作、新交接或切到其他应用取消；失败用底部提示告知手动点击。匹配逻辑及权限阻断由自动测试覆盖，真实 Codex 控件暴露、授权与焦点单独人工验收。见[辅助功能 Spec](../../docs/spec/2026-10-27/codex-accessibility-focus.md)。
+`CodexHandoffTests` 验证普通窗口、失败恢复、重复入口和取消边界；真实 Codex 连续打开及直接输入由用户验收。

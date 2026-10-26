@@ -8,54 +8,42 @@ import TodoCore
     var codexIntegration: CodexIntegration?
     var integrationError: Error?
     var codexHandoff: CodexHandoffSession?
-    var pendingCodexHandoff: (session: CodexHandoffSession, url: URL)?
-    var codexAutoFocus = false
-    var codexFocusFailure: String?
-    let codexFocus = CodexAccessibilityFocus()
+    var codexHandoffWindow: CodexHandoffWindow?
 
-    func prepareCodexHandoff(_ session: CodexHandoffSession,
-                            permissionGranted: @MainActor () -> Bool = { CodexFocusPermission.granted }) async {
-        guard codexHandoff === session else { return }
-        session.needsFocusPermission = codexAutoFocus && !permissionGranted()
-        guard !session.needsFocusPermission else {
-            session.error = L("请开启 Next One 的辅助功能权限，返回后重试。")
-            return
-        }
-        guard codexHandoff === session, pendingCodexHandoff == nil,
+    func presentCodexHandoff(_ session: CodexHandoffSession) {
+        if let existing = codexHandoffWindow { existing.present(); return }
+        codexHandoff = session
+        let dialog = CodexHandoffWindow(model: self, session: session)
+        codexHandoffWindow = dialog
+        dialog.present()
+    }
+    func cancelCodexHandoff() {
+        codexHandoff?.cancelled = true
+        let dialog = codexHandoffWindow
+        codexHandoff = nil; codexHandoffWindow = nil
+        dialog?.closeWithoutCallback()
+    }
+    func openCodexHandoff(_ session: CodexHandoffSession,
+                         using opener: (URL) -> Bool = { NSWorkspace.shared.open($0) }) async {
+        guard codexHandoff === session, let dialog = codexHandoffWindow,
               let url = await session.prepareOpen(), codexHandoff === session else { return }
-        pendingCodexHandoff = (session, url)
-        codexHandoff = nil
-    }
-
-    // Called by the sheet's onDismiss, after it has finished returning focus to its parent.
-    func finishCodexHandoff(using opener: (URL) -> Bool = { NSWorkspace.shared.open($0) }) {
-        guard let pending = pendingCodexHandoff else { return }
-        pendingCodexHandoff = nil
-        let wasExpanded = window?.expanded == true
-        window?.setExpandedForHandoff(false)
-        if opener(pending.url) {
-            if codexAutoFocus {
-                window?.setExpandedForHandoff(wasExpanded)
-                window?.panel.makeFirstResponder(nil)
-                let prompt = URLComponents(url: pending.url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "prompt" }?.value ?? ""
-                codexFocus.start(prompt: prompt) { [weak self] reason in
-                    self?.codexFocusFailure = reason.message
-                    self?.notify(reason.message, kind: .warning)
-                }
-            }
-            return
+        // A normal window owns the input. Prevent the still-visible panel from inheriting
+        // key status while that window is removed; never re-show or activate the panel.
+        window?.panel.inputEnabled = false
+        defer { window?.panel.inputEnabled = !locked }
+        dialog.window?.orderOut(nil)
+        if opener(url) {
+            codexHandoff = nil; codexHandoffWindow = nil
+            dialog.closeWithoutCallback()
+        } else {
+            session.report(TodoError("codex_open", "无法打开 Codex，请确认已安装后重试。"))
+            dialog.present()
         }
-        window?.setExpandedForHandoff(wasExpanded)
-        pending.session.cancelled = false
-        pending.session.report(TodoError("codex_open", "无法打开 Codex，请确认已安装后重试。"))
-        codexHandoff = pending.session
     }
-
     func beginCodexHandoff(_ item: TodoItem) {
-        codexFocus.cancel()
-        codexFocusFailure = nil
-        guard saveDraft(), codexHandoff == nil, pendingCodexHandoff == nil else { return }
-        do { codexHandoff = CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL()) }
+        if let dialog = codexHandoffWindow { dialog.present(); return }
+        guard saveDraft() else { return }
+        do { presentCodexHandoff(CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL())) }
         catch { report(error) }
     }
     var state = Snapshot()

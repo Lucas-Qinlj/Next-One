@@ -96,13 +96,10 @@ final class CodexHandoffTests: XCTestCase {
         session.instruction = "custom\ntext"
         _ = try store.execute("update", ["id":task.id,"title":"Updated","expected-revision":"1"])
         let model = AppModel(store: store)
-        model.codexHandoff = session
-        await model.prepareCodexHandoff(session)
-        XCTAssertNil(model.codexHandoff)
-        XCTAssertNotNil(model.pendingCodexHandoff)
-        session.cancelled = true // The disappearing sheet cancels further preparation.
+        model.presentCodexHandoff(session)
+        defer { model.cancelCodexHandoff() }
         var opened: URL?
-        model.finishCodexHandoff { opened = $0; return false }
+        await model.openCodexHandoff(session) { opened = $0; return false }
         XCTAssertTrue(model.codexHandoff === session)
         XCTAssertFalse(session.cancelled)
         XCTAssertNotNil(session.error)
@@ -117,46 +114,59 @@ final class CodexHandoffTests: XCTestCase {
         do { _ = try await session.prepareURL(); XCTFail() } catch {}
     }
 
-    @MainActor func testHandoffHidesPanelBeforeOpenAndRestoresOnFailure() async throws {
+    @MainActor func testOrdinaryHandoffKeepsPanelVisibleAndRestoresDraftOnFailure() async throws {
         try fixture(); let store = try store()
         let task = try XCTUnwrap(store.snapshot().liveTasks.first)
         let model = AppModel(store: store)
         let controller = FloatingController(model: model)
         defer {
+            model.cancelCodexHandoff()
             controller.timer?.invalidate(); controller.lockHoverTimer?.invalidate()
             controller.panel.orderOut(nil); controller.ball.orderOut(nil)
             NSStatusBar.system.removeStatusItem(controller.statusItem)
         }
         let session = CodexHandoffSession(taskID: task.id, store: store, database: database)
-        await session.reload()
-        session.chooseProject(try XCTUnwrap(session.projects.first))
+        await session.reload(); session.chooseProject(try XCTUnwrap(session.projects.first))
         session.instruction = "preserve draft"
-        model.codexHandoff = session
-        await model.prepareCodexHandoff(session)
-        XCTAssertTrue(controller.panel.isVisible) // Validation must not hide the panel.
+        model.presentCodexHandoff(session)
+        let dialog = try XCTUnwrap(model.codexHandoffWindow)
+        XCTAssertFalse(try XCTUnwrap(dialog.window) is NSPanel)
+        XCTAssertTrue(dialog.window?.canBecomeKey == true)
+        let other = CodexHandoffSession(taskID: task.id, store: store, database: database)
+        model.presentCodexHandoff(other)
+        XCTAssertTrue(model.codexHandoffWindow === dialog)
+        XCTAssertTrue(model.codexHandoff === session)
         var count = 0
-        model.finishCodexHandoff { _ in
+        await model.openCodexHandoff(session) { _ in
             count += 1
-            XCTAssertFalse(controller.panel.isVisible)
-            XCTAssertFalse(controller.expanded)
+            XCTAssertFalse(dialog.window?.isVisible == true)
+            XCTAssertTrue(controller.panel.isVisible)
+            XCTAssertTrue(controller.expanded)
+            XCTAssertFalse(controller.panel.canBecomeKey)
             XCTAssertTrue(controller.ball.isVisible)
             return false
         }
-        XCTAssertTrue(controller.panel.isVisible)
-        XCTAssertTrue(controller.expanded)
+        XCTAssertTrue(dialog.window?.isVisible == true)
+        XCTAssertTrue(controller.panel.inputEnabled)
         XCTAssertTrue(model.codexHandoff === session)
         XCTAssertEqual(session.instruction, "preserve draft")
         XCTAssertNotNil(session.error)
-        await model.prepareCodexHandoff(session)
-        model.finishCodexHandoff { _ in count += 1; return true }
-        XCTAssertFalse(controller.panel.isVisible)
-        XCTAssertFalse(controller.expanded)
-        XCTAssertTrue(controller.ball.isVisible)
-        XCTAssertNil(model.codexHandoff)
-        model.finishCodexHandoff { _ in XCTFail("Duplicate open"); return true }
-        XCTAssertEqual(count, 2)
-        controller.toggle()
+        await model.openCodexHandoff(session) { _ in count += 1; return true }
         XCTAssertTrue(controller.panel.isVisible)
+        XCTAssertTrue(controller.expanded)
+        XCTAssertTrue(controller.panel.inputEnabled)
+        XCTAssertNil(model.codexHandoffWindow)
+        XCTAssertNil(model.codexHandoff)
+        await model.openCodexHandoff(session) { _ in XCTFail("Duplicate open"); return true }
+        XCTAssertEqual(count, 2)
+        // A fresh second handoff uses another ordinary window and cancels through its close button.
+        await other.reload(); other.chooseProject(try XCTUnwrap(other.projects.first))
+        model.presentCodexHandoff(other)
+        XCTAssertFalse(model.codexHandoffWindow === dialog)
+        model.codexHandoffWindow?.window?.performClose(nil)
+        XCTAssertTrue(other.cancelled)
+        XCTAssertNil(model.codexHandoffWindow)
+        await model.openCodexHandoff(other) { _ in XCTFail("Closed window opened Codex"); return true }
     }
 
     @MainActor func testSingleAndMultipleSourcePathsAndUnmatchedFallback() async throws {
@@ -175,31 +185,6 @@ final class CodexHandoffTests: XCTestCase {
         XCTAssertEqual(session.step,.prompt)
         let url = try await session.prepareURL()
         XCTAssertTrue(URLComponents(url:url,resolvingAgainstBaseURL:false)?.queryItems?.first { $0.name == "prompt" }?.value?.contains("会话项目路径：") == true)
-    }
-
-    @MainActor func testMissingFocusPermissionKeepsDraftAndDoesNotQueueOpen() async throws {
-        try fixture(); let store = try store()
-        let task = try XCTUnwrap(store.snapshot().liveTasks.first)
-        let model = AppModel(store: store)
-        let session = CodexHandoffSession(taskID: task.id, store: store, database: database)
-        await session.reload(); session.chooseProject(try XCTUnwrap(session.projects.first))
-        session.instruction = "Do not send automatically"
-        model.codexHandoff = session; model.codexAutoFocus = true
-        await model.prepareCodexHandoff(session, permissionGranted: { false })
-        XCTAssertTrue(model.codexHandoff === session)
-        XCTAssertNil(model.pendingCodexHandoff)
-        XCTAssertTrue(session.needsFocusPermission)
-        XCTAssertNotNil(session.error)
-        XCTAssertEqual(session.instruction, "Do not send automatically")
-        XCTAssertEqual(session.targetPath, root.path)
-        model.finishCodexHandoff { _ in XCTFail("Opened without permission"); return true }
-        await model.prepareCodexHandoff(session, permissionGranted: { true })
-        XCTAssertFalse(session.needsFocusPermission)
-        XCTAssertNil(session.error)
-        XCTAssertNotNil(model.pendingCodexHandoff)
-        // Do not execute the live accessibility client in tests.
-        model.codexAutoFocus = false
-        model.finishCodexHandoff { _ in true }
     }
 
     @MainActor func testAttachmentPathsMissingFileAndDeletedTask() async throws {

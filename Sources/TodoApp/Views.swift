@@ -77,11 +77,6 @@ struct ContentView: View {
         .controlSize(.small)
         .tint(.primary)
         .environment(\.locale, LanguageSettings.shared.locale)
-        .sheet(item: $model.codexHandoff, onDismiss: { model.finishCodexHandoff() }) { session in
-            CodexHandoffView(session: session, dismiss: { model.codexHandoff = nil }, submit: {
-                Task { await model.prepareCodexHandoff(session) }
-            })
-        }
         .alert(model.confirm?.title ?? L("确认"), isPresented: Binding(get: { model.confirm != nil }, set: { if !$0 { model.confirm = nil } })) {
             Button(L("确认")) { let action = model.confirm?.action; model.confirm = nil; action?() }
             Button(L("取消"), role: .cancel) { model.confirm = nil }
@@ -650,8 +645,6 @@ struct SettingsView: View {
                 Divider()
                 if let sync = model.reminderSync { ReminderSyncView(sync: sync); Divider() }
                 CodexIntegrationView(model: model)
-                Divider()
-                CodexFocusSettingsView(model: model)
                 Divider()
                 Text(L("本版本默认当前桌面，不启用登录启动。锁定时右键球可解锁；菜单栏可找回悬浮球。")).font(.caption2).foregroundStyle(.secondary)
             }.padding(.horizontal, 14).padding(.vertical, 12)

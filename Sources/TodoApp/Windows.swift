@@ -35,7 +35,6 @@ final class TaskPanel: NSPanel {
             geometry.growsRight = p["right"] as? Bool ?? false; geometry.growsDown = p["down"] as? Bool ?? true
             model.opacity = min(1, max(0, p["opacity"] as? Double ?? 0.9)); model.pinned = p["pinned"] as? Bool ?? true
             model.collapsed = Set(p["collapsed"] as? [String] ?? [])
-            model.codexAutoFocus = p["codexAutoFocus"] as? Bool ?? false
         }
         for window in [panel, ball] { window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true; window.hidesOnDeactivate = false; window.isReleasedWhenClosed = false }
         panel.title = L("Next One 清单"); ball.title = L("Next One 悬浮球")
@@ -72,19 +71,9 @@ final class TaskPanel: NSPanel {
     }
     @objc func recover() { geometry.fit(in: currentScreen, chooseDirection: true); layout(); ball.orderFrontRegardless(); savePreferences() }
     func toggle() {
-        model.codexFocus.cancel()
         if expanded { guard model.saveDraft() else { return }; panel.orderOut(nil) }
         else { geometry.fit(in: currentScreen, chooseDirection: true); layout(); panel.orderFrontRegardless() }
         expanded.toggle(); ball.orderFrontRegardless()
-        updateLockHoverTracking()
-    }
-    // Handoff has already saved/validated the draft; do not toggle or save again here.
-    func setExpandedForHandoff(_ value: Bool) {
-        model.codexFocus.cancel()
-        if value { panel.orderFrontRegardless() }
-        else { panel.orderOut(nil) }
-        expanded = value
-        ball.orderFrontRegardless()
         updateLockHoverTracking()
     }
     func move(to point: CGPoint, start: Bool, end: Bool) {
@@ -156,9 +145,7 @@ final class TaskPanel: NSPanel {
     }
     func savePreferences() {
         let p: [String: Any] = ["x": geometry.anchor.x, "y": geometry.anchor.y, "width": geometry.size.width, "height": geometry.size.height, "right": geometry.growsRight, "down": geometry.growsDown, "opacity": model.opacity, "pinned": model.pinned, "collapsed": Array(model.collapsed)]
-        var preferences = p
-        preferences["codexAutoFocus"] = model.codexAutoFocus
-        do { try JSONSerialization.data(withJSONObject: preferences, options: [.sortedKeys]).write(to: preferencesURL, options: .atomic) } catch { model.report(error) }
+        do { try JSONSerialization.data(withJSONObject: p, options: [.sortedKeys]).write(to: preferencesURL, options: .atomic) } catch { model.report(error) }
     }
     @objc func showMenu() { let menu = makeMenu(); statusItem.menu = menu; statusItem.button?.performClick(nil); statusItem.menu = nil }
     func makeMenu() -> NSMenu {
