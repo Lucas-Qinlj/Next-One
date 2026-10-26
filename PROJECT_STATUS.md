@@ -8,6 +8,15 @@
 - 使用方法：[README](README.md)
 
 
+## 2026-10-27 04:53 | certificate-signing-policy | 所有打包强制正式证书签名
+
+- 状态：长期规范已更新。
+- 需求与范围：用户要求以后打包均使用正式证书，不使用临时签名，并写入 AGENTS.md。
+- 改动：AGENTS 明确所有 App／DMG 包含本地试装及隔离验收均须正式签名；签名失败停止，不得降级或替换现用版。同步 release Skill，移除隔离开发包例外；构建中间产物不视为可安装交付包。
+- 验证与证据：检查规则一致性、相对链接、AGENTS 字节上限及 Git 差异；本轮仅文档，不重跑代码测试。
+- 未完成/阻塞/下一步：无；未改脚本，未重新打包、安装、公证或发布。
+- 关联文档与 Git 状态：[协作规范](AGENTS.md)、[release Skill](.agents/skills/next-one-release/SKILL.md)；main，本轮仅文档本地提交，不推送；承接上轮 developer-id-install 记录。
+
 ## 2026-10-27 04:54 | developer-id-install | 正式 Developer ID 签名及本机安装
 
 - 状态：正式证书签名、备份安装和重启后提醒事项授权验证通过。

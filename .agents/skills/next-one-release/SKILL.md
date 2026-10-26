@@ -15,7 +15,7 @@ description: 处理 Next One 项目的 macOS App 与 DMG 打包、Developer ID �
 
 ## 签名资料
 
-本项目现用安装版已切换到正式 Developer ID 签名；后续替换现用应用沿用相同 Team 与 bundle ID，不得用未签名／ad-hoc 包覆盖。证书或签名失败时保留现用版并报告，不静默降级。隔离开发包不受此限制。
+所有 App／DMG 打包（含本地试装、隔离验收和正式分发）均须使用有效 Developer ID Application 正式证书，不使用临时／ad-hoc 签名或交付未签名包。正式安装版沿用既有 Team 与 bundle ID。构建脚本输出仅为中间产物，正式签名及校验通过后才能安装或交付；证书或签名失败时停止并保留现用版，不静默降级。公证、安装和发布分别按授权执行。
 
 - 私钥保留在 macOS 登录钥匙串，不导出到项目。`.cer` 仅含公开证书，复制它到另一台机器并不能恢复签名能力。
 - 项目本地资料目录为 `.local/signing/`，受 `.gitignore` 保护。可保存 `developer-id-application.cer`、CSR 和 `signing.json`；配置只含签名身份、Team ID、证书指纹、公证钥匙串 profile 名，不存密码、私钥或 API key。
