@@ -12,6 +12,8 @@ macOS 14+ · SwiftUI + AppKit · Local storage · Codex Skill + CLI
 
 </div>
 
+**Keep it on top. Tune the transparency. Copy a ready-made setup instruction to your agent.**
+
 ## Why Todo-AI?
 
 Coding with AI moves fast. Keeping track of the work often doesn't.
@@ -30,8 +32,8 @@ It is built for solo developers, indie makers, and anyone who builds software th
 <th align="left">Leave context with the task</th>
 </tr>
 <tr>
-<td width="50%"><img src="docs/assets/screenshots/task-list.jpg" alt="Todo-AI floating list with two project groups, nested tasks, progress and priority labels" width="480"></td>
-<td width="50%"><img src="docs/assets/screenshots/task-detail.jpg" alt="Todo-AI task details with a goal, progress notes, next steps, status and subtasks" width="480"></td>
+<td width="50%"><img src="docs/assets/screenshots/en/task-list.jpg" alt="Todo-AI floating list with two project groups, nested tasks, progress and priority labels" width="480"></td>
+<td width="50%"><img src="docs/assets/screenshots/en/task-detail.jpg" alt="Todo-AI task details with a goal, progress notes, next steps, status and subtasks" width="480"></td>
 </tr>
 </table>
 
@@ -43,7 +45,9 @@ Actual macOS app captures with fictional demo tasks. The app supports Simplified
 | --- | --- |
 | **Shared human–agent context** | Read and edit the same tasks from the app and CLI. Agent writes appear in the running app; the CLI also works while the app is closed. |
 | **Project-aware handoffs** | Bind folders to projects and retrieve the right context from the working directory. Explicitly bind additional worktrees to the same project. |
-| **A floating checklist** | Expand or collapse from a floating ball, move and resize the panel, pin it above other windows, and adjust background opacity. |
+| **Always-on-top workspace companion** | Keep the checklist visible alongside your editor or agent chat, so checking the next step does not mean switching to another task app. Move, resize, or collapse it from the floating ball. |
+| **Adjustable transparency** | Set background opacity from 30% to 100%. Keep the panel less visually intrusive while task text and the floating button remain opaque. |
+| **Copy-and-send agent setup** | Copy a ready-made, localized Codex setup instruction from Settings. It includes the actual Skill, CLI, and data paths, so you do not have to assemble the setup prompt yourself. |
 | **Tasks that keep their context** | Organize up to ten levels of subtasks, with descriptions, status, priority, color, and a due date or time. |
 | **Flexible organization** | Collapse project groups, reorder tasks and groups, move branches, and group unclassified tasks into a project. |
 | **Autosave with conflict handling** | Details save after editing pauses. Different-field changes can merge; conflicting edits keep your draft and ask you to resolve them. |
@@ -51,6 +55,16 @@ Actual macOS app captures with fictional demo tasks. The app supports Simplified
 | **Local by design** | SwiftUI, AppKit, and system SQLite. No Todo-AI account, cloud backend, or additional AI API key required. |
 
 Lock mode makes the panel ignore mouse input while the floating ball remains available to unlock it. Some cross-app and desktop combinations still need manual validation; see [current limitations](#current-status-and-limitations).
+
+## Keep your workflow in view
+
+**Keep your next step beside your code.** Use the pin button to keep Todo-AI above ordinary windows on the current desktop. Collapse it to the floating ball when you need more space, then expand it to check progress without hunting through another app.
+
+**Choose how much presence it has.** Adjust **Background opacity** in Settings from **30%–100%**. Only the background becomes transparent; text and the floating button remain clear. Pinning and opacity are independent controls, so you can choose the balance that suits your workspace.
+
+**Start sharing tasks with a copy and a paste.** In **Settings → Codex integration**, click the copy icon and paste the complete instruction into a local Codex chat. The app prepares the paths and setup steps, including preserving existing Skill customizations and read-only verification. The instruction follows your selected UI language. Sending it asks Codex to perform the setup; copying alone does not install anything. This built-in instruction targets Codex; other coding agents can use the documented local CLI.
+
+<p align="center"><img src="docs/assets/screenshots/en/settings.jpg" alt="English settings with language selection, background opacity slider, pin control and copyable Codex setup instructions" width="480"></p>
 
 ## How you and the agent work together
 
@@ -89,7 +103,7 @@ This builds and launches `.build/TodoAI.app`, including its CLI and Skill resour
 
 - Click the floating ball to show or hide the list; drag it to move the app.
 - Use **+** to add a task, and click a task title to edit its details. Changes autosave.
-- Open **Settings (设置)** to bind a project folder and find **Codex integration (Codex 接入)**.
+- Open **Settings** to bind a project folder and find **Codex integration**.
 - Right-click the ball to lock, unlock, or quit. The menu-bar entry can bring the ball back into view.
 - Shortcuts: `⌘B` recover the ball, `⌘T` toggle the list, `⌘,` open Settings, `⌘Q` quit.
 
