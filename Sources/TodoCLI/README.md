@@ -11,3 +11,5 @@ Skill 保存在项目内，不自动安装到全局目录，不修改用户 Code
 查询支持全局短编号（如 `get A1`）；写入使用查询返回的 UUID，因为归档后短编号可复用；返回 `short_code` 和原 UUID，编号不可修改，具体参数与升级约束见 [CLI 契约](../../Skills/next-one/references/cli.md#global-task-short-codes)。
 
 全局完成归档使用 `archive preview` → `archive completed --expected-token TOKEN --request-key KEY`；恢复按 UUID 并重新分配编号，详见 CLI 契约。
+
+`integration install/status/uninstall` dispatches to CodexSetup before Store initialization, preserving the Next-One directory and JSON/error protocol without creating a task database.

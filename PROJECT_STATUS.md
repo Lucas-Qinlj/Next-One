@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:53 | merge-all-branches | 整合所有已提交分支到 main
+
+- 状态：分支整合与验证完成。
+- 需求与范围：用户要求将尚未合并分支合并到 main 并推送 GitHub；多语言已在 main 历史中，待办功能链快进合并，Skill 生命周期分支合并适配。
+- 改动：保留现有品牌、neo、归档/编号和安装版本；整合 integration install/status/uninstall，迁移至 next-one 路径和 NEXT_ONE_HOME，四语提示、英文 Skill/接入文档与历史验收记录同步。主目录并行的不透明度0%修改保留为未提交，不纳入合并。
+- 验证与证据：Swift全量48项通过，安装器/本地化定向11项复验通过；debug打包及真实包内CLI隔离安装/状态/重复安装/runner/卸载通过，不创建待办数据库、不改真实全局规则。Skill校验通过。全量测试期间目录中有并行不透明度修改，其未暂存差异不属于本合并提交；另将精确暂存树导出到临时目录，独立构建并通过安装器/本地化/完成分区/后台归档13项定向测试。
+- 未完成/阻塞/下一步：推送 main；不删除工作树或分支，不安装此次额外合并的Skill生命周期代码，不重新执行历史新会话验收。
+- 关联文档与 Git 状态：[生命周期Spec](docs/spec/2026-10-26/codex-skill-lifecycle.md)；main，用户已授权合并/推送。
+
 ## 2026-10-26 18:47 | install-archive-completed | 安装长编号归档版本
 
 - 状态：用户授权的本机替换完成，新版已运行。
@@ -113,7 +122,7 @@
 - 改动：0.1.0 build 5，源码 13ab22b，包含最新 next-one Skill 的 neo 入口与参考文档、新路径和回形针品牌资源。
 - 验证与证据：release 构建、镜像 CRC/SHA-256、挂载四语/图标/布局/CLI 检查通过；包内 Skill 全部文件与源码一致并含 references/neo.md，主程序/CLI 与已验证运行版本逐字节一致。产物 Next-One-0.1.0-local-isolated-arm64-13ab22b.dmg，4,498,544 字节。
 - 未完成/阻塞/下一步：交付本机 arm64 DMG 和 SHA-256；不自动覆盖现用应用、全局 Skill，不签名公证或对外发布。
-- 关联文档与 Git 状态：[安装说明](docs/distribution/local-install.md)；main，本轮本地提交，不推送。
+- 关联文档与 Git 状态：[安装说明](docs/distribution/local-install.md)；main，本轮修改已保存，因并行合并尚未提交，不推送。
 
 ## 2026-10-26 14:41 | readme-neo-examples | 四语 README 与 neo 输入示例
 
@@ -334,3 +343,12 @@
 - 采用 KF 已授权的建议默认值，具体记录于 Spec 第 13 节；删除内容无限保留，不自动清理。
 - 当前目录仍未初始化 Git：没有 worktree、提交、合并或推送；没有远程仓库配置。
 - 没有修改全局 Skill、Codex 配置、登录启动、权限或显示系统设置。下一步按验收报告的最小人工步骤补齐剩余实机证据。
+
+## Codex 持续规则、Skill 更新与新会话验证（2026-10-26）
+
+- 按用户授权在独立 `codex/codex-skill-lifecycle` worktree 实施；[Spec](docs/spec/2026-10-26/codex-skill-lifecycle.md)与[验收报告](docs/acceptance/codex-skill-lifecycle.md)。没有委派开发、创建 sidebar chat 或修改真实全局配置。
+- 新增原生 CLI integration install/status/uninstall：安装用户级稳定 Skill 入口和固定数据 runner，在当前生效 Codex AGENTS 文件添加专属持续规则，备份并保留其他内容；未知旧 Skill、人工修改和不同数据绑定不静默覆盖。卸载保留 USER.md 与任务，支持重新安装。
+- 应用现有 current 原子切换承担升级：首次授权连接后，启动新版应用即可让新任务读取新 Skill/CLI，不每次写全局配置；个人偏好放 USER.md。四语设置安装/更新指令、Skill/接口/模块文档与四语 README 已同步。
+- 验证：debug/release 全量各 35 项、CLI smoke、Skill quick_validate 通过。实际原生设置文案与路径正确；实际应用升级切换 current 后，连接入口、run、专属规则及 USER.md 哈希不变。
+- 三个真实 GPT-6 Astra / medium 的 Codex CLI 新会话（使用隔离 profile 与测试项目）分别验证主动记录开发并完成、后续读取接续不重复原任务、纯讨论不新增/修改待办；核对 CLI 调用、7 项实际 Node 测试和任务快照。系统旧 CLI 被模型服务拒绝后改用已安装的应用内新版 CLI，没有降级模型。完整证据与测试范围见验收报告。
+- 本轮产物为 0.1.0 build 4 本机试装包 `Todo-AI-0.1.0-local-managed-skill-arm64-4600a54.dmg`，已复制到主仓库 `.local/releases/`，保留独立 Release 数据。最终包 CRC/SHA-256、完整资源与复制启动后的安装/状态/幂等/卸载检查通过。仍未签名/公证/对外发布；真实用户环境需发送新版安装/更新指令后新开会话验证，不能把隔离验收当作用户已安装。

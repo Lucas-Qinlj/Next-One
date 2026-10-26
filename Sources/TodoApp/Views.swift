@@ -655,7 +655,7 @@ struct CodexIntegrationView: View {
                 Text(L("Codex 接入")).font(.system(size: 13, weight: .semibold))
                 Spacer()
                 if let integration {
-                    IconButton(name: "doc.on.doc", title: L("复制 Codex 安装指令")) {
+                    IconButton(name: "doc.on.doc", title: L("复制 Codex 安装/更新指令")) {
                         let prompt = integration.installPrompt(dataDirectory: model.store.directory, language: LanguageSettings.shared.language)
                         NSPasteboard.general.clearContents()
                         if NSPasteboard.general.setString(prompt, forType: .string) { model.notify(L("安装指令已复制")) }
@@ -663,7 +663,7 @@ struct CodexIntegrationView: View {
                     }
                 }
             }
-            Text(L("复制指令，粘贴到本机 Codex 对话中发送，即可让它安装 Skill 并连接这份待办。"))
+            Text(L("复制指令到本机 Codex，安装 Skill 与持续工作规则；应用更新后接入内容自动跟随。"))
                 .font(.caption).foregroundStyle(.secondary)
             if let integration {
                 ScrollView {

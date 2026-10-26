@@ -74,3 +74,5 @@ neo 入口版：`.local/releases/Next-One-0.1.0-local-isolated-arm64-13ab22b.dmg
 - release 构建、镜像 CRC/SHA-256、挂载资源/布局/CLI、安装包复制完整性及隔离数据启动均通过；上图为本次 Finder 实际截图。测试应用已退出，未覆盖 Applications 中现用开发版。
 
 路径更名后默认使用 Next-One / Next-One-Release。同渠道旧路径存在、新路径不存在时，系统建立兼容链接继续使用原存储，不复制或合并数据；开发版和 release 仍隔离。Skill 使用 next-one，导出命令为 bin/next-one，安装指令使用 NEXT_ONE_HOME。旧全局 Skill 不自动改写，可从新版设置复制指令安装新 Skill。
+
+Merged source includes managed Codex setup using next-one paths. Historical Todo-AI package names and public release/build records above remain unchanged; merging source does not publish a new installer.

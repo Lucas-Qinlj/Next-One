@@ -35,3 +35,7 @@
 ## 后续渠道隔离（2026-10-26）
 
 用户后续要求安装版独立数据，见[隔离 Spec](../2026-10-26/release-data-isolation.md)。release 默认 Todo-AI-Release、debug 保留 Todo-AI；本页“数据目录不变”描述原始实施范围，后续以隔离 Spec 为准。integration/current 仍位于实际 Store.directory 内，复制出的 CLI 保持对应编译渠道，TODO_AI_HOME 显式覆盖。
+
+## 后续安装与持续规则（2026-10-26）
+
+见[接入生命周期 Spec](../2026-10-26/codex-skill-lifecycle.md)：首次显式安装稳定入口和专属全局规则，后续沿用本页 current 原子切换读取新版 Skill/CLI，不在应用启动时改写全局配置。旧复制式安装指令已被带备份/冲突检查的安装器替代。

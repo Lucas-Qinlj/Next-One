@@ -223,3 +223,5 @@ Before making changes, read [AGENTS.md](AGENTS.md) and the relevant specificatio
 ## License
 
 **Noncommercial use only.** Next One is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Noncommercial use, modification and redistribution are allowed subject to its terms; commercial use is not licensed. Preserve the license and [required notice](NOTICE) when distributing copies. This is source-available software with noncommercial restrictions, not an unrestricted open-source license. Third-party components retain their own licenses.
+
+After explicit setup authorization, `integration install` creates a managed Skill runner and a dedicated block in the active Codex rules file. App updates supply the latest workflow and CLI through `integration/current`; user preferences stay in `USER.md`. Setup refuses unmanaged or edited files. Use `integration status` to inspect and `integration uninstall` to remove only unchanged managed content. See [connection lifecycle](Skills/next-one/references/setup.md).

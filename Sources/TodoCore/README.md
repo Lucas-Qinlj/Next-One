@@ -32,3 +32,5 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 最新规则以 [归档 Spec](../../docs/spec/2026-10-26/archive-completed.md) 为准，替代上文 v2 的删除不复用约定。v3 清空回收站编号，普通删除/批量归档释放编号；归档将分配游标置 1，按占用集合跳号。恢复分支一次构建占用集合，按创建时间/UUID为每项重新分配。短编号仅供 get，写入先解析为 UUID，防止编号复用及相同 revision 误命中新任务。
 
 `archive preview` 返回完成候选数与 SHA256(ID/revision) token；`archive completed` 在写事务中重验 token、按连续完成祖先分组 deletionID、原子归档并重置游标，支持 request-key。归档单次扫描，不为每个完成项反复调用 delete/descendants。已有 UUID、父子关系、附件内容不变。
+
+CodexSetup implements explicitly authorized install/status/uninstall with a next-one entry, NEXT_ONE_HOME, and integration/current/bin/next-one. It backs up owned files, preserves unrelated rules and USER.md, and refuses unmanaged or modified content.

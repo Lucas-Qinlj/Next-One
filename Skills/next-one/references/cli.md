@@ -90,3 +90,7 @@ Storage v3 migrates v1/v2 automatically: existing live codes remain stable, Tras
 Only archive on an explicit user request. `archive preview` returns a global completed-task `count` and `token`. Explain that the operation moves completed tasks from every project, including completed children of unfinished parents, to Trash, releases their codes, and restarts allocation at A1 while skipping occupied codes. Restore keeps task relationships but assigns new codes. No attachment is purged.
 
 After the user approves this scope, run `archive completed --expected-token TOKEN --request-key KEY`. Preserve the exact token/key on a transport retry; `revision_conflict` means candidates changed, so preview again and review the new scope before executing. The operation is atomic and returns `count` and `affected_ids` (UUIDs). Do not issue many independent delete commands. No project filter is accepted. The top-of-list notice appears when any live code reaches four characters and remains if long live codes still exist; three characters is a preference, not a hard limit.
+
+## Codex integration management
+
+`integration install|status|uninstall [--skill-root DIR --codex-home DIR]` manages only the explicitly authorized local Codex connection. These commands do not initialize the task database. `status` is read-only. Setup conflicts return `integration_conflict`; preserve existing files and reconcile instead of forcing replacement. See [setup lifecycle](setup.md).

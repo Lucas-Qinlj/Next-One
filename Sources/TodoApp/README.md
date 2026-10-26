@@ -74,3 +74,5 @@ CodexIntegration 只从应用包 Contents/Helpers/next-one 和 Contents/Resource
 长编号提示：`TaskListView` 在 ScrollView 外检测全局 `needsCodeArchiving`（任一未删除编号至少4字符），固定显示提示和归档按钮，空完成集合也可确认归档0项并重置编号分配游标。`AppModel.archiveCompleted` 刷新候选并显示数量/全局范围确认，再通过同一 Store 原子归档。提示只取决于当前编号长度，不使用3秒Toast；长编号仍在时持续显示。
 
 归档确认后设 `isArchiving`，后台独立 Store 执行事务并读取新快照；归档期间暂停主线程轮询，暂时禁用面板操作并显示进度，完成或失败后恢复。`ArchiveActionTests` 验证取消和异步完成状态。
+
+Managed setup: Settings copies an explicit installation/update request. App startup prepares current resources only; it never installs global rules. See [lifecycle](../../Skills/next-one/references/setup.md).

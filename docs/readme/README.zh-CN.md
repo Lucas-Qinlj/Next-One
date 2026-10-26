@@ -218,3 +218,5 @@ python3 scripts/drag-cli-smoke.py
 ## 许可证
 
 **仅限非商业用途，不得商用。** Next One 使用 [PolyForm Noncommercial License 1.0.0](../../LICENSE)。在条款规定范围内允许非商业使用、修改和再分发，商业用途不在授权范围内；分发时须保留许可证和[版权声明](../../NOTICE)。这是带非商业限制的源码可用许可，不是允许自由商用的开源许可。第三方组件仍遵循各自许可证。
+
+授权后，`integration install` 安装稳定 Skill 入口与专属 Codex 持续规则。应用更新后通过 `integration/current` 读取新版规则和 CLI，保留 `USER.md`；遇到非托管或人工修改内容会拒绝覆盖。`integration status` 只读检查，`integration uninstall` 仅移除未修改的管理内容。详见[接入说明](../../Skills/next-one/references/setup.md)。

@@ -218,3 +218,5 @@ python3 scripts/drag-cli-smoke.py
 ## 라이선스
 
 **비상업적 용도로만 사용할 수 있으며 상업적 이용은 허용되지 않습니다.** Next One은 [PolyForm Noncommercial License 1.0.0](../../LICENSE)을 따릅니다. 해당 조건에 따라 비상업적 사용, 수정, 재배포가 가능하며 배포 시 라이선스와 [저작권 고지](../../NOTICE)를 유지해야 합니다. 비상업적 제한이 있는 소스 공개 라이선스이며 자유로운 상업적 이용을 허용하는 오픈 소스 라이선스가 아닙니다. 타사 구성 요소에는 각자의 라이선스가 적용됩니다.
+
+승인 후 `integration install`이 관리형 Skill 진입점과 Codex 전용 규칙을 만듭니다. 앱 업데이트 후 `integration/current`에서 최신 워크플로와 CLI를 읽으며 USER.md는 보존합니다. 관리되지 않거나 수정된 파일은 덮어쓰지 않습니다. `integration status`로 확인하고 `integration uninstall`로 변경되지 않은 관리 항목만 제거할 수 있습니다.
