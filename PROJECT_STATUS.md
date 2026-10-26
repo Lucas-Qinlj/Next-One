@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 14:57 | readme-vibe-scenarios | README 聚焦 Vibe Coding 痛点
+
+- 状态：四语文档及配图更新完成，检查通过。
+- 需求与范围：用户要求替换生活化示例，聚焦开发者从需求拆待办、按架构排优先级，以及产品经理记录想法和老板交办事项。
+- 改动：四语 README 改为场景/指令/保存价值三列表，覆盖需求拆分、依赖排序、想法留存、临时插单、会话交接和演示查漏；四张主图同步改为 PRD 任务规划，保留模型与完整底栏。明确架构判断由 Agent 完成，依赖记录在备注，不新增自动调度能力。
+- 验证与证据：四张生成图文字与底栏已逐张检查；四语各六类场景、生活示例移除、图片/文档链接、提示词版本及 git diff --check 均通过。仅文档和素材修改，不运行无关业务测试。
+- 未完成/阻塞/下一步：示例为使用建议，不是六类场景全部端到端验收；未修改 Skill、应用、安装包或真实任务。
+- 关联文档与 Git 状态：[中文 README](docs/readme/README.zh-CN.md)、[英文 README](README.md)、[图片提示词](docs/assets/neo-examples/generation.json)；main，本地提交，不推送。
+
 ## 2026-10-26 14:49 | neo-installer | 包含 neo 的最新本机安装包
 
 - 状态：本机安装包生成并验证完成。

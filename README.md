@@ -28,20 +28,22 @@ It is built for solo developers, indie makers, and anyone who builds software th
 
 Install or update the `next-one` Skill from **Settings → Codex integration**, and make sure your local coding agent can discover it. Then write `neo` followed by what you want to record or change.
 
-<img src="docs/assets/neo-examples/en.png" alt="neo Add user management, analytics, and operations dashboards to this project's backlog." width="960">
+<img src="docs/assets/neo-examples/en.png" alt="neo Read the PRD, break it into tasks, and prioritize by architecture dependencies. No coding yet." width="960">
 
 *Illustrative input example based on a Coding Agent composer. It shows an unsent request, not a successful execution. The model and permission controls reproduce the reference UI; they are not Next One requirements.*
 
-> neo Add user management, analytics, and operations dashboards to this project's backlog.
+> neo Read the PRD, break it into tasks, and prioritize by architecture dependencies. No coding yet.
 
-| You say | Next One workflow |
-| --- | --- |
-| `neo Tomorrow at 8am I need to mail a parcel` | Create a personal task with a due time |
-| `neo Show today's unfinished tasks` | Read today's due tasks |
-| `neo Move mailing the parcel to tomorrow at 3pm` | Find the task and update its due time |
-| `neo I have mailed the parcel` | Find the task and mark it complete |
+| When this happens | Tell your agent | What stays in Next One |
+| --- | --- | --- |
+| A long PRD makes it hard to start | `neo Turn docs/PRD.md into tasks and subtasks for this project, with acceptance criteria for each. No coding yet.` | An actionable backlog without manually copying the requirements |
+| Code moves fast; dependencies get overlooked | `neo Reorder tasks using the existing architecture: data models and APIs before UI integration. Set priorities and note dependencies and reasons.` | Execution order, priorities, and reasoning you can review |
+| A product idea interrupts focused work | `neo Capture an idea: give new users a sample project on first launch. Low priority; mark it for validation. Do not implement it yet.` | An idea saved without treating it as an approved requirement |
+| Your boss adds work before a demo | `neo My boss needs data export and permission guidance before this Friday’s demo. Add two high-priority tasks and keep the existing backlog.` | The request, deadline, and urgency without losing the original plan |
+| A new agent session needs the context again | `neo Mark only verified work complete. Record failing tests, blockers, and where to resume on the relevant tasks.` | A handoff with actual progress and unfinished checks |
+| Tomorrow’s demo is close; what is still missing? | `neo Review the tasks and acceptance notes for tomorrow’s demo. Rank unfinished items by impact; do not count unverified work as done.` | Gaps grounded in the saved work rather than assumed completion |
 
-`neo` helps the agent select Next One; the rest of the sentence determines the operation. The project example records future work rather than immediately implementing it. Personal tasks default to Unfiled; project tasks use an explicit project or clear project context. Dates use your local timezone. Ambiguous task matches are clarified before changes, and writes are reported successful only after the CLI succeeds. Due times do not schedule notifications.
+Turn requirements into a backlog, keep interruptions from getting lost, and leave a usable handoff for the next session. The agent reads the documents you specify and accessible project context, then writes its breakdown and architectural reasoning into tasks, subtasks, priorities, and notes. Dependencies are notes, not an automatic scheduling engine. Missing documents, unclear projects, and ambiguous task matches are clarified before writing; success is reported only after the write succeeds.
 
 This is a Skill convention, not a shell command or background listener. The bundled setup targets Codex; discovery depends on your agent and installed Skill version. Fresh-session automatic routing has not yet been verified.
 
