@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:44 | locked-hover-install | 推送并替换滚动条与锁定淡化版本
+
+- 状态：release构建、8项针对性测试、备份、应用替换及启动核验完成。
+- 需求与范围：用户明确要求提交推送并替换当前应用，包含滚动条贴边47d7dc6与锁定悬停淡化60d0b82。
+- 改动：正常退出旧版，完整备份release数据及旧应用；替换 /Applications/Next One.app 并重新启动。使用原release标识及数据目录，不安装全局Skill。
+- 验证与证据：release打包及8项相关测试通过；安装文件与构建逐文件哈希相同，替换期间数据逐文件不变；重启后任务／回收站／项目快照及附件一致，不透明度／置顶／折叠／尺寸／语言保留。位置与展开方向在启动后变化，未覆盖当前窗口几何值。证据 `.local/locked-hover-install/verification.txt`。
+- 未完成/阻塞/下一步：无替换阻塞；原物理悬停／背后输入及多屏验收限制不变。旧应用与数据备份 `.local/backups/before-locked-hover-20261027-004343/`；不发布DMG。
+- 关联文档与 Git 状态：[锁定Spec](docs/spec/2026-10-27/locked-hover-fade.md)；main，功能已提交，本轮交付记录提交后一并按授权推送origin/main。
+
 ## 2026-10-27 00:40 | locked-hover-fade | 锁定面板悬停淡化
 
 - 状态：本地实现完成，自动及原生属性验证通过；物理交互待补验。

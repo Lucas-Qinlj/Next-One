@@ -44,3 +44,5 @@
 - debug 应用打包通过；隔离数据实际打开清单／设置并锁定。原生宿主内容渲染 `.local/locked-hover-fade/evidence/hover-content.png` 的空白背景 RGBA=(0,0,0,0)，窗口 alphaValue=0.5 由原生测试确认；内容图本身不包含窗口合成阶段的0.5系数，不将其当作最终屏幕合成截图。
 - CUA 在锁定面板坐标点击报 `windowNotFoundAtPosition`，不能用于物理鼠标持续悬停和背后输入验收；不把自动设置窗口位置或属性断言冒充人工鼠标测试。多显示器、Spaces、Stage Manager 与辅助功能组合未实测。测试实例已退出，现用应用未替换。
 - 无代码实现阻塞；按项目默认安全合并 main，不推送、不安装。
+
+- 2026-10-27 00:44：用户追加提交、推送和替换授权；release打包与8项测试通过，备份后替换现用应用并确认重启后任务数据一致，详见 PROJECT_STATUS 的 locked-hover-install 记录。
