@@ -126,9 +126,9 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 
 **现成指令，一键复制给 Agent。** 打开**设置 → Codex 接入**，点击复制图标，把完整指令粘贴到本机 Codex 对话中发送。应用已准备好实际路径、安装步骤、保留已有 Skill 自定义内容的要求和只读验证方式，省去自己查路径、拼指令的过程。指令跟随当前界面语言；发送后才由 Codex 执行安装，单纯复制不会安装。当前内置指令面向 Codex，其他 Coding Agent 可通过公开的本地 CLI 接入。
 
-<p align="center"><img src="../assets/screenshots/zh-CN/settings.jpg" alt="中文设置：语言切换、背景不透明度滑块、置顶按钮和可复制的 Codex 安装指令" width="480"></p>
+<p align="center"><img src="../assets/screenshots/zh-CN/settings.jpg" alt="当前中文设置：日历同步、语言、背景不透明度和 Codex 接入" width="480"></p>
 
-*此设置截图拍摄于更名前，仅展示布局；接入时复制当前应用生成的路径，不照抄图中旧路径。*
+*当前版本实拍（2026-10-27），使用虚构演示任务；日历同步展示默认关闭状态。接入时请复制自己应用生成的路径，不照抄演示路径。*
 
 ## 你与 Agent 如何一起工作
 

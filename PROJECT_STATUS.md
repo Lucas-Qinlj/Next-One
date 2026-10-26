@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:59 | readme-screenshot-refresh | 四语README更新当前应用实拍
+
+- 状态：12张新截图拍摄、替换及视觉检查完成。
+- 需求与范围：用户指出README截图旧，要求重新截图；更新英／中／日／韩的清单、详情和设置。
+- 改动：当前release副本配独立演示数据，拍摄短编号、统一完成区、日期与日历同步设置；替换12张JPEG，更新四语图片说明／alt及素材来源记录，删除历史截图提示。
+- 验证与证据：12张原生截图逐张目视检查，格式JPEG、960×1480；相对图片链接及差异检查通过。日历同步默认关闭，未申请权限或向系统写入演示提醒，未改真实任务、应用设置或安装。截图脚本／目录指针在 `.local/readme-refresh/`。
+- 未完成/阻塞/下一步：无；生成的neo输入示意图保持原有说明，本轮不把静态图作为同步或穿透验收。
+- 关联文档与 Git 状态：[截图来源](docs/assets/screenshots/README.md)、[中文README](docs/readme/README.zh-CN.md)；main，仅提交截图和相关文档，沿用本会话推送授权。
+
 ## 2026-10-27 00:50 | readme-recent-features | 四语README补充提醒事项同步与近期功能
 
 - 状态：文档更新、事实核对与链接检查完成。

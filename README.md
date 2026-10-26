@@ -128,9 +128,9 @@ Mac/iPhone Calendar display, completion feedback, and an ordinary notification h
 
 **Start sharing tasks with a copy and a paste.** In **Settings → Codex integration**, click the copy icon and paste the complete instruction into a local Codex chat. The app prepares the paths and setup steps, including preserving existing Skill customizations and read-only verification. The instruction follows your selected UI language. Sending it asks Codex to perform the setup; copying alone does not install anything. This built-in instruction targets Codex; other coding agents can use the documented local CLI.
 
-<p align="center"><img src="docs/assets/screenshots/en/settings.jpg" alt="English settings with language selection, background opacity slider, pin control and copyable Codex setup instructions" width="480"></p>
+<p align="center"><img src="docs/assets/screenshots/en/settings.jpg" alt="Current English settings with Calendar sync, language, background opacity and Codex setup" width="480"></p>
 
-*Historical settings capture from before the rename; use the paths copied from your current app, not the paths pictured here.*
+*Current app capture (2026-10-27), using fictional demo tasks. Calendar sync is shown in its default off state. Copy setup paths from your own app, not this demo.*
 
 ## How you and the agent work together
 
