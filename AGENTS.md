@@ -117,6 +117,8 @@ KF docs/spec/2026-10-24/macos-floating-todo.md
 
 ## 本地环境与分发
 
+- 本项目打包、Developer ID 签名、公证与分发工作先读取项目级 [next-one-release Skill](.agents/skills/next-one-release/SKILL.md)，按本轮授权执行相应阶段；不将流程规范视为发布授权。
+- 签名私钥留在 macOS 钥匙串；项目本地签名资料统一放在已忽略的 `.local/signing/`，仅存公开证书副本、CSR 和非秘密配置，不导出私钥到仓库。正式签名身份以钥匙串实时验证结果为准。
 - 优先宿主机与轻量本地工具，不默认启动 Docker 或额外后台服务；新增常驻进程须有实际需求。
 - 本地开发和测试使用隔离数据，不破坏真实清单或修改用户现有 Codex 配置。
 - 安装全局 Skill、修改 Codex 工作规则、启用登录启动或修改其他系统设置时，依据用户明确授权执行，并保留已有配置及可撤销路径。

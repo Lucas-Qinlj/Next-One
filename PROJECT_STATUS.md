@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:51 | release-workflow-skill | 项目打包签名 Skill 与本地证书目录
+
+- 状态：流程规范与本地资料整理完成；正式签名、公证流水线尚未实施／验收。
+- 需求与范围：用户要求制定打包 Skill、在 AGENTS 引用并隔离签名资料；仅文档与本地配置，不执行打包、签名、公证、安装或发布。
+- 改动：新增项目级 next-one-release Skill，规定身份检查、由内到外签名、App／DMG 公证票据、校验与授权边界；AGENTS 引用；补充证书／CSR／p8 忽略规则。公开证书、CSR 与非秘密元数据复制到 .local/signing/，私钥继续留在登录钥匙串，未导出。
+- 验证与证据：本机 security find-identity 确认为有效 Developer ID Application 身份；证书属于 LIJIAN QIN（5C58V84WF7），到期 2027-11-26（Asia/Singapore）。Skill quick_validate、相对链接、AGENTS 大小、Git 忽略规则与 git diff --check 均通过；没有运行产品代码测试或正式签名测试。
+- 未完成/阻塞/下一步：无文档阻塞；现有 package-dmg.sh 会重建 App，正式自动化仍需改造；本轮未配置或验证公证 profile，权限跨重启／更新保留未实测。未验证新会话自动发现 Skill，AGENTS 已提供显式读取入口。
+- 关联文档与 Git 状态：[Skill](.agents/skills/next-one-release/SKILL.md)、[AGENTS](AGENTS.md)、[本机安装说明](docs/distribution/local-install.md)；main 文档／配置维护，仅提交本任务，不推送；.local/signing/ 不入库。
+
 ## 2026-10-27 01:49 | codex-task-handoff | Codex 接口预验证
 
 - 状态：官方契约与本机协议核对完成，桌面交互验证受工具限制。

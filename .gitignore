@@ -13,6 +13,12 @@ __pycache__/
 *.p12
 *.pfx
 *.key
+*.p8
+*.cer
+*.certSigningRequest
+*.csr
+# Project-local signing material (also covered by .local/).
+.local/signing/
 *.log
 # Keep research references and generated preview captures local.
 docs/design/2026-10-25/pixel-aquarium-references/
