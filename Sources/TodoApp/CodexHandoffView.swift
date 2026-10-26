@@ -19,6 +19,7 @@ import TodoCore
     var busy = false
     var loaded = false
     var cancelled = false
+    var needsFocusPermission = false
     var sourceProjectID: String?
     var candidates: [CodexProject] = []
 
@@ -171,6 +172,9 @@ struct CodexHandoffView: View {
                     .font(.system(size: 11)).foregroundStyle(.secondary)
             }
             if let error = session.error { Text(error).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
+            if session.needsFocusPermission {
+                Button(L("前往授权")) { CodexFocusPermission.openSettings() }
+            }
             HStack {
                 Button(L("取消"), role: .cancel, action: cancel).keyboardShortcut(.cancelAction)
                 if !session.busy { Button(L("重新选择")) { Task { await session.reload() } } }
@@ -184,6 +188,18 @@ struct CodexHandoffView: View {
         .font(.system(size: 13)).buttonStyle(.bordered).controlSize(.small).tint(.primary)
         .onDisappear { session.cancelled = true }
         .task { if !session.loaded { await session.reload() } }
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didActivateApplicationNotification)) { _ in
+            if session.needsFocusPermission, CodexFocusPermission.granted {
+                session.needsFocusPermission = false
+                session.error = nil
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            if session.needsFocusPermission, CodexFocusPermission.granted {
+                session.needsFocusPermission = false
+                session.error = nil
+            }
+        }
         .background(HandoffScrollbarStyler())
     }
     func cancel() { session.cancelled = true; dismiss() }

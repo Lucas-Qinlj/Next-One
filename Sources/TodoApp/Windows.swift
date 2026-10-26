@@ -4,17 +4,8 @@ import TodoCore
 
 final class TaskPanel: NSPanel {
     var inputEnabled = true
-    var awaitingUserFocus = false
-    override var canBecomeKey: Bool { inputEnabled && !awaitingUserFocus }
+    override var canBecomeKey: Bool { inputEnabled }
     override var canBecomeMain: Bool { false }
-    override func sendEvent(_ event: NSEvent) {
-        if awaitingUserFocus, inputEnabled, !ignoresMouseEvents,
-           [.leftMouseDown, .rightMouseDown, .otherMouseDown].contains(event.type) {
-            awaitingUserFocus = false
-            makeKey()
-        }
-        super.sendEvent(event)
-    }
 }
 @MainActor final class FloatingController: NSObject {
     let model: AppModel
@@ -29,7 +20,6 @@ final class TaskPanel: NSPanel {
     var statusItem: NSStatusItem!
     var timer: Timer?
     var lockHoverTimer: Timer?
-    var handoffRestoreTask: Task<Void, Never>?
     let preferencesURL: URL
     init(model: AppModel) {
         self.model = model
@@ -45,6 +35,7 @@ final class TaskPanel: NSPanel {
             geometry.growsRight = p["right"] as? Bool ?? false; geometry.growsDown = p["down"] as? Bool ?? true
             model.opacity = min(1, max(0, p["opacity"] as? Double ?? 0.9)); model.pinned = p["pinned"] as? Bool ?? true
             model.collapsed = Set(p["collapsed"] as? [String] ?? [])
+            model.codexAutoFocus = p["codexAutoFocus"] as? Bool ?? false
         }
         for window in [panel, ball] { window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true; window.hidesOnDeactivate = false; window.isReleasedWhenClosed = false }
         panel.title = L("Next One 清单"); ball.title = L("Next One 悬浮球")
@@ -81,8 +72,7 @@ final class TaskPanel: NSPanel {
     }
     @objc func recover() { geometry.fit(in: currentScreen, chooseDirection: true); layout(); ball.orderFrontRegardless(); savePreferences() }
     func toggle() {
-        handoffRestoreTask?.cancel(); handoffRestoreTask = nil
-        panel.awaitingUserFocus = false
+        model.codexFocus.cancel()
         if expanded { guard model.saveDraft() else { return }; panel.orderOut(nil) }
         else { geometry.fit(in: currentScreen, chooseDirection: true); layout(); panel.orderFrontRegardless() }
         expanded.toggle(); ball.orderFrontRegardless()
@@ -90,23 +80,12 @@ final class TaskPanel: NSPanel {
     }
     // Handoff has already saved/validated the draft; do not toggle or save again here.
     func setExpandedForHandoff(_ value: Bool) {
-        handoffRestoreTask?.cancel(); handoffRestoreTask = nil
+        model.codexFocus.cancel()
         if value { panel.orderFrontRegardless() }
-        else { panel.orderOut(nil); panel.awaitingUserFocus = false }
+        else { panel.orderOut(nil) }
         expanded = value
         ball.orderFrontRegardless()
         updateLockHoverTracking()
-    }
-    func restoreAfterHandoff() {
-        handoffRestoreTask?.cancel()
-        handoffRestoreTask = Task { @MainActor [weak self] in
-            // The URL protocol has no prefill-ready callback. This is a trial settling delay.
-            do { try await Task.sleep(for: .milliseconds(800)) } catch { return }
-            guard let self, !self.expanded else { return }
-            self.panel.makeFirstResponder(nil)
-            self.panel.awaitingUserFocus = true
-            self.setExpandedForHandoff(true)
-        }
     }
     func move(to point: CGPoint, start: Bool, end: Bool) {
         if start { mouseOrigin = point; dragOrigin = geometry.anchor }
@@ -177,7 +156,9 @@ final class TaskPanel: NSPanel {
     }
     func savePreferences() {
         let p: [String: Any] = ["x": geometry.anchor.x, "y": geometry.anchor.y, "width": geometry.size.width, "height": geometry.size.height, "right": geometry.growsRight, "down": geometry.growsDown, "opacity": model.opacity, "pinned": model.pinned, "collapsed": Array(model.collapsed)]
-        do { try JSONSerialization.data(withJSONObject: p, options: [.sortedKeys]).write(to: preferencesURL, options: .atomic) } catch { model.report(error) }
+        var preferences = p
+        preferences["codexAutoFocus"] = model.codexAutoFocus
+        do { try JSONSerialization.data(withJSONObject: preferences, options: [.sortedKeys]).write(to: preferencesURL, options: .atomic) } catch { model.report(error) }
     }
     @objc func showMenu() { let menu = makeMenu(); statusItem.menu = menu; statusItem.button?.performClick(nil); statusItem.menu = nil }
     func makeMenu() -> NSMenu {
@@ -196,7 +177,7 @@ final class TaskPanel: NSPanel {
     }
     @objc func lockAction() { setLocked(!model.locked) }
     @objc func toggleAction() { toggle() }
-    @objc func settingsAction() { guard model.saveDraft() else { return }; handoffRestoreTask?.cancel(); panel.awaitingUserFocus = false; setLocked(false); model.showSettings(); if !expanded { toggle() }; panel.makeKeyAndOrderFront(nil) }
+    @objc func settingsAction() { guard model.saveDraft() else { return }; setLocked(false); model.showSettings(); if !expanded { toggle() }; panel.makeKeyAndOrderFront(nil) }
     @objc func quitAction() { if model.saveDraft() { savePreferences(); NSApplication.shared.terminate(nil) } }
 }
 struct HeaderDragArea: NSViewRepresentable {

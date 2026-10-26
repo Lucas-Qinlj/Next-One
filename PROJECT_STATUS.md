@@ -7,9 +7,18 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 03:49 | codex-accessibility-focus | C3 可选权限聚焦及授权页面跳转
+
+- 状态：实现、16 项相关测试及 release 打包通过；真实权限与 Codex 焦点未验证。
+- 需求与范围：用户确认第二轮自动恢复仍失败，授权使用权限方案，并要求需要授权时跳转对应系统页面。默认不请求权限，开启自动聚焦后才使用。
+- 改动：设置新增可选自动聚焦和授权状态；设置及缺权限交接提供“前往授权”，打开系统辅助功能页面。保留草稿、返回刷新、手动重试。恢复清单后限时查找完整指令匹配的唯一编辑框，设置并读回焦点；不点击发送、不模拟按键。删除失败的 800 ms 恢复及持续 non-key 实验。
+- 验证与证据：11 项交接与匹配、5 项本地化测试通过，包括未授权不排队打开、草稿保留、授权后可重试、完整/部分/已编辑/禁用/不可聚焦控件区分；四语 strings、release 构建、资源及 CLI --help 校验通过。验收包 `.local/releases/c3-accessibility-20261027/Next One.app`；主程序 SHA-256 `c3dcac605cb0ec98b38230df05946e08ab9f26b1f306132854360e0ac20278de`。未启动真实 Codex AX 测试或修改系统权限，未正式签名公证。
+- 未完成/阻塞/下一步：用户需在系统设置亲自授权运行的验收版 Next One；实际设置跳转、Codex 编辑框 AX 暴露和展开后聚焦需人工验收。工具禁止直接操作 Codex，不绕过。未替换应用、未推送或发布。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-accessibility-focus.md)、[原交接 Spec](docs/spec/2026-10-27/codex-task-handoff.md)；独立 codex/codex-accessibility-focus worktree，检查通过后按规范合并 main；未推送。
+
 ## 2026-10-27 03:39 | codex-composer-focus-pointer | C3 展开后等待用户点击再取焦点
 
-- 状态：实现、10 项针对性测试及 release 打包通过；真实焦点待用户验收。
+- 状态：实现、10 项针对性测试及 release 打包通过；用户随后确认仍失败，转入可选辅助功能方案。
 - 需求与范围：用户确认 03:33 自动恢复试验失败，授权改为展开后持续不取焦点，主动点击时恢复；不增加权限、不替换现用安装。
 - 改动：新增独立 awaitingUserFocus 标志，不复用锁定开关；自身鼠标按下清除等待并正常分发同一事件。鼠标移动不恢复、锁定不被绕过；球切换和设置入口恢复正常操作。
 - 验证与证据：10 项 CodexHandoffTests 通过，覆盖持续不能成为 key、鼠标移动不解除、按下恢复、原点击只分发一次及锁定约束。release 构建、资源及 CLI --help 校验通过，验收包 `.local/releases/c3-pointer-20261027/Next One.app`；日志在同目录，主程序 SHA-256 `c8a6b514708b7820c8fe79095cdb12290f0957cfd9e21cbd353d725a99d1ff40`。未正式签名公证；自动检查不冒充 Codex 实机验收。

@@ -651,6 +651,8 @@ struct SettingsView: View {
                 if let sync = model.reminderSync { ReminderSyncView(sync: sync); Divider() }
                 CodexIntegrationView(model: model)
                 Divider()
+                CodexFocusSettingsView(model: model)
+                Divider()
                 Text(L("本版本默认当前桌面，不启用登录启动。锁定时右键球可解锁；菜单栏可找回悬浮球。")).font(.caption2).foregroundStyle(.secondary)
             }.padding(.horizontal, 14).padding(.vertical, 12)
         }

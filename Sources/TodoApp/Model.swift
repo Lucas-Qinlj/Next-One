@@ -9,8 +9,17 @@ import TodoCore
     var integrationError: Error?
     var codexHandoff: CodexHandoffSession?
     var pendingCodexHandoff: (session: CodexHandoffSession, url: URL)?
+    var codexAutoFocus = false
+    let codexFocus = CodexAccessibilityFocus()
 
-    func prepareCodexHandoff(_ session: CodexHandoffSession) async {
+    func prepareCodexHandoff(_ session: CodexHandoffSession,
+                            permissionGranted: @MainActor () -> Bool = { CodexFocusPermission.granted }) async {
+        guard codexHandoff === session else { return }
+        session.needsFocusPermission = codexAutoFocus && !permissionGranted()
+        guard !session.needsFocusPermission else {
+            session.error = L("请开启 Next One 的辅助功能权限，返回后重试。")
+            return
+        }
         guard codexHandoff === session, pendingCodexHandoff == nil,
               let url = await session.prepareOpen(), codexHandoff === session else { return }
         pendingCodexHandoff = (session, url)
@@ -24,7 +33,13 @@ import TodoCore
         let wasExpanded = window?.expanded == true
         window?.setExpandedForHandoff(false)
         if opener(pending.url) {
-            if wasExpanded { window?.restoreAfterHandoff() }
+            if codexAutoFocus {
+                window?.setExpandedForHandoff(wasExpanded)
+                let prompt = URLComponents(url: pending.url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "prompt" }?.value ?? ""
+                codexFocus.start(prompt: prompt) { [weak self] in
+                    self?.notify(L("未能聚焦 Codex 输入框，请手动点击。"), kind: .warning)
+                }
+            }
             return
         }
         window?.setExpandedForHandoff(wasExpanded)
@@ -34,6 +49,7 @@ import TodoCore
     }
 
     func beginCodexHandoff(_ item: TodoItem) {
+        codexFocus.cancel()
         guard saveDraft(), codexHandoff == nil, pendingCodexHandoff == nil else { return }
         do { codexHandoff = CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL()) }
         catch { report(error) }

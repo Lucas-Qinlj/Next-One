@@ -314,3 +314,10 @@
 "待办的项目目录已变化，请重新选择。" = "The task project folder has changed. Choose again.";
 "附件无法读取：%1$@" = "Cannot read attachment: %1$@";
 "无法打开 Codex，请确认已安装后重试。" = "Cannot open Codex. Make sure it is installed and retry.";
+"自动聚焦 Codex 输入框" = "Automatically focus the Codex input";
+"使用辅助功能定位本次预填输入框，只设置焦点，不自动发送。" = "Uses Accessibility to focus this prefilled input. Never sends automatically.";
+"辅助功能已授权" = "Accessibility allowed";
+"需要辅助功能权限" = "Accessibility permission required";
+"前往授权" = "Open permission settings";
+"请开启 Next One 的辅助功能权限，返回后重试。" = "Allow Accessibility for Next One, then return and retry.";
+"未能聚焦 Codex 输入框，请手动点击。" = "Could not focus the Codex input. Please click it manually.";
