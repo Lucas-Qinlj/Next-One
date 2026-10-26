@@ -18,3 +18,5 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 
 
 本地化：`LocalizedText` 分离文案模板与插值参数，`Localization` 使用本地 `.strings` 资源输出中/英/日/韩文；只改变展示，不参与 Store 数据更新。`TodoError.localizedText` 供 UI 翻译，`message` / `errorDescription` 保留原中文契约，系统生成的动态错误使用 `verbatim:`。位置参数一次性从原模板替换，用户内容中的 `%1$@` 等文本不会被再次替换。
+
+`CodexSetup` 只由显式 CLI integration 命令使用，不创建 Store/数据库。管理稳定 Skill 入口、固定数据 runner、当前生效的 Codex AGENTS 文件中的独立区块；记录拥有的原文以检查编辑冲突，备份后原子写单文件，失败尽力回滚，flock 串行化同 Codex profile 的安装。自动资源更新由原 CodexIntegration.current 完成，不每次改全局配置。测试在 CodexSetupTests。

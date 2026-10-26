@@ -64,3 +64,7 @@ todo attachment add TASK_ID --path ./reference.png --expected-revision 7 --reque
 ## 数据渠道
 
 debug CLI 默认读取 Application Support/Todo-AI，release CLI 默认读取 Application Support/Todo-AI-Release。TODO_AI_HOME 显式覆盖默认值；`--help` 显示实际解析目录且不打开数据库。安装版与开发版不自动复制/迁移任务，调用方应使用目标应用设置给出的 CLI 与目录。
+
+## Codex 配置管理（不打开待办数据库）
+
+`integration install|status|uninstall` 使用本 CLI 的实际数据目录，TODO_AI_HOME 可明确指定。首次安装必须先启动完整应用准备 integration/current。仅 install/uninstall 在用户授权下写全局 Skill 与专属规则块；status 只读。可用 --skill-root DIR、--codex-home DIR 进行隔离验证。成功沿用 ok/data JSON；配置冲突返回 integration_conflict，失败退出非零。详细边界见[接入生命周期](setup.md)。

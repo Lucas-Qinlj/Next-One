@@ -4,6 +4,7 @@ import TodoCore
 let help = """
 Todo-AI local interface · JSON on stdout, errors on stderr, nonzero exit on failure
 Usage: todo <command> [id] [--field value] [--json]
+  integration install|status|uninstall [--skill-root DIR --codex-home DIR]
   board list
   board place --key p:ID|t:ID --expected-revision N --expected-board-revision N --anchor p:ID|t:ID --placement before|after|end
   project create --name NAME
@@ -36,7 +37,7 @@ do {
     var tokens = Array(CommandLine.arguments.dropFirst())
     if tokens.isEmpty || tokens.contains("--help") || tokens == ["help"] { print(help); exit(0) }
     var command = tokens.removeFirst()
-    if ["project", "attachment", "board"].contains(command), !tokens.isEmpty { command += " " + tokens.removeFirst() }
+    if ["project", "attachment", "board", "integration"].contains(command), !tokens.isEmpty { command += " " + tokens.removeFirst() }
     var args: [String: String] = [:]
     while !tokens.isEmpty {
         let token = tokens.removeFirst()
@@ -57,7 +58,15 @@ do {
         guard let value = String(data: data, encoding: .utf8) else { throw TodoError("invalid_field", "描述文件必须为 UTF-8。") }
         args["description"] = value
     }
-    let result = try Store().execute(command, args)
+    let result: [String: Any]
+    if command.hasPrefix("integration ") {
+        guard Set(args.keys).isSubset(of: ["skill-root", "codex-home"]) else { throw TodoError("invalid_field", verbatim: "Unexpected setup option.") }
+        result = try CodexSetup(dataDirectory: Store.defaultDirectory,
+            skillsDirectory: args["skill-root"].map { URL(fileURLWithPath: $0) },
+            codexDirectory: args["codex-home"].map { URL(fileURLWithPath: $0) }).execute(String(command.dropFirst("integration ".count)))
+    } else {
+        result = try Store().execute(command, args)
+    }
     let data = try JSONSerialization.data(withJSONObject: ["ok": true, "data": result], options: [.prettyPrinted, .sortedKeys, .fragmentsAllowed])
     print(String(decoding: data, as: UTF8.self))
 } catch {

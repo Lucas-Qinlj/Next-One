@@ -102,15 +102,19 @@ cd Todo-AI
 - 右键球可以锁定、解锁或退出；菜单栏入口可以找回悬浮球。
 - 快捷键：`⌘B` 找回球、`⌘T` 展开/收起、`⌘,` 设置、`⌘Q` 退出。
 
-### 接入 Codex
+### 接入 Codex 与后续更新
 
-1. 启动 Todo-AI，打开 **设置 → Codex 接入**。
-2. 复制安装指令，发送到**同一台 Mac 上的本地 Codex 会话**。指令要求该会话安装应用携带的 Skill，保留已有自定义内容，并通过只读命令验证 CLI。
-3. 绑定项目目录后，让 Codex 读取项目的 Todo-AI 上下文；额外 worktree 需要显式绑定。
+1. 启动 Todo-AI，在 **设置 → Codex 接入** 复制**安装/更新指令**，发送到同一台 Mac 上的本地 Codex 会话。
+2. 指令授权内置 `integration install` 创建用户级 Skill 入口，并在当前生效的全局 `AGENTS.md` 或 `AGENTS.override.md` 添加 Todo-AI 专属持续规则。安装会备份并保留其他内容；非托管旧 Skill、人工修改过的管理文件/区块不会被静默覆盖。
+3. 绑定项目目录后新开 Codex 会话。明确项目工作应先读取已有待办、记录请求、按实际结果更新进度。额外 worktree 仍需显式绑定。
 
-仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
+**一次接入，跟随应用更新。** 更新软件后启动一次，稳定 Skill 入口通过 `integration/current` 读取新版规则和 CLI，不会每次启动都重写全局配置。个人偏好放在入口目录的 `USER.md`，应用更新会保留。旧会话可能已读入旧指令，更新后请用新会话；若连接格式或数据目录改变，再复制当前指令检查/重装。
 
-详细说明：[内置 Skill](../../Skills/todo-ai/SKILL.md) · [CLI 接口](../../Skills/todo-ai/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。这些详细参考文档当前以中文提供。
+`integration status` 只读检查连接、不打开任务数据库；`integration uninstall` 只移除未被修改的管理入口和规则，保留个人文件及待办。仅复制指令不会安装，普通项目工作也不应自行重装或改全局规则。
+
+已用隔离 profile 与测试项目完成代表性 Codex CLI 新会话检查，但不保证每次请求或每种 Agent 宿主都会触发；安装后仍需验证自己的环境。其他 Coding Agent 不会被自动配置。
+
+详细说明：[内置 Skill](../../Skills/todo-ai/SKILL.md) · [安装与更新](../../Skills/todo-ai/references/setup.md) · [CLI 接口](../../Skills/todo-ai/references/cli.md) · [持续规则](../codex-rules-snippet.md)。
 
 ### 直接使用 CLI
 
@@ -172,7 +176,7 @@ python3 scripts/drag-cli-smoke.py
 
 - 签名公证下载包、跨机器分发及跨架构验证尚未完成。
 - 背后应用实际接收穿透输入、多显示器变化、Spaces、全屏与 Stage Manager 尚未完成全面验证。
-- 部分媒体交互及新会话发现 Skill 仍需端到端检查。
+- 部分媒体交互仍需端到端检查；Skill 已有代表性隔离 Codex CLI 证据，其他宿主和用户配置仍需验证。
 - 不提供云同步、多人工作区或远程 Agent 自动访问本机数据的保证。
 - `docs/` 下的像素鱼缸实验是独立原型，不是原生应用已有功能。
 

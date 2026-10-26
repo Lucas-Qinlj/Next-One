@@ -107,15 +107,19 @@ This builds and launches `.build/TodoAI.app`, including its CLI and Skill resour
 - Right-click the ball to lock, unlock, or quit. The menu-bar entry can bring the ball back into view.
 - Shortcuts: `⌘B` recover the ball, `⌘T` toggle the list, `⌘,` open Settings, `⌘Q` quit.
 
-### Connect Codex
+### Connect Codex and keep it updated
 
-1. Launch Todo-AI and open **Settings → Codex integration**.
-2. Copy the installation instruction and send it in a **local Codex session on the same Mac**. The instruction asks that session to install the bundled Skill, preserve existing customization, and verify the CLI using read-only commands.
-3. Bind your project folder, then ask Codex to read its Todo-AI context. Additional worktree folders must be explicitly bound.
+1. Launch Todo-AI, open **Settings → Codex integration**, and copy the **setup / update instructions** into a local Codex chat on the same Mac.
+2. The instruction authorizes the built-in `integration install` command to create a user-level Skill connection and a Todo-AI-only block in the active global `AGENTS.md` or `AGENTS.override.md`. It backs up existing content, preserves unrelated rules, and refuses to overwrite unmanaged Skills or user-edited managed files.
+3. Bind the project folder and start a new Codex chat. Ordinary explicit project work should read existing context first, record requests, and update verified progress. Additional worktrees require explicit binding.
 
-Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
+**Install once, follow app updates.** After an app upgrade, launch Todo-AI once. The stable Skill connection reads the latest workflow and CLI through `integration/current`; it does not rewrite global configuration on every launch. Put personal preferences in the installed connection's `USER.md`. Existing chats may retain older instructions, so use a new chat after updates. If the connection format or data folder changes, copy the current instructions again to check/reinstall it.
 
-See the [included Skill](Skills/todo-ai/SKILL.md), [CLI reference](Skills/todo-ai/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). These detailed references are currently in Chinese.
+`integration status` checks the connection without opening the task database. `integration uninstall` removes only unchanged managed entries and rules, preserving custom files and tasks. Copying instructions alone installs nothing; ordinary task work must not reinstall or modify global rules.
+
+Representative fresh Codex CLI sessions have been checked with an isolated profile and test project; this is not a guarantee that every request or every agent host will invoke the Skill. Verify your own setup after installation. Other coding agents are not automatically configured.
+
+See the [included Skill](Skills/todo-ai/SKILL.md), [setup lifecycle](Skills/todo-ai/references/setup.md), [CLI reference](Skills/todo-ai/references/cli.md), and [persistent work rules](docs/codex-rules-snippet.md). Detailed references are currently in Chinese.
 
 ### Use the CLI directly
 
@@ -177,7 +181,7 @@ The native app and CLI are implemented and have been built and run on Apple Sili
 
 - Signed/notarized downloads, cross-machine distribution, and cross-architecture validation are not complete.
 - Full validation of click-through input reaching other apps, multi-display changes, Spaces, full-screen apps, and Stage Manager remains incomplete.
-- Some media interactions and fresh-session Skill discovery still need end-to-end checks.
+- Some media interactions still need end-to-end checks. Skill invocation has representative isolated Codex CLI evidence; other hosts and user configurations still need verification.
 - There is no cloud sync, team workspace, or guaranteed remote-agent access to this Mac's data.
 - The pixel-aquarium experiment under `docs/` is a separate prototype, not a feature of the native app.
 
