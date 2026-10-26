@@ -2,7 +2,7 @@ import Foundation
 import TodoCore
 
 let help = """
-Todo-AI local interface · JSON on stdout, errors on stderr, nonzero exit on failure
+Next One local interface · JSON on stdout, errors on stderr, nonzero exit on failure
 Usage: todo <command> [id] [--field value] [--json]
   board list
   board place --key p:ID|t:ID --expected-revision N --expected-board-revision N --anchor p:ID|t:ID --placement before|after|end

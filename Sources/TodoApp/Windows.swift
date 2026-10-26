@@ -36,12 +36,12 @@ final class TaskPanel: NSPanel {
             model.collapsed = Set(p["collapsed"] as? [String] ?? [])
         }
         for window in [panel, ball] { window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true; window.hidesOnDeactivate = false; window.isReleasedWhenClosed = false }
-        panel.title = L("Todo-AI 清单"); ball.title = L("Todo-AI 悬浮球")
+        panel.title = L("Next One 清单"); ball.title = L("Next One 悬浮球")
         panel.contentView = TodoHostingView(rootView: ContentView(model: model))
         let ballView = BallView(); ballView.controller = self; ball.contentView = ballView
         model.window = self
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "paperclip", accessibilityDescription: "Todo-AI")
+        statusItem.button?.image = NSImage(systemSymbolName: "paperclip", accessibilityDescription: "Next One")
         statusItem.button?.target = self; statusItem.button?.action = #selector(showMenu)
         refreshLanguage()
         NotificationCenter.default.addObserver(self, selector: #selector(refreshLanguage), name: .todoLanguageChanged, object: nil)
@@ -55,7 +55,7 @@ final class TaskPanel: NSPanel {
     }
     @objc func systemLanguageChanged() { LanguageSettings.shared.refreshSystemLanguage() }
     @objc func refreshLanguage() {
-        panel.title = L("Todo-AI 清单"); ball.title = L("Todo-AI 悬浮球")
+        panel.title = L("Next One 清单"); ball.title = L("Next One 悬浮球")
         (ball.contentView as? BallView)?.refreshLanguage()
         rebuildMainMenu(target: self)
     }
@@ -179,7 +179,7 @@ struct HeaderDragArea: NSViewRepresentable {
     override func keyDown(with event: NSEvent) { if event.keyCode == 49 || event.keyCode == 36 { controller?.toggle() } else { super.keyDown(with: event) } }
     override init(frame frameRect: NSRect) { super.init(frame: frameRect); setAccessibilityElement(true); setAccessibilityRole(.button); refreshLanguage() }
     func refreshLanguage() {
-        setAccessibilityLabel(L("Todo-AI 悬浮球，单击展开或收起，右键解锁"))
+        setAccessibilityLabel(L("Next One 悬浮球，单击展开或收起，右键解锁"))
         toolTip = L("单击展开/收起 · 拖动移动 · 右键解锁")
     }
     required init?(coder: NSCoder) { fatalError() }

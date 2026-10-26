@@ -12,17 +12,17 @@ output_dir="$PWD/.local/releases"
 mkdir -p "$output_dir" .build
 staging=$(mktemp -d "$PWD/.build/dmg-stage.XXXXXX")
 trap 'rm -rf "$staging"' EXIT
-./scripts/package-app.sh release "$staging/TodoAI.app"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleShortVersionString string 0.1.0' "$staging/TodoAI.app/Contents/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 3' "$staging/TodoAI.app/Contents/Info.plist"
+./scripts/package-app.sh release "$staging/Next One.app"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleShortVersionString string 0.1.0' "$staging/Next One.app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 3' "$staging/Next One.app/Contents/Info.plist"
 architecture=$(uname -m)
 revision=$(git rev-parse --short HEAD)
-image="$output_dir/Todo-AI-0.1.0-local-isolated-${architecture}-${revision}.dmg"
+image="$output_dir/Next-One-0.1.0-local-isolated-${architecture}-${revision}.dmg"
 if [[ -e "$image" ]]; then
     print -u2 "Output already exists: $image"
     exit 1
 fi
-"$dmg_python" -m dmgbuild -s scripts/distribution/dmg-settings.py -D "app=$staging/TodoAI.app" "Todo-AI Installer" "$image"
+"$dmg_python" -m dmgbuild -s scripts/distribution/dmg-settings.py -D "app=$staging/Next One.app" "Next One Installer" "$image"
 hdiutil verify "$image"
 shasum -a 256 "$image" > "$image.sha256"
 print "DMG: $image"

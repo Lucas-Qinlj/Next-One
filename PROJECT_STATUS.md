@@ -1,4 +1,4 @@
-# Todo-AI 项目状态
+# Next One 项目状态
 
 - 更新日期：2026-10-26
 - 当前阶段：首版本地实现完成，自动验证与部分原生交互通过；**尚未全部验收**
@@ -6,6 +6,15 @@
 - 产品 Spec：[macOS 悬浮待办与 Codex 共享上下文](docs/spec/2026-10-24/macos-floating-todo.md)
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
+
+## 2026-10-26 13:53 | product-rename | 产品更名 Next One
+
+- 状态：已完成本地应用更名及远端仓库改名。
+- 需求与范围：用户确认应用名 Next One，并要求同步产品需求和 GitHub 仓库名 Next-One。
+- 改动：同步应用显示、四语文案、打包、当前使用文档；内部接口、数据目录及历史记录保留兼容名称。
+- 验证与证据：debug 构建与打包通过；本地化/数据目录 7 项测试通过；原生应用标题、无障碍名称和菜单均显示 Next One；GitHub 页面显示 Lucas-Qinlj/Next-One（仍为私有），截图 `.local/next-one/github-renamed.png`。
+- 未完成/阻塞/下一步：无阻塞。已安装并打开 `/Applications/Next One.app`，旧应用保存在 `.local/backups/before-next-one-2026-10-26/`，替换时数据库/附件哈希未变。未重制或发布 DMG，既有文档截图保留历史样貌；已有全局 Skill 保持不变。
+- 关联文档与 Git 状态：[产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[新仓库](https://github.com/Lucas-Qinlj/Next-One)；origin 已更新，main 本地提交本轮内容，未推送代码（远端操作仅仓库改名）。
 
 ## 2026-10-26 13:45 | status-record-template | 统一开发状态记录模板
 

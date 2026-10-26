@@ -18,3 +18,5 @@ cp .local/distribution-assets/installer-background*.png Resources/Distribution/
 仅提交 Logo 原图、最终 ICNS、背景和渲染源码，iconset 留在忽略的 `.local`。背景图的 point size 与像素倍率由 NSBitmapImageRep 管理，不再重复缩放 context，以免 Retina 图片放大裁切。
 
 布局配置见 `scripts/distribution/dmg-settings.py`，安装窗口截图和验证见[安装说明](../../docs/distribution/local-install.md)。
+
+产品显示名称为 Next One；安装背景使用新名称，后续打包输出 `Next One.app` 与 `Next-One-*.dmg`。`TodoAI.icns` 保留为内部资源文件名。

@@ -1,9 +1,9 @@
 ---
 name: todo-ai
-description: 通过 Todo-AI 本地 CLI 读取项目待办、记录用户明确工作事项并更新真实进度。用于已绑定目录的本机 Codex 工作，不用于全量聊天监听、远程自动同步或直接改数据库。
+description: 通过 Next One 本地 CLI 读取项目待办、记录用户明确工作事项并更新真实进度。用于已绑定目录的本机 Codex 工作，不用于全量聊天监听、远程自动同步或直接改数据库。
 ---
 
-# Todo-AI
+# Next One
 
 使用前定位可执行文件：用户提供的 `todo`、PATH 中的 `todo`，或本项目 `.build/debug/todo`。不要猜测另一个项目的数据目录。同一构建渠道的应用与 CLI 共用数据：debug 默认本机 Application Support/Todo-AI，release 安装版默认 Application Support/Todo-AI-Release。优先使用用户从应用设置复制的准确 CLI/数据路径，不能用 .build/debug/todo 代替安装版 CLI；显式设置 TODO_AI_HOME 时该目录优先。隔离测试时，两者必须使用相同 TODO_AI_HOME。执行 `todo --help` 核对实际版本。
 

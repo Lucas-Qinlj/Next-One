@@ -15,7 +15,7 @@ struct CodexIntegration {
         guard fm.isExecutableFile(atPath: sourceCLI.path),
               fm.isReadableFile(atPath: sourceSkill.appendingPathComponent("SKILL.md").path),
               fm.isReadableFile(atPath: sourceSkill.appendingPathComponent("references/cli.md").path) else {
-            throw IntegrationError("应用包缺少接入文件，请重新构建或安装完整的 Todo-AI 应用。")
+            throw IntegrationError("应用包缺少接入文件，请重新构建或安装完整的 Next One 应用。")
         }
         var files: [(String, URL)] = [("bin/todo", sourceCLI)]
         for relative in try fm.subpathsOfDirectory(atPath: sourceSkill.path) {
@@ -76,7 +76,7 @@ struct CodexIntegration {
 
     func installPrompt(dataDirectory: URL, language: String = "zh-Hans") -> String {
         Localization.text("""
-        请在这台 Mac 上为我安装并使用 Todo-AI Skill，让你能通过本地接口读取、新增、修改、完成、可恢复删除及恢复我的待办。
+        请在这台 Mac 上为我安装并使用 Next One Skill，让你能通过本地接口读取、新增、修改、完成、可恢复删除及恢复我的待办。
 
         Skill 源文件：\(skill.path)
         CLI：\(cli.path)

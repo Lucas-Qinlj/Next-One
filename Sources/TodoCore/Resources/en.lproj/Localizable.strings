@@ -2,10 +2,10 @@
 "%1$@ 必须为 true。" = "%1$@ must be true.";
 "%1$@，点击切换完成状态" = "%1$@, click to toggle completion";
 "Codex 接入" = "Codex integration";
-"Todo-AI 悬浮球" = "Todo-AI floating button";
-"Todo-AI 悬浮球，单击展开或收起，右键解锁" = "Todo-AI floating button. Click to expand or collapse; right-click to unlock.";
-"Todo-AI 无法打开" = "Unable to open Todo-AI";
-"Todo-AI 清单" = "Todo-AI tasks";
+"Next One 悬浮球" = "Next One floating button";
+"Next One 悬浮球，单击展开或收起，右键解锁" = "Next One floating button. Click to expand or collapse; right-click to unlock.";
+"Next One 无法打开" = "Unable to open Next One";
+"Next One 清单" = "Next One tasks";
 "limit 为 1–500，offset 不得为负。" = "limit must be 1–500; offset cannot be negative.";
 "“%1$@”与“%2$@”及其子任务将移入同一个项目。" = "“%1$@”, “%2$@” and their subtasks will move into the same project.";
 "一并完成 %1$@ 个子任务？" = "Also complete subtasks (%1$@)?";
@@ -71,7 +71,7 @@
 "已收起" = "Collapsed";
 "已移除：%1$@" = "Removed: %1$@";
 "已读取最新内容" = "Latest content loaded";
-"应用包缺少接入文件，请重新构建或安装完整的 Todo-AI 应用。" = "Integration files are missing. Rebuild or install the complete Todo-AI app.";
+"应用包缺少接入文件，请重新构建或安装完整的 Next One 应用。" = "Integration files are missing. Rebuild or install the complete Next One app.";
 "当前目录没有绑定项目；未读取其他项目。" = "No project is linked to this folder. Other projects were not read.";
 "待办" = "To do";
 "待办不存在或已删除。" = "Task not found or deleted.";
@@ -177,7 +177,7 @@
 "请从回收站恢复分支根任务。" = "Restore the branch's root task from Trash.";
 "请先恢复父任务。" = "Restore the parent task first.";
 "请在相同完成状态分区内排序。" = "Reorder within the same completion section.";
-"请在这台 Mac 上为我安装并使用 Todo-AI Skill，让你能通过本地接口读取、新增、修改、完成、可恢复删除及恢复我的待办。\n\nSkill 源文件：%1$@\nCLI：%2$@\n待办数据目录：%3$@\n\n我授权本次安装到用户级 ~/.agents/skills/todo-ai。请先读取上述 SKILL.md 和同目录 references/cli.md，再完整复制 Skill 目录（含 references）。已有同名 Skill 时先检查并备份，保留用户自定义内容，不覆盖无关文件；只安装此 Skill，不修改其他全局规则或系统设置。\n\n在安装后的 SKILL.md 中记录上面的 CLI 和数据目录，要求每次调用显式设置 TODO_AI_HOME 为该数据目录，并对路径做正确 shell 引用；不要使用当前工作项目中的同名程序或其他数据库。若本机无法访问这些文件，说明具体缺失位置，不猜测路径。\n\n安装后先用该 CLI 的 --help、project list 做只读验证，再按当前工作目录执行 context；未匹配项目时让我选择项目或未分类，不自动绑定。不要为了验证而创建、修改或删除真实待办。\n\n后续处理明确工作事项时，先读取相关项目待办，复用已有任务；按实际进展局部更新状态，留下未完成事项。修改前读取最新 revision，遵守层级、项目与冲突规则；删除仅使用可恢复删除，不直接操作数据库。不要把探讨当成任务，不虚报完成，也不要承诺后台监听所有聊天。\n\n完成后告诉我实际安装位置、只读验证结果和如何调用 todo-ai。若当前会话尚未发现 Skill，说明需要刷新或重启 Codex；不要把复制成功当作已验证自动调用。" = "Please install and use the Todo-AI Skill on this Mac so you can read, create, edit, complete, soft-delete and restore my tasks through its local interface.\n\nSkill source: %1$@\nCLI: %2$@\nTask data folder: %3$@\n\nI authorize this installation to the user-level ~/.agents/skills/todo-ai. Read the SKILL.md above and references/cli.md in the same directory first, then copy the entire Skill directory including references. If a Skill with that name exists, inspect and back it up first. Preserve custom content and unrelated files. Install only this Skill; do not change other global rules or system settings.\n\nRecord the CLI and data folder above in the installed SKILL.md. Require every call to explicitly set TODO_AI_HOME to that folder and quote shell paths correctly. Do not use a similarly named program in the current project or another database. If these files are inaccessible on this Mac, report exactly which location is missing; do not guess paths.\n\nAfter installation, run this CLI's --help and project list for read-only verification, then run context for the current working directory. If no project matches, ask me to choose a project or Unfiled; do not link automatically. Do not create, modify or delete real tasks just to verify the setup.\n\nFor subsequent explicit work items, read the relevant project tasks first and reuse existing tasks. Update only relevant fields according to actual progress, keeping unfinished work. Read the latest revision before modifying and respect hierarchy, project and conflict rules. Use only restorable deletion; never edit the database directly. Do not turn discussions into tasks, claim completion without evidence, or promise background monitoring of all chats.\n\nTell me the actual installation location, read-only verification results and how to invoke todo-ai. If the current chat has not discovered the Skill, explain that Codex needs to be refreshed or restarted. Successful copying does not verify automatic invocation.";
+"请在这台 Mac 上为我安装并使用 Next One Skill，让你能通过本地接口读取、新增、修改、完成、可恢复删除及恢复我的待办。\n\nSkill 源文件：%1$@\nCLI：%2$@\n待办数据目录：%3$@\n\n我授权本次安装到用户级 ~/.agents/skills/todo-ai。请先读取上述 SKILL.md 和同目录 references/cli.md，再完整复制 Skill 目录（含 references）。已有同名 Skill 时先检查并备份，保留用户自定义内容，不覆盖无关文件；只安装此 Skill，不修改其他全局规则或系统设置。\n\n在安装后的 SKILL.md 中记录上面的 CLI 和数据目录，要求每次调用显式设置 TODO_AI_HOME 为该数据目录，并对路径做正确 shell 引用；不要使用当前工作项目中的同名程序或其他数据库。若本机无法访问这些文件，说明具体缺失位置，不猜测路径。\n\n安装后先用该 CLI 的 --help、project list 做只读验证，再按当前工作目录执行 context；未匹配项目时让我选择项目或未分类，不自动绑定。不要为了验证而创建、修改或删除真实待办。\n\n后续处理明确工作事项时，先读取相关项目待办，复用已有任务；按实际进展局部更新状态，留下未完成事项。修改前读取最新 revision，遵守层级、项目与冲突规则；删除仅使用可恢复删除，不直接操作数据库。不要把探讨当成任务，不虚报完成，也不要承诺后台监听所有聊天。\n\n完成后告诉我实际安装位置、只读验证结果和如何调用 todo-ai。若当前会话尚未发现 Skill，说明需要刷新或重启 Codex；不要把复制成功当作已验证自动调用。" = "Please install and use the Next One Skill on this Mac so you can read, create, edit, complete, soft-delete and restore my tasks through its local interface.\n\nSkill source: %1$@\nCLI: %2$@\nTask data folder: %3$@\n\nI authorize this installation to the user-level ~/.agents/skills/todo-ai. Read the SKILL.md above and references/cli.md in the same directory first, then copy the entire Skill directory including references. If a Skill with that name exists, inspect and back it up first. Preserve custom content and unrelated files. Install only this Skill; do not change other global rules or system settings.\n\nRecord the CLI and data folder above in the installed SKILL.md. Require every call to explicitly set TODO_AI_HOME to that folder and quote shell paths correctly. Do not use a similarly named program in the current project or another database. If these files are inaccessible on this Mac, report exactly which location is missing; do not guess paths.\n\nAfter installation, run this CLI's --help and project list for read-only verification, then run context for the current working directory. If no project matches, ask me to choose a project or Unfiled; do not link automatically. Do not create, modify or delete real tasks just to verify the setup.\n\nFor subsequent explicit work items, read the relevant project tasks first and reuse existing tasks. Update only relevant fields according to actual progress, keeping unfinished work. Read the latest revision before modifying and respect hierarchy, project and conflict rules. Use only restorable deletion; never edit the database directly. Do not turn discussions into tasks, claim completion without evidence, or promise background monitoring of all chats.\n\nTell me the actual installation location, read-only verification results and how to invoke todo-ai. If the current chat has not discovered the Skill, explain that Codex needs to be refreshed or restarted. Successful copying does not verify automatic invocation.";
 "请明确指定项目或 unclassified。" = "Specify a project or unclassified.";
 "请求标识不能为空。" = "Request key cannot be empty.";
 "请求标识已用于不同内容。" = "This request key was already used for different content.";
@@ -192,7 +192,7 @@
 "这个任务还有未完成的后代。确认将一起完成。" = "This task has unfinished subtasks. Confirm to complete them together.";
 "进行中" = "In progress";
 "退出" = "Quit";
-"退出 TodoAI" = "Quit TodoAI";
+"退出 Next One" = "Quit Next One";
 "选择空项目或填写新项目名称，不能同时指定。" = "Choose an empty project or enter a new project name, not both.";
 "重绑" = "Relink";
 "重试" = "Retry";

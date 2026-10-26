@@ -25,15 +25,15 @@ python3.13 -m venv .local/dmg-tools/venv
 
 仅 DMG 打包依赖 dmgbuild 1.6.7、ds-store 1.3.3 和 mac-alias 2.2.3；应用运行没有新增依赖。锁文件包含版本和 wheel SHA-256，不安装全局包。可用 `TODO_AI_DMG_PYTHON` 指定已准备的同版本 Python 环境。产物位于忽略的 `.local/releases/`，包含 `.dmg` 和 SHA-256 校验文件；同名产物已存在时拒绝覆盖。
 
-脚本复用 `package-app.sh release <临时应用路径>`，不会覆盖 `.build/TodoAI.app` 中正在使用的开发版。DMG 可见内容只有完整 `TodoAI.app` 与指向 `/Applications` 的快捷方式，安装指引直接显示在背景上。dmgbuild 负责 Finder 布局和 Retina 背景元数据；不通过 AppleScript 操控 Finder。安装版使用 local.todo-ai.release 标识和独立默认数据目录，保留 CLI、完整 Skill 与四语资源，不修改真实数据、全局 Skill 或系统设置。
+脚本复用 `package-app.sh release <临时应用路径>`，不会覆盖 `.build/Next One.app` 中正在使用的开发版。DMG 可见内容只有完整 `Next One.app` 与指向 `/Applications` 的快捷方式，安装指引直接显示在背景上。dmgbuild 负责 Finder 布局和 Retina 背景元数据；不通过 AppleScript 操控 Finder。安装版使用 local.todo-ai.release 标识和独立默认数据目录，保留 CLI、完整 Skill 与四语资源，不修改真实数据、全局 Skill 或系统设置。
 
-`package-app.sh` 的第二个参数可省略；原有 debug/release 调用默认仍输出 `.build/TodoAI.app`。CLI/应用核心功能不变。
+`package-app.sh` 的第二个参数可省略；原有 debug/release 调用默认仍输出 `.build/Next One.app`。CLI/应用核心功能不变。
 
 ## 安装与启动
 
 1. 通过悬浮球右键或应用菜单退出已运行的开发版。
-2. 打开 DMG，将 `TodoAI.app` 拖到其中的 `Applications` 快捷方式。
-3. 从“应用程序”打开 TodoAI；单击悬浮球显示清单。
+2. 打开 DMG，将 `Next One.app` 拖到其中的 `Applications` 快捷方式。
+3. 从“应用程序”打开 Next One；单击悬浮球显示清单。
 4. 安装完成后推出磁盘映像。不要直接从只读映像长期运行应用。
 
 安装版使用独立的 `~/Library/Application Support/Todo-AI-Release`，开发版保留 `~/Library/Application Support/Todo-AI`。旧版共用目录中的待办不会导入或删除；首次打开新版安装版时，若其独立目录尚不存在，则显示空清单。以后更新安装版保留其自身数据。同一数据目录不要同时运行两个 UI 实例。安装前如需备份，退出 UI、停止 CLI 写入，再复制完整数据目录。仅移除 Applications 中的应用不会清除待办数据。
@@ -54,7 +54,7 @@ DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI
 - 挂载后可运行以下只读检查（路径以实际卷名为准）：
 
 ```sh
-.local/dmg-tools/venv/bin/python scripts/distribution/verify-mounted.py '/Volumes/Todo-AI Installer'
+.local/dmg-tools/venv/bin/python scripts/distribution/verify-mounted.py '/Volumes/Next One Installer'
 ```
 
 脚本检查图标、四语资源、完整 Skill、Applications 链接、背景与图标左右关系，并调用包内 CLI --help。检查不安装应用、不修改真实待办。更换 macOS 或打包依赖后仍需实际 Finder 检查。

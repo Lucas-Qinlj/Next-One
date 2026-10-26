@@ -1,6 +1,6 @@
 <div align="center">
 
-# Todo-AI
+# Next One
 
 **你和 Coding Agent，共同维护一份待办上下文。**
 
@@ -14,13 +14,13 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 
 **置顶伴随开发，透明度按需调整，现成指令复制给 Agent 即可开始接入。**
 
-## 为什么需要 Todo-AI？
+## 为什么需要 Next One？
 
 和 AI 一起写代码很快，但跟上项目进度并不总是那么容易。
 
 “这个以后再做”埋进了聊天记录；换一个会话，又要重新解释背景；你自己的清单和 Agent 理解的进度逐渐脱节；几个项目来回切换后，很难记清哪些真正完成了，哪些还需要验证。
 
-**Todo-AI 让你与 Coding Agent 共同维护一份持久化、按项目组织的待办。** 你在悬浮应用里查看和编辑，Agent 通过 CLI 读写同一份本地数据。目标、进度、验收条件和剩余工作都留在任务里，下次会话可以直接读取。
+**Next One 让你与 Coding Agent 共同维护一份持久化、按项目组织的待办。** 你在悬浮应用里查看和编辑，Agent 通过 CLI 读写同一份本地数据。目标、进度、验收条件和剩余工作都留在任务里，下次会话可以直接读取。
 
 它面向独立开发者、个人创作者，以及通过与 Coding Agent 对话来构建软件的人。目前内置 **Codex** 接入；其他本地 Agent 可以使用公开的 CLI 接口，但尚未验证专用集成。
 
@@ -49,7 +49,7 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 | **灵活整理** | 折叠项目组，拖动任务与项目排序，移动整条分支，将未分类待办合并成项目。 |
 | **自动保存与冲突保护** | 停止编辑后自动保存；不同字段的修改可以合并，同字段冲突保留草稿并请求处理。 |
 | **参考资料与恢复** | 图片和视频保存为本地托管副本，单文件最大 100 MB；删除的任务和附件可以恢复。 |
-| **本地优先** | SwiftUI、AppKit 与系统 SQLite，无需 Todo-AI 账号、云端后端或额外 AI API Key。 |
+| **本地优先** | SwiftUI、AppKit 与系统 SQLite，无需 Next One 账号、云端后端或额外 AI API Key。 |
 
 锁定模式让面板忽略鼠标输入，悬浮球仍可用于解锁。部分跨应用与桌面组合还需要人工验证，见下方“当前状态与限制”。
 
@@ -72,7 +72,7 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 
 完成接入后，可以这样说：
 
-> 先读取当前项目的 Todo-AI 待办，继续开发新用户引导流程。把明确的后续工作记成子任务，根据实际验证结果更新进度，保留我已有的备注。
+> 先读取当前项目的 Next One 待办，继续开发新用户引导流程。把明确的后续工作记成子任务，根据实际验证结果更新进度，保留我已有的备注。
 
 ```text
 你 ───────── macOS 应用 ────┐
@@ -80,7 +80,7 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 Coding Agent ─ Skill / CLI ─┘
 ```
 
-这是明确指令驱动的协作：Todo-AI 不监听全部聊天，不在后台运行 Agent，也不自动同步远程环境。
+这是明确指令驱动的协作：Next One 不监听全部聊天，不在后台运行 Agent，也不自动同步远程环境。
 
 ## 快速开始
 
@@ -89,12 +89,12 @@ Coding Agent ─ Skill / CLI ─┘
 需要 **macOS 14 或更高版本**、**Swift 6.0+ 工具链**（例如兼容的 Xcode）以及打包脚本使用的 Python 3。没有第三方运行依赖。
 
 ```sh
-git clone https://github.com/Lucas-Qinlj/Todo-AI.git
-cd Todo-AI
+git clone https://github.com/Lucas-Qinlj/Next-One.git
+cd Next-One
 ./scripts/run.sh
 ```
 
-脚本构建并启动 `.build/TodoAI.app`，包含 CLI 与 Skill 资源，不安装到 Applications。这是本地开发构建，尚非签名、公证后的分发版。
+脚本构建并启动 `.build/Next One.app`，包含 CLI 与 Skill 资源，不安装到 Applications。这是本地开发构建，尚非签名、公证后的分发版。
 
 - 单击悬浮球展开或收起，拖动球移动窗口。
 - 点击 **+** 新建任务，点击任务标题编辑详情，修改自动保存。
@@ -104,9 +104,9 @@ cd Todo-AI
 
 ### 接入 Codex
 
-1. 启动 Todo-AI，打开 **设置 → Codex 接入**。
+1. 启动 Next One，打开 **设置 → Codex 接入**。
 2. 复制安装指令，发送到**同一台 Mac 上的本地 Codex 会话**。指令要求该会话安装应用携带的 Skill，保留已有自定义内容，并通过只读命令验证 CLI。
-3. 绑定项目目录后，让 Codex 读取项目的 Todo-AI 上下文；额外 worktree 需要显式绑定。
+3. 绑定项目目录后，让 Codex 读取项目的 Next One 上下文；额外 worktree 需要显式绑定。
 
 仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
 
@@ -118,7 +118,7 @@ cd Todo-AI
 
 ```sh
 .build/debug/todo --help
-.build/debug/todo project bind --path "$PWD" --name Todo-AI
+.build/debug/todo project bind --path "$PWD" --name "Next One"
 .build/debug/todo context --cwd "$PWD" --json
 ```
 
@@ -132,7 +132,7 @@ cd Todo-AI
 - 从旧的共用数据库安装包升级后，请从新版设置复制 Codex 接入指令重新接入。已有全局 Skill 不会自动改写，应使用新指令中的 CLI/数据路径。`TODO_AI_HOME` 可显式覆盖两种默认目录。
 - 附件导入时复制到托管目录，原文件移动不会影响副本；视频播放依赖系统默认媒体应用。
 - 已删除的任务和附件可恢复，不自动清空回收站。
-- Todo-AI 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。
+- Next One 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。
 - 备份前退出 UI 并停止 CLI 写入，再复制完整数据目录，包括 SQLite/WAL 文件和附件。
 
 演示或测试使用隔离目录，应用与 CLI 必须设置**相同的** `TODO_AI_HOME`：
@@ -155,7 +155,7 @@ python3 scripts/drag-cli-smoke.py
 ./scripts/package-app.sh release
 ```
 
-最后一条命令生成优化后的本地应用包 `.build/TodoAI.app`，不会签名、公证、安装或发布。移动时保留完整应用包及其中的 CLI、Skill 资源。
+最后一条命令生成优化后的本地应用包 `.build/Next One.app`，不会签名、公证、安装或发布。移动时保留完整应用包及其中的 CLI、Skill 资源。
 
 | 模块 | 职责 |
 | --- | --- |

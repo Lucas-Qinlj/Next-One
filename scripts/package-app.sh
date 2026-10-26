@@ -4,7 +4,7 @@ set -euo pipefail
 cd "${0:A:h:h}"
 configuration=${1:-debug}
 case "$configuration" in debug|release) ;; *) print -u2 "Usage: $0 [debug|release] [output.app]"; exit 2 ;; esac
-app_path=${2:-.build/TodoAI.app}
+app_path=${2:-".build/Next One.app"}
 app_path=${app_path:A}
 swift build -c "$configuration"
 mkdir -p "$app_path"/Contents/{MacOS,Helpers,Resources/CodexIntegration}
@@ -35,8 +35,8 @@ cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>TodoAI</string>
 <key>CFBundleIdentifier</key><string>local.todo-ai.dev</string>
-<key>CFBundleName</key><string>TodoAI</string>
-<key>CFBundleDisplayName</key><string>Todo-AI</string>
+<key>CFBundleName</key><string>Next One</string>
+<key>CFBundleDisplayName</key><string>Next One</string>
 <key>CFBundleIconFile</key><string>TodoAI.icns</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>CFBundleDevelopmentRegion</key><string>zh-Hans</string>

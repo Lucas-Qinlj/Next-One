@@ -7,7 +7,7 @@ import sys
 from ds_store import DSStore
 
 volume = Path(sys.argv[1])
-app = volume / 'TodoAI.app'
+app = volume / 'Next One.app'
 info = plistlib.loads((app / 'Contents/Info.plist').read_bytes())
 assert info['CFBundleIdentifier'] == 'local.todo-ai.release'
 assert info['CFBundleIconFile'] == 'TodoAI.icns'
@@ -20,7 +20,7 @@ for name in ['SKILL.md', 'references/cli.md']:
 assert not any(p.suffix in {'.sqlite', '.db', '.env'} for p in app.rglob('*'))
 with DSStore.open(str(volume / '.DS_Store'), 'r') as store:
     assert store['.']['icvp']['backgroundType'] == 2
-    assert store['TodoAI.app']['Iloc'][0] < store['Applications']['Iloc'][0]
+    assert store['Next One.app']['Iloc'][0] < store['Applications']['Iloc'][0]
 assert any(volume.glob('.background.*'))
 help_text = subprocess.check_output([str(app / 'Contents/Helpers/todo'), '--help'], text=True)
 assert 'Data: TODO_AI_HOME overrides Application Support/Todo-AI-Release.' in help_text

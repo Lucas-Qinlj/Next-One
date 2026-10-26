@@ -11,7 +11,7 @@ import TodoCore
             controller = FloatingController(model: model)
             for item in NSApp.mainMenu?.items.first?.submenu?.items ?? [] { item.target = controller }
         }
-        catch { let alert = NSAlert(); alert.messageText = L("Todo-AI 无法打开"); alert.informativeText = LanguageSettings.shared.describe(error); alert.runModal(); NSApp.terminate(nil) }
+        catch { let alert = NSAlert(); alert.messageText = L("Next One 无法打开"); alert.informativeText = LanguageSettings.shared.describe(error); alert.runModal(); NSApp.terminate(nil) }
     }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard controller?.model.saveDraft() != false else { return .terminateCancel }
@@ -30,8 +30,8 @@ app.run()
 
 @MainActor func rebuildMainMenu(target: AnyObject?) {
 let menu = NSMenu()
-let appRoot = NSMenuItem(); let appMenu = NSMenu(title: "TodoAI"); appRoot.submenu = appMenu; menu.addItem(appRoot)
-for (title, action, key) in [(L("找回悬浮球"), "revealBall", "b"), (L("展开或收起清单"), "toggleAction", "t"), (L("设置…"), "settingsAction", ","), (L("退出 TodoAI"), "quitAction", "q")] {
+let appRoot = NSMenuItem(); let appMenu = NSMenu(title: "Next One"); appRoot.submenu = appMenu; menu.addItem(appRoot)
+for (title, action, key) in [(L("找回悬浮球"), "revealBall", "b"), (L("展开或收起清单"), "toggleAction", "t"), (L("设置…"), "settingsAction", ","), (L("退出 Next One"), "quitAction", "q")] {
     let item = appMenu.addItem(withTitle: title, action: Selector(action), keyEquivalent: key)
     item.target = target
 }

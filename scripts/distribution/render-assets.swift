@@ -49,12 +49,12 @@ for scale in [1, 2] {
     let suffix = scale == 2 ? "@2x" : ""
     try render("installer-background\(suffix).png",width: 720,height: 480,scale: scale) {
         color(0.95, 0.97, 0.96).setFill(); NSRect(x: 0,y: 0,width: 720,height: 480).fill()
-        text("Todo-AI",top: 32,size: 32,ink: color(0.12,0.25,0.20),weight: .semibold)
+        text("Next One",top: 32,size: 32,ink: color(0.12,0.25,0.20),weight: .semibold)
         text("Your tasks. Your agent. One shared context.",top: 79,size: 14,ink: color(0.36,0.46,0.40))
         let ink = color(0.28,0.49,0.40)
         stroke([NSPoint(x: 307,y: 260),NSPoint(x: 413,y: 260)],width: 5,ink: ink)
         stroke([NSPoint(x: 393,y: 280),NSPoint(x: 413,y: 260),NSPoint(x: 393,y: 240)],width: 5,ink: ink)
-        text("Drag Todo-AI to Applications",top: 328,size: 19,ink: color(0.12,0.25,0.20),weight: .medium)
+        text("Drag Next One to Applications",top: 328,size: 19,ink: color(0.12,0.25,0.20),weight: .medium)
         text("将左侧应用拖入右侧 Applications 文件夹",top: 362,size: 14,ink: color(0.38,0.46,0.41))
         text("左のアプリを Applications にドラッグ",top: 391,size: 13,ink: color(0.45,0.52,0.48))
         text("앱을 오른쪽 Applications 폴더로 드래그하세요",top: 418,size: 13,ink: color(0.45,0.52,0.48))

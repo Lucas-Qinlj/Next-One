@@ -1,6 +1,6 @@
 <div align="center">
 
-# Todo-AI
+# Next One
 
 **One task list. Shared context. You and your coding agent.**
 
@@ -14,13 +14,13 @@ macOS 14+ · SwiftUI + AppKit · Local storage · Codex Skill + CLI
 
 **Keep it on top. Tune the transparency. Copy a ready-made setup instruction to your agent.**
 
-## Why Todo-AI?
+## Why Next One?
 
 Coding with AI moves fast. Keeping track of the work often doesn't.
 
 A follow-up gets buried in a chat. A new session needs the same explanation again. Your own checklist and the agent's understanding drift apart. Switching projects makes it harder to remember what was actually finished and what still needs checking.
 
-**Todo-AI gives you and your coding agent one persistent, project-aware task list to maintain together.** You work in a small floating app; the agent reads and updates the same local data through a CLI. Keep the goal, progress, acceptance criteria, and unfinished work attached to the task, ready for the next session to read.
+**Next One gives you and your coding agent one persistent, project-aware task list to maintain together.** You work in a small floating app; the agent reads and updates the same local data through a CLI. Keep the goal, progress, acceptance criteria, and unfinished work attached to the task, ready for the next session to read.
 
 It is built for solo developers, indie makers, and anyone who builds software through conversation with coding agents. The included integration targets **Codex**; other local agents can use the documented CLI, but dedicated integrations have not been verified.
 
@@ -32,8 +32,8 @@ It is built for solo developers, indie makers, and anyone who builds software th
 <th align="left">Leave context with the task</th>
 </tr>
 <tr>
-<td width="50%"><img src="docs/assets/screenshots/en/task-list.jpg" alt="Todo-AI floating list with two project groups, nested tasks, progress and priority labels" width="480"></td>
-<td width="50%"><img src="docs/assets/screenshots/en/task-detail.jpg" alt="Todo-AI task details with a goal, progress notes, next steps, status and subtasks" width="480"></td>
+<td width="50%"><img src="docs/assets/screenshots/en/task-list.jpg" alt="Next One floating list with two project groups, nested tasks, progress and priority labels" width="480"></td>
+<td width="50%"><img src="docs/assets/screenshots/en/task-detail.jpg" alt="Next One task details with a goal, progress notes, next steps, status and subtasks" width="480"></td>
 </tr>
 </table>
 
@@ -52,13 +52,13 @@ Actual macOS app captures with fictional demo tasks. The app supports Simplified
 | **Flexible organization** | Collapse project groups, reorder tasks and groups, move branches, and group unclassified tasks into a project. |
 | **Autosave with conflict handling** | Details save after editing pauses. Different-field changes can merge; conflicting edits keep your draft and ask you to resolve them. |
 | **References and recovery** | Attach images and videos as managed local copies, up to 100 MB per file. Restore deleted tasks and attachments from the trash. |
-| **Local by design** | SwiftUI, AppKit, and system SQLite. No Todo-AI account, cloud backend, or additional AI API key required. |
+| **Local by design** | SwiftUI, AppKit, and system SQLite. No Next One account, cloud backend, or additional AI API key required. |
 
 Lock mode makes the panel ignore mouse input while the floating ball remains available to unlock it. Some cross-app and desktop combinations still need manual validation; see [current limitations](#current-status-and-limitations).
 
 ## Keep your workflow in view
 
-**Keep your next step beside your code.** Use the pin button to keep Todo-AI above ordinary windows on the current desktop. Collapse it to the floating ball when you need more space, then expand it to check progress without hunting through another app.
+**Keep your next step beside your code.** Use the pin button to keep Next One above ordinary windows on the current desktop. Collapse it to the floating ball when you need more space, then expand it to check progress without hunting through another app.
 
 **Choose how much presence it has.** Adjust **Background opacity** in Settings from **30%–100%**. Only the background becomes transparent; text and the floating button remain clear. Pinning and opacity are independent controls, so you can choose the balance that suits your workspace.
 
@@ -75,7 +75,7 @@ Lock mode makes the panel ignore mouse input while the floating ball remains ava
 
 After setting up the integration, try a request like:
 
-> Read this project's Todo-AI tasks. Work on the onboarding flow, record confirmed follow-up work as subtasks, and update progress based on what you actually verify. Preserve my existing notes.
+> Read this project's Next One tasks. Work on the onboarding flow, record confirmed follow-up work as subtasks, and update progress based on what you actually verify. Preserve my existing notes.
 
 The app and agent use one business-rule layer and one local store:
 
@@ -85,7 +85,7 @@ You ─────────── macOS app ──────┐
 Coding agent ── Skill / CLI ────┘
 ```
 
-This is explicit collaboration: Todo-AI does not listen to every chat, run agents in the background, or automatically synchronize remote environments.
+This is explicit collaboration: Next One does not listen to every chat, run agents in the background, or automatically synchronize remote environments.
 
 ## Quick start
 
@@ -94,12 +94,12 @@ This is explicit collaboration: Todo-AI does not listen to every chat, run agent
 Requirements: **macOS 14 or later**, a **Swift 6.0+ toolchain** (such as a compatible Xcode installation), and Python 3 for the packaging script. There are no third-party runtime dependencies.
 
 ```sh
-git clone https://github.com/Lucas-Qinlj/Todo-AI.git
-cd Todo-AI
+git clone https://github.com/Lucas-Qinlj/Next-One.git
+cd Next-One
 ./scripts/run.sh
 ```
 
-This builds and launches `.build/TodoAI.app`, including its CLI and Skill resources. It does not install the app into Applications. This is a local development build, not a signed and notarized distribution.
+This builds and launches `.build/Next One.app`, including its CLI and Skill resources. It does not install the app into Applications. This is a local development build, not a signed and notarized distribution.
 
 - Click the floating ball to show or hide the list; drag it to move the app.
 - Use **+** to add a task, and click a task title to edit its details. Changes autosave.
@@ -109,9 +109,9 @@ This builds and launches `.build/TodoAI.app`, including its CLI and Skill resour
 
 ### Connect Codex
 
-1. Launch Todo-AI and open **Settings → Codex integration**.
+1. Launch Next One and open **Settings → Codex integration**.
 2. Copy the installation instruction and send it in a **local Codex session on the same Mac**. The instruction asks that session to install the bundled Skill, preserve existing customization, and verify the CLI using read-only commands.
-3. Bind your project folder, then ask Codex to read its Todo-AI context. Additional worktree folders must be explicitly bound.
+3. Bind your project folder, then ask Codex to read its Next One context. Additional worktree folders must be explicitly bound.
 
 Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
 
@@ -123,7 +123,7 @@ Run these from the repository root after building:
 
 ```sh
 .build/debug/todo --help
-.build/debug/todo project bind --path "$PWD" --name Todo-AI
+.build/debug/todo project bind --path "$PWD" --name "Next One"
 .build/debug/todo context --cwd "$PWD" --json
 ```
 
@@ -137,7 +137,7 @@ Updates require the task's latest `revision`. Creation supports stable request k
 - After switching from the older shared-data installer, copy the new Codex setup instruction from Settings to reconnect the agent to the installer’s data. Existing global Skills are not rewritten automatically; use the CLI/data paths in that instruction. `TODO_AI_HOME` explicitly overrides either default.
 - Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
 - Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
-- Todo-AI does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
+- Next One does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
 - To back up, quit the UI and stop CLI writes, then copy the entire data directory, including SQLite/WAL files and attachments.
 
 For an isolated demo or test, use the **same** `TODO_AI_HOME` for both app and CLI:
@@ -160,7 +160,7 @@ python3 scripts/drag-cli-smoke.py
 ./scripts/package-app.sh release
 ```
 
-The release command creates an optimized local app bundle at `.build/TodoAI.app`; it does not sign, notarize, install, or publish it. Keep the complete bundle, including its CLI and Skill resources.
+The release command creates an optimized local app bundle at `.build/Next One.app`; it does not sign, notarize, install, or publish it. Keep the complete bundle, including its CLI and Skill resources.
 
 | Area | Responsibility |
 | --- | --- |
