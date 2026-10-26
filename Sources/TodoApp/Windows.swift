@@ -36,19 +36,28 @@ final class TaskPanel: NSPanel {
             model.collapsed = Set(p["collapsed"] as? [String] ?? [])
         }
         for window in [panel, ball] { window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true; window.hidesOnDeactivate = false; window.isReleasedWhenClosed = false }
-        panel.title = "Todo-AI 清单"; ball.title = "Todo-AI 悬浮球"
+        panel.title = L("Todo-AI 清单"); ball.title = L("Todo-AI 悬浮球")
         panel.contentView = TodoHostingView(rootView: ContentView(model: model))
         let ballView = BallView(); ballView.controller = self; ball.contentView = ballView
         model.window = self
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "checklist", accessibilityDescription: "Todo-AI")
         statusItem.button?.target = self; statusItem.button?.action = #selector(showMenu)
+        refreshLanguage()
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLanguage), name: .todoLanguageChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(systemLanguageChanged), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
         recover()
         applySettings()
         panel.orderFrontRegardless(); ball.orderFrontRegardless()
         timer = Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { [weak self] _ in MainActor.assumeIsolated { self?.model.refresh() } }
         NotificationCenter.default.addObserver(self, selector: #selector(recover), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(panelResignedKey), name: NSWindow.didResignKeyNotification, object: panel)
+    }
+    @objc func systemLanguageChanged() { LanguageSettings.shared.refreshSystemLanguage() }
+    @objc func refreshLanguage() {
+        panel.title = L("Todo-AI 清单"); ball.title = L("Todo-AI 悬浮球")
+        (ball.contentView as? BallView)?.refreshLanguage()
+        rebuildMainMenu(target: self)
     }
     var currentScreen: CGRect { (NSScreen.screens.first { $0.visibleFrame.contains(geometry.anchor) } ?? NSScreen.main)?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1200, height: 800) }
     func layout() {
@@ -111,7 +120,7 @@ final class TaskPanel: NSPanel {
     @objc func showMenu() { let menu = makeMenu(); statusItem.menu = menu; statusItem.button?.performClick(nil); statusItem.menu = nil }
     func makeMenu() -> NSMenu {
         let menu = NSMenu()
-        for (title, selector) in [(model.locked ? "解除锁定" : "锁定穿透", #selector(lockAction)), (expanded ? "收起清单" : "展开清单", #selector(toggleAction)), ("设置…", #selector(settingsAction)), ("找回悬浮球", #selector(revealBall)), ("退出", #selector(quitAction))] {
+        for (title, selector) in [(model.locked ? L("解除锁定") : L("锁定穿透"), #selector(lockAction)), (expanded ? L("收起清单") : L("展开清单"), #selector(toggleAction)), (L("设置…"), #selector(settingsAction)), (L("找回悬浮球"), #selector(revealBall)), (L("退出"), #selector(quitAction))] {
             let item = NSMenuItem(title: title, action: selector, keyEquivalent: ""); item.target = self
             if selector == #selector(lockAction) { item.isEnabled = model.pinned }
             menu.addItem(item)
@@ -134,7 +143,11 @@ final class TaskPanel: NSPanel {
     var dragging = false
     override var acceptsFirstResponder: Bool { true }
     override func keyDown(with event: NSEvent) { if event.keyCode == 49 || event.keyCode == 36 { controller?.toggle() } else { super.keyDown(with: event) } }
-    override init(frame frameRect: NSRect) { super.init(frame: frameRect); setAccessibilityElement(true); setAccessibilityRole(.button); setAccessibilityLabel("Todo-AI 悬浮球，单击展开或收起，右键解锁"); toolTip = "单击展开/收起 · 拖动移动 · 右键解锁" }
+    override init(frame frameRect: NSRect) { super.init(frame: frameRect); setAccessibilityElement(true); setAccessibilityRole(.button); refreshLanguage() }
+    func refreshLanguage() {
+        setAccessibilityLabel(L("Todo-AI 悬浮球，单击展开或收起，右键解锁"))
+        toolTip = L("单击展开/收起 · 拖动移动 · 右键解锁")
+    }
     required init?(coder: NSCoder) { fatalError() }
     override func accessibilityPerformPress() -> Bool { controller?.toggle(); return true }
     override func draw(_ dirtyRect: NSRect) {

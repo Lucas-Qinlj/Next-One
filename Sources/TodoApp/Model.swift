@@ -5,7 +5,7 @@ import TodoCore
 @MainActor @Observable final class AppModel {
     let store: Store
     var codexIntegration: CodexIntegration?
-    var integrationError: String?
+    var integrationError: Error?
     var state = Snapshot()
     var scope = "all" { didSet { composerExpanded = false } }
     var selectedID: String? { didSet { if selectedID != nil { composerExpanded = false } } }
@@ -36,14 +36,14 @@ import TodoCore
     var window: FloatingController?
     var confirm: Confirmation?
     struct Confirmation: Identifiable { let id = UUID(); var title: String; var detail: String; var action: () -> Void }
-    init(store: Store) { self.store = store; refresh() }
+    init(store: Store) { self.store = store; LanguageSettings.shared.load(directory: store.directory); refresh() }
     func prepareCodexIntegration() {
         do {
             codexIntegration = try CodexIntegration.prepare(dataDirectory: store.directory)
             integrationError = nil
         } catch {
             codexIntegration = nil
-            integrationError = error.localizedDescription
+            integrationError = error
         }
     }
     func refresh() {
@@ -54,7 +54,7 @@ import TodoCore
                 state = snapshot
                 if let id = selectedID, !dirty {
                     draft = state.liveTasks.first { $0.id == id }; base = draft
-                    if draft == nil { selectedID = nil; notify("该任务已移入回收站", kind: .warning) }
+                    if draft == nil { selectedID = nil; notify(L("该任务已移入回收站"), kind: .warning) }
                 }
             }
         } catch {
@@ -78,12 +78,12 @@ import TodoCore
         toastDismissTask = nil
         toast = nil
     }
-    func report(_ error: Error) { notify(error.localizedDescription, kind: .error) }
+    func report(_ error: Error) { notify(LanguageSettings.shared.describe(error), kind: .error) }
     @discardableResult func run(_ command: String, _ args: [String: String]) -> Bool {
         do {
             let result = try store.execute(command, args); refresh()
             let reopened = result["reopened_ancestors"] as? [String] ?? []
-            notify(reopened.isEmpty ? "已保存" : "已保存，\(reopened.count) 个祖先任务恢复为待办", kind: reopened.isEmpty ? .success : .warning)
+            notify(reopened.isEmpty ? L("已保存") : L("已保存，\(reopened.count) 个祖先任务恢复为待办"), kind: reopened.isEmpty ? .success : .warning)
             return true
         } catch { report(error); return false }
     }
@@ -117,7 +117,7 @@ import TodoCore
         if draft.dueAt != base.dueAt { args["due-at"] = draft.dueAt ?? "" }
         if cascade { args["cascade"] = "true" }
         if draft.status == "done", !cascade, state.descendants(draft.id).contains(where: { $0.status != "done" }) {
-            confirm = Confirmation(title: "一并完成子任务？", detail: "这个任务还有未完成的后代。确认将一起完成。", action: { [weak self] in _ = self?.saveDraft(cascade: true) }); return false
+            confirm = Confirmation(title: L("一并完成子任务？"), detail: L("这个任务还有未完成的后代。确认将一起完成。"), action: { [weak self] in _ = self?.saveDraft(cascade: true) }); return false
         }
         do {
             let latest = try store.snapshot().liveTasks.first { $0.id == draft.id }
@@ -135,7 +135,7 @@ import TodoCore
                     merged.dueAt = draft.dueAt; merged.dueDate = draft.dueDate
                 }
                 if conflict {
-                    confirm = Confirmation(title: "同一内容已被其他操作修改", detail: "本次输入仍保留。确认使用本次修改；取消后可继续编辑，不会覆盖外部内容。", action: { [weak self] in
+                    confirm = Confirmation(title: L("同一内容已被其他操作修改"), detail: L("本次输入仍保留。确认使用本次修改；取消后可继续编辑，不会覆盖外部内容。"), action: { [weak self] in
                         self?.base = latest; self?.draft = merged
                         _ = self?.saveDraft(cascade: cascade)
                     })
@@ -145,11 +145,11 @@ import TodoCore
             }
             let result = try store.execute("update", args)
             refresh()
-            if !(result["reopened_ancestors"] as? [String] ?? []).isEmpty { notify("已恢复相关父任务为待办", kind: .warning) }
+            if !(result["reopened_ancestors"] as? [String] ?? []).isEmpty { notify(L("已恢复相关父任务为待办"), kind: .warning) }
         } catch { report(error); return false }
         self.draft = state.liveTasks.first { $0.id == draft.id }; self.base = self.draft; return true
     }
-    func reloadDraft() { if let id = selectedID { draft = state.liveTasks.first { $0.id == id }; base = draft; notify("已读取最新内容") } }
+    func reloadDraft() { if let id = selectedID { draft = state.liveTasks.first { $0.id == id }; base = draft; notify(L("已读取最新内容")) } }
     func beginAdding(parent: String? = nil) {
         guard saveDraft() else { return }
         selectedID = nil; draft = nil; base = nil; settings = false; trash = false
@@ -173,13 +173,13 @@ import TodoCore
     func toggle(_ item: TodoItem) {
         var args = ["id": item.id, "expected-revision": String(item.revision)]
         if item.status != "done", !state.descendants(item.id).filter({ $0.status != "done" }).isEmpty {
-            confirm = Confirmation(title: "一并完成 \(state.descendants(item.id).filter { $0.status != "done" }.count) 个子任务？", detail: "父任务与未完成后代将一起完成。", action: { [weak self] in args["cascade"] = "true"; self?.run("complete", args) }); return
+            confirm = Confirmation(title: L("一并完成 \(state.descendants(item.id).filter { $0.status != "done" }.count) 个子任务？"), detail: L("父任务与未完成后代将一起完成。"), action: { [weak self] in args["cascade"] = "true"; self?.run("complete", args) }); return
         }
         args["status"] = item.status == "done" ? "todo" : "done"; _ = run("update", args)
     }
     func delete(_ item: TodoItem) {
         let count = state.descendants(item.id).count + 1
-        confirm = Confirmation(title: "移入回收站？", detail: "将移动整个分支，共 \(count) 个任务。可在设置中恢复。", action: { [weak self] in
+        confirm = Confirmation(title: L("移入回收站？"), detail: L("将移动整个分支，共 \(count) 个任务。可在设置中恢复。"), action: { [weak self] in
             guard let self else { return }
             if self.run("delete", ["id": item.id, "expected-revision": String(item.revision)]) { self.selectedID = nil; self.draft = nil; self.base = nil }
         })
@@ -194,12 +194,12 @@ import TodoCore
     }
     func pasteImage() {
         if let urls = NSPasteboard.general.readObjects(forClasses: [NSURL.self]) as? [URL], !urls.isEmpty { urls.forEach(addAttachment); return }
-        guard let data = NSPasteboard.general.data(forType: .tiff), let image = NSBitmapImageRep(data: data), let png = image.representation(using: .png, properties: [:]) else { notify("剪贴板里没有图片或媒体文件", kind: .warning); return }
+        guard let data = NSPasteboard.general.data(forType: .tiff), let image = NSBitmapImageRep(data: data), let png = image.representation(using: .png, properties: [:]) else { notify(L("剪贴板里没有图片或媒体文件"), kind: .warning); return }
         let path = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".png")
         do { try png.write(to: path); defer { try? FileManager.default.removeItem(at: path) }; addAttachment(path) } catch { report(error) }
     }
     func unbindProject(_ project: Project, path: String) {
-        confirm = Confirmation(title: "解除目录绑定？", detail: "\(path)\n仅解除此目录与“\(project.name)”的关联，保留项目、待办和磁盘文件。", action: { [weak self] in
+        confirm = Confirmation(title: L("解除目录绑定？"), detail: L("\(path)\n仅解除此目录与“\(project.name)”的关联，保留项目、待办和磁盘文件。"), action: { [weak self] in
             _ = self?.run("project unbind", ["id": project.id, "path": path, "expected-revision": String(project.revision)])
         })
     }

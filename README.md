@@ -35,7 +35,7 @@ It is built for solo developers, indie makers, and anyone who builds software th
 </tr>
 </table>
 
-Actual macOS app captures with fictional demo tasks. The current app interface is in Chinese; these four README languages do not imply four-language app localization.
+Actual macOS app captures with fictional demo tasks. The app supports Simplified Chinese, English, Japanese, and Korean. Choose a language or System default at the top of Settings; changes apply immediately and are remembered. Your task and project content stays unchanged.
 
 ## Highlights
 

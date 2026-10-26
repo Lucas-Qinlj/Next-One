@@ -60,7 +60,7 @@ do {
     let data = try JSONSerialization.data(withJSONObject: ["ok": true, "data": result], options: [.prettyPrinted, .sortedKeys, .fragmentsAllowed])
     print(String(decoding: data, as: UTF8.self))
 } catch {
-    let error = error as? TodoError ?? TodoError("storage_unavailable", error.localizedDescription)
+    let error = error as? TodoError ?? TodoError("storage_unavailable", verbatim: error.localizedDescription)
     let data = try! JSONSerialization.data(withJSONObject: ["ok": false, "error": ["code": error.code, "message": error.message]], options: [.sortedKeys])
     FileHandle.standardError.write(data + Data("\n".utf8)); exit(1)
 }

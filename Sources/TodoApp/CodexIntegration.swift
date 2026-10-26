@@ -1,4 +1,5 @@
 import Foundation
+import TodoCore
 import CryptoKit
 import Darwin
 
@@ -68,13 +69,13 @@ struct CodexIntegration {
     }
 
     struct IntegrationError: LocalizedError {
-        let message: String
-        init(_ message: String) { self.message = message }
-        var errorDescription: String? { message }
+        let text: LocalizedText
+        init(_ text: LocalizedText) { self.text = text }
+        var errorDescription: String? { text.original }
     }
 
-    func installPrompt(dataDirectory: URL) -> String {
-        """
+    func installPrompt(dataDirectory: URL, language: String = "zh-Hans") -> String {
+        Localization.text("""
         请在这台 Mac 上为我安装并使用 Todo-AI Skill，让你能通过本地接口读取、新增、修改、完成、可恢复删除及恢复我的待办。
 
         Skill 源文件：\(skill.path)
@@ -90,6 +91,6 @@ struct CodexIntegration {
         后续处理明确工作事项时，先读取相关项目待办，复用已有任务；按实际进展局部更新状态，留下未完成事项。修改前读取最新 revision，遵守层级、项目与冲突规则；删除仅使用可恢复删除，不直接操作数据库。不要把探讨当成任务，不虚报完成，也不要承诺后台监听所有聊天。
 
         完成后告诉我实际安装位置、只读验证结果和如何调用 todo-ai。若当前会话尚未发现 Skill，说明需要刷新或重启 Codex；不要把复制成功当作已验证自动调用。
-        """
+        """, language: language)
     }
 }

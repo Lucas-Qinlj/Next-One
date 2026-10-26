@@ -15,3 +15,6 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 `Snapshot.boardKeys` 是全部项目视图的统一顶层顺序，兼容可选 boardOrder/boardRevision；过滤空项目、已删除或非根任务、已完成未分类任务，并为新对象补默认位置。`board place` 在事务中重排整组或整支移出项目后插入，带源对象版本和顶层顺序版本；项目数组本身不重排，因此 UI 项目颜色稳定。`board list` 供 CLI 获取当前顺序与版本。
 
 `project unbind` 校验项目 revision 及已绑定路径，仅删除项目 paths 中的对应项，不触碰文件系统和任务；允许最后一条路径解除。ProjectUnbindTests 覆盖文件/任务保留、路径不存在、版本冲突、最后一条解除及后续重绑。
+
+
+本地化：`LocalizedText` 分离文案模板与插值参数，`Localization` 使用本地 `.strings` 资源输出中/英/日/韩文；只改变展示，不参与 Store 数据更新。`TodoError.localizedText` 供 UI 翻译，`message` / `errorDescription` 保留原中文契约，系统生成的动态错误使用 `verbatim:`。位置参数一次性从原模板替换，用户内容中的 `%1$@` 等文本不会被再次替换。

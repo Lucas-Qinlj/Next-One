@@ -21,7 +21,7 @@ struct ToastView: View {
         }
     }
     private var category: String {
-        switch toast.kind { case .success: return "成功"; case .error: return "错误"; case .warning: return "提醒" }
+        switch toast.kind { case .success: return L("成功"); case .error: return L("错误"); case .warning: return L("提醒") }
     }
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
@@ -30,7 +30,7 @@ struct ToastView: View {
             Text(toast.message).font(.system(size: 13)).foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
-            IconButton(name: "xmark", title: "关闭提示", action: dismiss)
+            IconButton(name: "xmark", title: L("关闭提示"), action: dismiss)
                 .foregroundStyle(.secondary)
         }
         .padding(.leading, 14).padding(.trailing, 8).padding(.vertical, 8)
