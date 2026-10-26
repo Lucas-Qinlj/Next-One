@@ -23,4 +23,5 @@ show_pathbar = False
 show_sidebar = False
 show_icon_preview = False
 include_icon_view_settings = True
-hide_extensions = [app.name]
+# FinderInfo on a signed app invalidates strict resource verification.
+hide_extensions = []

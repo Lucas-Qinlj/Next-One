@@ -14,9 +14,9 @@ macOS 14+ · SwiftUI + AppKit · ローカル保存 · Codex Skill + CLI
 
 </div>
 
-**[macOS プレビュー版をダウンロード](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · 未署名・未公証 · 非商用のみ。
+**[Next One 0.2.0 をダウンロード · プレリリース](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)** · Apple Silicon · macOS 14+ · Developer ID 署名済み／未公証 · 非商用利用のみ。
 
-**バージョンについて：**以下は現在の `main` の機能です。上記 `v0.1.0-preview.1` は更新前の配布物です。新機能は現在のソースからビルドしてください。
+
 
 **最前面に表示。不透明度を調整。用意された設定手順を Agent にコピー。**
 
@@ -225,7 +225,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent とスクリプト用の構造化インターフェース |
 | [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex によるタスクの読み取り・更新の取り決め |
 
-ローカルで試すには `./scripts/package-dmg.sh` を実行してください。Applications にドラッグしてインストールする DMG と SHA-256 チェックサムが `.local/releases/` に生成されます。[ローカルインストール手順](../distribution/local-install.md)（中国語）を参照してください。この試用版は Developer ID 署名・公証を行っていません。
+ローカルで試すには `./scripts/package-dmg.sh` を実行してください。Applications にドラッグしてインストールする DMG と SHA-256 チェックサムが `.local/releases/` に生成されます。[ローカルインストール手順](../distribution/local-install.md)（中国語）を参照してください。有効な Developer ID Application 証明書がキーチェーンに必要です。App と DMG を署名しますが、公証は行いません。
 
 ## 現在の状態と制限
 

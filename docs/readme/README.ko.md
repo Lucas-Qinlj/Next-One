@@ -14,9 +14,9 @@ macOS 14+ · SwiftUI + AppKit · 로컬 저장 · Codex Skill + CLI
 
 </div>
 
-**[macOS 미리 보기 버전 다운로드](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · 서명·공증 전 · 비상업적 용도만 허용.
+**[Next One 0.2.0 다운로드 · 사전 출시](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)** · Apple Silicon · macOS 14+ · Developer ID 서명 완료／공증 전 · 비상업적 사용만 허용.
 
-**버전 안내:** 아래 기능은 현재 `main` 기준입니다. 위의 `v0.1.0-preview.1` 배포본에는 이후 업데이트가 포함되지 않습니다. 새 기능은 현재 소스로 빌드하세요.
+
 
 **항상 위에 표시하고, 투명도를 조절하고, 준비된 설치 안내를 Agent에게 복사해 보내세요.**
 
@@ -225,7 +225,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent와 스크립트를 위한 구조화된 인터페이스 |
 | [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex의 할 일 읽기와 업데이트 규칙 |
 
-로컬 시험 설치는 `./scripts/package-dmg.sh`로 만들 수 있습니다. Applications로 드래그해 설치하는 DMG와 SHA-256 체크섬이 `.local/releases/`에 생성됩니다. [로컬 설치 안내](../distribution/local-install.md)(중국어)를 참고하세요. 이 시험판은 Developer ID 서명이나 공증을 받지 않았습니다.
+로컬 시험 설치는 `./scripts/package-dmg.sh`로 만들 수 있습니다. Applications로 드래그해 설치하는 DMG와 SHA-256 체크섬이 `.local/releases/`에 생성됩니다. [로컬 설치 안내](../distribution/local-install.md)(중국어)를 참고하세요. 키체인에 유효한 Developer ID Application 인증서가 필요합니다. App과 DMG에 서명하지만 공증은 수행하지 않습니다.
 
 ## 현재 상태와 제한 사항
 

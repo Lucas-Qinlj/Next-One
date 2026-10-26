@@ -41,6 +41,8 @@ cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>TodoAI</string>
 <key>CFBundleIdentifier</key><string>local.todo-ai.dev</string>
+<key>CFBundleShortVersionString</key><string>0.2.0</string>
+<key>CFBundleVersion</key><string>2026102702</string>
 <key>CFBundleName</key><string>Next One</string>
 <key>CFBundleDisplayName</key><string>Next One</string>
 <key>CFBundleIconFile</key><string>TodoAI.icns</string>

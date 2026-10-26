@@ -1,5 +1,9 @@
 # 本机 DMG 试装
 
+## 0.2.0 预发布打包
+
+0.2.0 使用正式 Developer ID 签名的 App 与 DMG，按用户选择暂不公证。功能说明见 [0.2.0 Release notes](releases/v0.2.0.md)。当前 `package-dmg.sh` 继承 App 版本，签名 CLI、App 与 DMG，失败即停止；不公证、不安装、不发布。以下旧版签名状态仅适用于对应历史产物。
+
 ## 2026-10-27 正式签名本机安装
 
 本机已安装 Developer ID Application: LIJIAN QIN (5C58V84WF7) 签名的 0.1.0 build 2026102701，标识 `local.todo-ai.release`。App 与内置 CLI 使用 hardened runtime 和安全时间戳，严格签名校验通过。资源包位于 `Contents/Resources/`，SwiftPM 开发／测试仍使用默认资源回退。

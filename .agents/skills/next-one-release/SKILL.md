@@ -27,7 +27,7 @@ description: 处理 Next One 项目的 macOS App 与 DMG 打包、Developer ID �
 ## 现有脚本边界
 
 - `scripts/package-app.sh release <输出.app>` 构建 Swift Package 与应用资源，不做正式签名、公证、安装。
-- `scripts/package-dmg.sh` 目前是本地试装流程：重新构建 App、写入固定版本号，再生成 DMG。**不能用它封装预先签好的 App**；它会重建内容。正式流程应复用 `scripts/distribution/dmg-settings.py`，直接封装已经完成签名／票据处理的 App。用户授权改造自动化时再修改脚本，不提前宣称已有正式一键流水线。
+- `scripts/package-dmg.sh` 构建 App、保留其版本号并对内置 CLI、App 与 DMG 做正式 Developer ID 签名；身份可由 `NEXT_ONE_SIGNING_IDENTITY` 指定，默认本项目证书，失败即停止，无临时签名回退。脚本不公证或安装，也不能封装预先公证的 App（会重新构建）；需封装已公证 App 时直接复用 `scripts/distribution/dmg-settings.py`。
 - SwiftPM 的 `TodoAI_TodoCore.bundle` 与 `TodoAI_TodoApp.bundle` 放在 `Contents/Resources/`，应用优先从该位置加载，SwiftPM 开发／测试回退 `Bundle.module`。不要在 App 根目录放资源或使用 `--deep` 签名掩盖布局问题；签名前后检查四语资源、图标、CLI 与产品 Skill。
 
 ## 执行流程

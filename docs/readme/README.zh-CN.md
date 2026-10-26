@@ -15,9 +15,9 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 
 </div>
 
-**[下载 macOS 预览版](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · 尚未签名公证 · 仅限非商业用途。
+**[下载 Next One 0.2.0 · 预发布版](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)** · Apple Silicon · macOS 14+ · 已正式签名／尚未公证 · 仅限非商业用途。
 
-**版本说明：**以下功能以当前 `main` 为准。上方 `v0.1.0-preview.1` 预览包早于这些更新；体验新功能请构建当前源码。
+
 
 **置顶伴随开发，透明度按需调整，现成指令复制给 Agent 即可开始接入。**
 
@@ -232,7 +232,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCLI](../../Sources/TodoCLI/README.md) | 面向 Agent 和脚本的结构化接口 |
 | [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex 读取和更新待办的约定 |
 
-本机试装可执行 `./scripts/package-dmg.sh`，生成可拖入 Applications 的 DMG 和 SHA-256 校验文件，位于 `.local/releases/`。详见[本机安装说明](../distribution/local-install.md)。试装包尚未进行 Developer ID 签名或 Apple 公证。
+本机试装可执行 `./scripts/package-dmg.sh`，生成可拖入 Applications 的 DMG 和 SHA-256 校验文件，位于 `.local/releases/`。详见[本机安装说明](../distribution/local-install.md)。脚本要求钥匙串中有有效 Developer ID Application 身份，正式签名 App 与 DMG；不执行 Apple 公证。
 
 ## 当前状态与限制
 

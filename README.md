@@ -14,9 +14,9 @@ macOS 14+ · SwiftUI + AppKit · Local storage · Codex Skill + CLI
 
 </div>
 
-**[Download the macOS preview](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · Unsigned / not notarized · Noncommercial use only.
+**[Download Next One 0.2.0 · Pre-release](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)** · Apple Silicon · macOS 14+ · Developer ID signed / not notarized · Noncommercial use only.
 
-**Version note:** the features below describe current `main`. The linked `v0.1.0-preview.1` download predates these updates; build current source to use them.
+
 
 **Keep it on top. Tune the transparency. Copy a ready-made setup instruction to your agent.**
 
@@ -237,7 +237,7 @@ The release command creates an optimized local app bundle at `.build/Next One.ap
 | [TodoCLI](Sources/TodoCLI/README.md) | Structured local interface for agents and scripts |
 | [Skills/next-one](Skills/next-one/SKILL.md) | Codex task-reading and update conventions |
 
-For a local drag-to-Applications installer, run `./scripts/package-dmg.sh`. The DMG and SHA-256 checksum are written to `.local/releases/`; see the [local installation guide](docs/distribution/local-install.md) (Chinese). This trial package is not Developer ID signed or notarized.
+For a local drag-to-Applications installer, run `./scripts/package-dmg.sh`. The DMG and SHA-256 checksum are written to `.local/releases/`; see the [local installation guide](docs/distribution/local-install.md) (Chinese). This script requires a valid Developer ID Application signing identity in your keychain and signs the app and DMG; it does not notarize them.
 
 ## Current status and limitations
 
