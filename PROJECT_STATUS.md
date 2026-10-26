@@ -1,11 +1,20 @@
 # Next One 项目状态
 
-- 更新日期：2026-10-26
+- 更新日期：2026-10-27
 - 当前阶段：首版本地实现完成，自动验证与部分原生交互通过；**尚未全部验收**
 - 协作规范：[AGENTS.md](AGENTS.md)
 - 产品 Spec：[macOS 悬浮待办与 Codex 共享上下文](docs/spec/2026-10-24/macos-floating-todo.md)
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
+
+## 2026-10-27 00:00 | calendar-sync-install | 合并日历同步并替换现用应用
+
+- 状态：按用户授权快进合并、现用 release 应用替换与验证完成；本记录提交后推送主分支。
+- 需求与范围：合并日历同步、推送 GitHub、替换现用应用；AGENTS 新增本项目默认安全自动合并，遇无法安全处理的冲突／问题先说明，不自动扩大为后续推送、安装或发布授权。
+- 改动：main 快进至功能提交 e358cf4；使用相同 release 标识和数据渠道打包替换。旧应用及完整数据已备份到 `.local/backups/before-calendar-sync-20261026-235919/`。同步保持默认关闭，无测试数据／映射导入。
+- 验证与证据：release 构建与18项针对性测试通过；新应用与构建逐文件一致，替换前数据逐文件一致，启动后任务快照和附件哈希与备份一致。原生设置确认“同步到日历”入口且关闭，证据 `.local/calendar-sync-install/verification.txt`；AGENTS 大小与差异检查通过。
+- 未完成/阻塞/下一步：用户可在设置主动启用并选择自己的 iCloud 提醒事项清单；未自动授权系统提醒事项访问、安装全局 Skill或发布新 DMG。自动 Urgent 仍不支持，原验收限制不变。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/calendar-reminders-sync.md)、[验收](docs/acceptance/calendar-reminders-sync.md)、[协作规则](AGENTS.md)；main，本轮仅提交规则与安装记录，并按授权推送。
 
 ## 2026-10-26 23:12 | calendar-reminders-sync | 日历提醒同步开发
 
