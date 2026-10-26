@@ -25,16 +25,12 @@ func stroke(_ points: [NSPoint], width: CGFloat, ink: NSColor) {
 func icon(size: CGFloat) {
     let t = NSAffineTransform(); t.scale(by: size / 1024); t.concat()
     let tile = NSBezierPath(roundedRect: NSRect(x: 80, y: 80, width: 864, height: 864), xRadius: 196, yRadius: 196)
-    NSGradient(starting: color(0.10, 0.27, 0.23), ending: color(0.23, 0.47, 0.40))!.draw(in: tile, angle: 70)
-    let ink = color(0.95, 0.98, 0.96)
-    stroke([NSPoint(x: 245,y: 680),NSPoint(x: 285,y: 640),NSPoint(x: 357,y: 724)],width: 35,ink: ink)
-    for y: CGFloat in [490, 310] {
-        let ring = NSBezierPath(ovalIn: NSRect(x: 254,y: y - 37,width: 74,height: 74)); ring.lineWidth = 27; ink.setStroke(); ring.stroke()
-    }
-    for y: CGFloat in [680, 490, 310] {
-        stroke([NSPoint(x: 443,y: y),NSPoint(x: y == 310 ? 679 : 769,y: y)],width: 34,ink: ink)
-    }
+    tile.addClip()
+    NSGraphicsContext.current?.imageInterpolation = .high
+    logo.draw(in: NSRect(x: 80, y: 80, width: 864, height: 864))
 }
+let source = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+let logo = NSImage(contentsOf: source.appendingPathComponent("Resources/Distribution/paperclip-logo.png"))!
 let iconset = output.appendingPathComponent("TodoAI.iconset")
 try FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
 for size in [16, 32, 128, 256, 512] {

@@ -13,6 +13,7 @@ mv -f "$app_path"/Contents/MacOS/TodoAI.new "$app_path"/Contents/MacOS/TodoAI
 cp ".build/$configuration/todo" "$app_path"/Contents/Helpers/todo.new
 mv -f "$app_path"/Contents/Helpers/todo.new "$app_path"/Contents/Helpers/todo
 cp Resources/Distribution/TodoAI.icns "$app_path"/Contents/Resources/TodoAI.icns
+cp Resources/Distribution/paperclip-logo.png "$app_path"/Contents/Resources/paperclip-logo.png
 # SwiftPM resolves Bundle.module at the root of the main application bundle.
 ditto ".build/$configuration/TodoAI_TodoCore.bundle" "$app_path"/TodoAI_TodoCore.bundle
 # Copy the complete source skill into bundle-owned resources, including references.

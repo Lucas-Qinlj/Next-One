@@ -41,7 +41,7 @@ final class TaskPanel: NSPanel {
         let ballView = BallView(); ballView.controller = self; ball.contentView = ballView
         model.window = self
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "checklist", accessibilityDescription: "Todo-AI")
+        statusItem.button?.image = NSImage(systemSymbolName: "paperclip", accessibilityDescription: "Todo-AI")
         statusItem.button?.target = self; statusItem.button?.action = #selector(showMenu)
         refreshLanguage()
         NotificationCenter.default.addObserver(self, selector: #selector(refreshLanguage), name: .todoLanguageChanged, object: nil)
@@ -169,6 +169,7 @@ struct HeaderDragArea: NSViewRepresentable {
 }
 
 @MainActor final class BallView: NSView {
+    private let logo = Bundle.main.url(forResource: "paperclip-logo", withExtension: "png").flatMap { NSImage(contentsOf: $0) }
     weak var controller: FloatingController?
     var start: CGPoint?
     var dragging = false
@@ -184,8 +185,17 @@ struct HeaderDragArea: NSViewRepresentable {
     required init?(coder: NSCoder) { fatalError() }
     override func accessibilityPerformPress() -> Bool { controller?.toggle(); return true }
     override func draw(_ dirtyRect: NSRect) {
-        NSColor(calibratedRed: 0.15, green: 0.35, blue: 0.30, alpha: 1).setFill(); NSBezierPath(ovalIn: bounds.insetBy(dx: 2, dy: 2)).fill()
-        let image = NSImage(systemSymbolName: controller?.model.locked == true ? "lock.fill" : "checklist", accessibilityDescription: nil)!
+        let circle = NSBezierPath(ovalIn: bounds.insetBy(dx: 2, dy: 2))
+        NSColor(calibratedWhite: 0.08, alpha: 1).setFill(); circle.fill()
+        if controller?.model.locked != true, let logo {
+            NSGraphicsContext.saveGraphicsState()
+            circle.addClip()
+            NSGraphicsContext.current?.imageInterpolation = .high
+            logo.draw(in: bounds.insetBy(dx: 2, dy: 2))
+            NSGraphicsContext.restoreGraphicsState()
+            return
+        }
+        let image = NSImage(systemSymbolName: controller?.model.locked == true ? "lock.fill" : "paperclip", accessibilityDescription: nil)!
         image.withSymbolConfiguration(.init(paletteColors: [.white]))?.draw(in: NSRect(x: 12, y: 12, width: 20, height: 20))
     }
     func screenPoint(_ event: NSEvent) -> CGPoint { window?.convertPoint(toScreen: event.locationInWindow) ?? event.locationInWindow }

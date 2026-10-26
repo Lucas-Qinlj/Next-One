@@ -7,6 +7,12 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 回形针 Logo 试用（2026-10-26）
+
+- 按用户要求替换为白色竖向回形针、炭黑背景。保留生成原图，AppKit 转换圆角多尺寸 ICNS；悬浮球显示同源 PNG，菜单栏改为系统单色回形针，锁定保留锁标识。软件名称仍为 Todo-AI。
+- `scripts/package-app.sh debug .local/paperclip-brand/TodoAI.app` 构建打包通过；检查 256 px 图标，实际启动后截图确认 44 pt 悬浮球显示新标识。此轮只改视觉资源与加载，不重复无关业务测试；未声称 Finder 图标缓存或锁定交互重新验收。
+- 已备份 `/Applications/TodoAI.app` 至 `.local/backups/before-paperclip-logo-2026-10-26/TodoAI.app`，以相同 debug 身份替换并打开。安装后二进制与两份图标资源逐字节一致；启动前检查任务数据库与附件哈希未变，没有改名、迁移数据、更新全局 Skill、推送或制作新 DMG。
+
 ## 顶部空白区拖动（2026-10-26）
 
 - 按用户截图，清单/详情/设置/回收站共用顶部工具栏及其上下留白支持按住拖动，保留控件点击；通过原生背景视图接收首次输入，超过 4 pt 后复用球与面板联动及位置保存，不触发清单折叠。锁定穿透不变，无新增权限或依赖。

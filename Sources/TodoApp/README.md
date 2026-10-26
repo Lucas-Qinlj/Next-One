@@ -58,3 +58,5 @@ CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/Co
 添加界面文案时使用 `L("中文模板")`，在四套资源中添加同键译文；动态值保留 Swift 插值，资源中使用 `%1$@` 等位置参数。运行 `swift test --filter LocalizationTests` 验证键集、占位参数、实际资源读取、语言保存与草稿/数据库不变。打包脚本复制 SwiftPM 资源 bundle 到应用包根目录，符合生成的 Bundle.module 解析路径。
 
 安装版与开发版：共享 Store 的编译期目录规则决定整套数据（含语言、窗口偏好及 integration），release 使用 Todo-AI-Release，debug 保留 Todo-AI。打包的 release bundle ID 为 local.todo-ai.release；安装指令始终读取当前 Store.directory，不迁移旧任务、不自动修改全局 Skill。
+
+品牌图标：应用包包含 `paperclip-logo.png`，悬浮球以圆形裁切显示白色竖向回形针与炭黑背景；锁定仍显示白色锁。菜单栏使用原生单色 `paperclip`；缺少 PNG 时回退为系统回形针。应用 ICNS 由同一原图生成，详见[视觉资源](../../Resources/Distribution/README.md)。
