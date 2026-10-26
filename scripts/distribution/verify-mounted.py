@@ -16,12 +16,12 @@ assert os.readlink(volume / 'Applications') == '/Applications'
 for lang in ['zh-Hans', 'en', 'ja', 'ko']:
     assert (app / 'TodoAI_TodoCore.bundle' / f'{lang}.lproj/Localizable.strings').is_file(), lang
 for name in ['SKILL.md', 'references/cli.md']:
-    assert (app / 'Contents/Resources/CodexIntegration/todo-ai' / name).is_file(), name
+    assert (app / 'Contents/Resources/CodexIntegration/next-one' / name).is_file(), name
 assert not any(p.suffix in {'.sqlite', '.db', '.env'} for p in app.rglob('*'))
 with DSStore.open(str(volume / '.DS_Store'), 'r') as store:
     assert store['.']['icvp']['backgroundType'] == 2
     assert store['Next One.app']['Iloc'][0] < store['Applications']['Iloc'][0]
 assert any(volume.glob('.background.*'))
-help_text = subprocess.check_output([str(app / 'Contents/Helpers/todo'), '--help'], text=True)
-assert 'Data: TODO_AI_HOME overrides Application Support/Todo-AI-Release.' in help_text
+help_text = subprocess.check_output([str(app / 'Contents/Helpers/next-one'), '--help'], text=True)
+assert 'Data: NEXT_ONE_HOME overrides Application Support/Next-One-Release.' in help_text
 print('PASS: app icon, Applications link, four languages, Skill, layout, background, CLI')

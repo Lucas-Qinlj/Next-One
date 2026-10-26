@@ -4,13 +4,13 @@ import XCTest
 final class IntegrationTests: XCTestCase {
     private func fixture(_ root: URL) throws -> URL {
         let bundle = root.appendingPathComponent("移动前/Todo AI.app")
-        let helper = bundle.appendingPathComponent("Contents/Helpers/todo")
-        let skill = bundle.appendingPathComponent("Contents/Resources/CodexIntegration/todo-ai")
+        let helper = bundle.appendingPathComponent("Contents/Helpers/next-one")
+        let skill = bundle.appendingPathComponent("Contents/Resources/CodexIntegration/next-one")
         try FileManager.default.createDirectory(at: helper.deletingLastPathComponent(), withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: skill.appendingPathComponent("references"), withIntermediateDirectories: true)
         try Data("#!/bin/sh\nprintf 'version-one'\n".utf8).write(to: helper)
         try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: helper.path)
-        try Data("---\nname: todo-ai\ndescription: Test fixture\n---".utf8).write(to: skill.appendingPathComponent("SKILL.md"))
+        try Data("---\nname: next-one\ndescription: Test fixture\n---".utf8).write(to: skill.appendingPathComponent("SKILL.md"))
         try Data("CLI reference".utf8).write(to: skill.appendingPathComponent("references/cli.md"))
         return bundle
     }
@@ -18,7 +18,7 @@ final class IntegrationTests: XCTestCase {
         let fm = FileManager.default, root = fm.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? fm.removeItem(at: root) }
         let bundle = try fixture(root)
-        let data = root.appendingPathComponent("Users/其他用户/Library/Application Support/Todo-AI")
+        let data = root.appendingPathComponent("Users/其他用户/Library/Application Support/Next-One")
         try fm.createDirectory(at: data, withIntermediateDirectories: true)
         let marker = data.appendingPathComponent("user-data.txt")
         try Data("untouched".utf8).write(to: marker)
@@ -32,7 +32,7 @@ final class IntegrationTests: XCTestCase {
         let second = try CodexIntegration.prepare(dataDirectory: data, bundleURL: moved)
         XCTAssertEqual(second.cli.resolvingSymlinksInPath(), original)
         XCTAssertFalse(second.installPrompt(dataDirectory: data).contains(moved.path))
-        let helper = moved.appendingPathComponent("Contents/Helpers/todo")
+        let helper = moved.appendingPathComponent("Contents/Helpers/next-one")
         try Data("#!/bin/sh\nprintf 'version-two'\n".utf8).write(to: helper)
         let updated = try CodexIntegration.prepare(dataDirectory: data, bundleURL: moved)
         XCTAssertEqual(updated.cli, first.cli)

@@ -26,7 +26,7 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 透明度仅作用于背景，提高对比度/减少透明时使用实色背景。窗口偏好单独保存于 window.json。显示器变动时按实际屏幕可见区域回收位置；实际多屏、Spaces 与穿透测试限制见 [验收报告](../../docs/acceptance/macos-floating-todo.md)。
 
-启动：根目录 `./scripts/run.sh`。运行开发测试时使用 `TODO_AI_HOME` 隔离。原生窗口测试须操作实际应用；几何单元测试不替代拖动、置顶和跨应用输入验证。
+启动：根目录 `./scripts/run.sh`。运行开发测试时使用 `NEXT_ONE_HOME` 隔离。原生窗口测试须操作实际应用；几何单元测试不替代拖动、置顶和跨应用输入验证。
 
 全部项目清单按绑定项目显示透明 1 pt 彩色边框；9 pt 项目名嵌在顶边真实缺口，点击名称切换项目折叠，复用窗口 collapsed 偏好（project- 前缀）。不显示展开箭头或空项目；未分类直接显示原任务树。项目颜色按稳定项目数组位置分配色相，深浅模式分别调亮度。单项目筛选保持无框任务树。优先级使用独立 PriorityBadge：一般/比较紧急/紧急对应 low/medium/high，绿/黄/红圆角背景白字；共享 label 保证详情及右键菜单名称一致。
 
@@ -46,7 +46,7 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 设置页每条绑定目录在“重绑”右侧提供 trash 图标；悬停和辅助功能名称明确解除绑定、保留文件/待办，确认后走 project unbind。无目录后显示“绑定文件夹…”入口。
 
-CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/CodexIntegration/todo-ai 读取资源，启动时准备到当前 Store.directory/integration 的内容寻址版本目录，完整校验后原子切换 current 链接。设置指令引用 current/bin/todo 和 current/skills/todo-ai/SKILL.md，不含源码定位逻辑或编译机路径。缺资源/无法写入时提示错误并支持重试，不影响待办打开。scripts/package-app.sh [debug|release] 构建自包含应用包，run.sh 打包 debug 后启动。用户级 Skill 仍由粘贴指令后的 Codex 安装，应用不自动修改全局配置。
+CodexIntegration 只从应用包 Contents/Helpers/next-one 和 Contents/Resources/CodexIntegration/next-one 读取资源，启动时准备到当前 Store.directory/integration 的内容寻址版本目录，完整校验后原子切换 current 链接。设置指令引用 current/bin/next-one 和 current/skills/next-one/SKILL.md，不含源码定位逻辑或编译机路径。缺资源/无法写入时提示错误并支持重试，不影响待办打开。scripts/package-app.sh [debug|release] 构建自包含应用包，run.sh 打包 debug 后启动。用户级 Skill 仍由粘贴指令后的 Codex 安装，应用不自动修改全局配置。
 
 
 ## 多语言
@@ -57,8 +57,10 @@ CodexIntegration 只从应用包 Contents/Helpers/todo 和 Contents/Resources/Co
 
 添加界面文案时使用 `L("中文模板")`，在四套资源中添加同键译文；动态值保留 Swift 插值，资源中使用 `%1$@` 等位置参数。运行 `swift test --filter LocalizationTests` 验证键集、占位参数、实际资源读取、语言保存与草稿/数据库不变。打包脚本复制 SwiftPM 资源 bundle 到应用包根目录，符合生成的 Bundle.module 解析路径。
 
-安装版与开发版：共享 Store 的编译期目录规则决定整套数据（含语言、窗口偏好及 integration），release 使用 Todo-AI-Release，debug 保留 Todo-AI。打包的 release bundle ID 为 local.todo-ai.release；安装指令始终读取当前 Store.directory，不迁移旧任务、不自动修改全局 Skill。
+安装版与开发版：共享 Store 的编译期目录规则决定整套数据（含语言、窗口偏好及 integration），release 使用 Next-One-Release，debug 使用 Next-One。打包的 release bundle ID 为 local.todo-ai.release；安装指令始终读取当前 Store.directory，不迁移旧任务、不自动修改全局 Skill。
 
 品牌图标：应用包包含 `paperclip-logo.png`，悬浮球以圆形裁切显示白色竖向回形针与炭黑背景；锁定仍显示白色锁。菜单栏使用原生单色 `paperclip`；缺少 PNG 时回退为系统回形针。应用 ICNS 由同一原图生成，详见[视觉资源](../../Resources/Distribution/README.md)。
 
-产品显示名为 Next One，默认应用包为 `.build/Next One.app`；菜单、窗口、四语安装指令使用新名称。内部 `TodoAI` 可执行文件、资源 bundle、应用标识和数据目录保持兼容旧版。
+产品显示名为 Next One，默认应用包为 `.build/Next One.app`；菜单、窗口、四语安装指令使用新名称。内部 `TodoAI` 可执行文件、资源 bundle、应用标识保持兼容旧版，数据路径兼容规则见下文。
+
+默认新目录不存在且同渠道旧目录存在时，Store 建立新路径到旧目录的符号链接，数据库、附件和偏好仍为同一份；已有新目录不合并，显式目录不自动链接。语言偏好在 Store 准备完毕后加载。NEXT_ONE_HOME 优先，TODO_AI_HOME 仅作为旧调用兼容；安装提示只展示新变量。

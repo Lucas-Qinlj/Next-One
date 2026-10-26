@@ -110,7 +110,7 @@ CLI와 Skill 리소스를 포함한 `.build/Next One.app`을 빌드하고 실행
 
 지시문을 복사하는 것만으로 설치되지는 않습니다. 앱 시작 시 자체 데이터 디렉터리에 연동 리소스를 준비하지만, 전역 Skill이나 Codex 설정은 바꾸지 않습니다. 설치 후 자동 검색은 새로운 대상 세션에서 검증해야 합니다.
 
-[포함된 Skill](../../Skills/todo-ai/SKILL.md) · [CLI 참고 문서](../../Skills/todo-ai/references/cli.md) · [선택적 작업 규칙](../codex-rules-snippet.md). 이 상세 문서들은 현재 중국어로 제공됩니다.
+[포함된 Skill](../../Skills/next-one/SKILL.md) · [CLI 참고 문서](../../Skills/next-one/references/cli.md) · [선택적 작업 규칙](../codex-rules-snippet.md). 이 상세 문서들은 현재 중국어로 제공됩니다.
 
 ### CLI 직접 사용하기
 
@@ -128,19 +128,19 @@ bind 명령은 현재 체크아웃을 프로젝트로 생성하거나 연결합�
 
 ## 데이터와 개인정보
 
-- Release 설치판과 해당 CLI는 `~/Library/Application Support/Todo-AI-Release`, debug 개발판은 `~/Library/Application Support/Todo-AI`를 사용합니다. 할 일, 첨부 파일, 언어, 창 설정, 연동 리소스가 분리됩니다. 설치판의 저장 폴더가 없으면 빈 목록으로 시작하고 이후 업데이트에서는 자체 데이터를 유지합니다. 개발판 데이터를 가져오거나 삭제하지 않습니다.
-- 이전의 공유 데이터 설치판에서 업데이트했다면 설정에서 새로운 Codex 연동 안내를 복사해 다시 연결하세요. 기존 전역 Skill은 자동 변경되지 않습니다. 새 안내의 CLI와 데이터 경로를 사용하세요. `TODO_AI_HOME`은 두 기본 경로보다 우선합니다.
+- Release 설치판과 해당 CLI는 `~/Library/Application Support/Next-One-Release`, debug 개발판은 `~/Library/Application Support/Next-One`를 사용합니다. 할 일, 첨부 파일, 언어, 창 설정, 연동 리소스가 분리됩니다. 설치판의 저장 폴더가 없으면 빈 목록으로 시작하고 이후 업데이트에서는 자체 데이터를 유지합니다. 개발판 데이터를 가져오거나 삭제하지 않습니다.
+- 이전의 공유 데이터 설치판에서 업데이트했다면 설정에서 새로운 Codex 연동 안내를 복사해 다시 연결하세요. 기존 전역 Skill은 자동 변경되지 않습니다. 새 안내의 CLI와 데이터 경로를 사용하세요. `NEXT_ONE_HOME`은 두 기본 경로보다 우선합니다.
 - 첨부 파일은 관리 폴더에 복사되므로 원본을 옮겨도 사본이 유지됩니다. 동영상 재생은 시스템 기본 미디어 앱에 따라 달라집니다.
 - 삭제한 작업과 첨부 파일은 복구할 수 있으며, 휴지통을 자동으로 비우지 않습니다.
 - Next One는 할 일이나 첨부 파일을 자동 업로드하지 않습니다. Coding Agent에게 읽도록 요청한 내용은 해당 Agent의 맥락에 포함되며, 그 서비스의 데이터 처리 방식을 따릅니다.
 - 백업할 때는 UI를 종료하고 CLI 쓰기를 중단한 뒤, SQLite/WAL 파일과 첨부 파일을 포함한 데이터 디렉터리 전체를 복사하세요.
 
-데모나 테스트에서는 앱과 CLI에 **동일한** `TODO_AI_HOME`을 지정하세요.
+데모나 테스트에서는 앱과 CLI에 **동일한** `NEXT_ONE_HOME`을 지정하세요.
 
 ```sh
-TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+NEXT_ONE_HOME="$PWD/.local/demo" ./scripts/run.sh
 # 다른 터미널에서 같은 저장소로 이동한 뒤 실행:
-TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
+NEXT_ONE_HOME="$PWD/.local/demo" .build/debug/todo project list
 ```
 
 데이터 디렉터리당 UI 인스턴스는 하나만 실행하세요. CLI는 동시에 호출할 수 있습니다.
@@ -162,7 +162,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCore](../../Sources/TodoCore/README.md) | 데이터 저장, 트랜잭션, 작업 규칙, 충돌 검사 |
 | [TodoApp](../../Sources/TodoApp/README.md) | 플로팅 창, 작업 UI, 로컬 연동 준비 |
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent와 스크립트를 위한 구조화된 인터페이스 |
-| [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex의 할 일 읽기와 업데이트 규칙 |
+| [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex의 할 일 읽기와 업데이트 규칙 |
 
 로컬 시험 설치는 `./scripts/package-dmg.sh`로 만들 수 있습니다. Applications로 드래그해 설치하는 DMG와 SHA-256 체크섬이 `.local/releases/`에 생성됩니다. [로컬 설치 안내](../distribution/local-install.md)(중국어)를 참고하세요. 이 시험판은 Developer ID 서명이나 공증을 받지 않았습니다.
 

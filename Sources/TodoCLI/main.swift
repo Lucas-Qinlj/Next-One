@@ -3,7 +3,7 @@ import TodoCore
 
 let help = """
 Next One local interface · JSON on stdout, errors on stderr, nonzero exit on failure
-Usage: todo <command> [id] [--field value] [--json]
+Usage: next-one <command> [id] [--field value] [--json]
   board list
   board place --key p:ID|t:ID --expected-revision N --expected-board-revision N --anchor p:ID|t:ID --placement before|after|end
   project create --name NAME
@@ -29,7 +29,7 @@ Usage: todo <command> [id] [--field value] [--json]
 Fields: --title, --description, --description-file FILE (or - for stdin), --status,
         --priority high|medium|low, --color none|red|orange|green|blue|purple,
         --due-date yyyy-MM-dd, --due-at ISO8601 (timezone required); empty value clears.
-Data: TODO_AI_HOME overrides Application Support/\(Store.defaultDirectoryName). No network server.
+Data: NEXT_ONE_HOME overrides Application Support/\(Store.defaultDirectoryName). No network server.
 Resolved data directory: \(Store.defaultDirectory.path)
 """
 do {

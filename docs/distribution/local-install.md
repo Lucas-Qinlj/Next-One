@@ -2,7 +2,7 @@
 
 - 日期：2026-10-26
 - 范围：本机 release 应用与 DMG 制作，供用户手动拖入 Applications 试装。不是签名公证或公开发布。
-- 版本：0.1.0 本地试装版，build 3；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
+- 版本：0.1.0 本地试装版，build 4；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
 
 ## 安装窗口
 
@@ -36,7 +36,7 @@ python3.13 -m venv .local/dmg-tools/venv
 3. 从“应用程序”打开 Next One；单击悬浮球显示清单。
 4. 安装完成后推出磁盘映像。不要直接从只读映像长期运行应用。
 
-安装版使用独立的 `~/Library/Application Support/Todo-AI-Release`，开发版保留 `~/Library/Application Support/Todo-AI`。旧版共用目录中的待办不会导入或删除；首次打开新版安装版时，若其独立目录尚不存在，则显示空清单。以后更新安装版保留其自身数据。同一数据目录不要同时运行两个 UI 实例。安装前如需备份，退出 UI、停止 CLI 写入，再复制完整数据目录。仅移除 Applications 中的应用不会清除待办数据。
+安装版使用独立的 `~/Library/Application Support/Next-One-Release`，开发版保留 `~/Library/Application Support/Next-One`。旧版共用目录中的待办不会导入或删除；首次打开新版安装版时，若其独立目录尚不存在，则显示空清单。以后更新安装版保留其自身数据。同一数据目录不要同时运行两个 UI 实例。安装前如需备份，退出 UI、停止 CLI 写入，再复制完整数据目录。仅移除 Applications 中的应用不会清除待办数据。
 
 安装不自动安装全局 Skill。需要接入时在设置中复制当前生成的 Codex 指令，再发送给本机 Codex 会话。旧全局 Skill 可能仍指向开发数据，请从新版设置复制接入指令重新接入；不自动覆盖已有全局 Skill。开发版与新版安装版可以分别使用各自数据，不能假设两个清单会同步。
 
@@ -64,3 +64,5 @@ DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI
 - 文件：`.local/releases/Next-One-0.1.0-local-isolated-arm64-59ea3a2.dmg`，约 4.5 MB；同目录附 `.sha256`。
 - 源码：`59ea3a2`；产品名称 Next One，0.1.0 build 3，arm64。
 - release 构建、镜像 CRC/SHA-256、挂载资源/布局/CLI、安装包复制完整性及隔离数据启动均通过；上图为本次 Finder 实际截图。测试应用已退出，未覆盖 Applications 中现用开发版。
+
+路径更名后默认使用 Next-One / Next-One-Release。同渠道旧路径存在、新路径不存在时，系统建立兼容链接继续使用原存储，不复制或合并数据；开发版和 release 仍隔离。Skill 使用 next-one，导出命令为 bin/next-one，安装指令使用 NEXT_ONE_HOME。旧全局 Skill 不自动改写，可从新版设置复制指令安装新 Skill。

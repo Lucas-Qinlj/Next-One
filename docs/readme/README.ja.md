@@ -110,7 +110,7 @@ CLI と Skill を含む `.build/Next One.app` をビルドして起動します�
 
 コピーしただけではインストールされません。アプリの起動時に連携リソースを自身のデータディレクトリへ用意しますが、グローバル Skill や Codex 設定は変更しません。インストール後の自動検出は、新しい対象セッションでの検証が必要です。
 
-[同梱 Skill](../../Skills/todo-ai/SKILL.md) · [CLI リファレンス](../../Skills/todo-ai/references/cli.md) · [任意の作業ルール](../codex-rules-snippet.md)。これらの詳細資料は現在、中国語で提供しています。
+[同梱 Skill](../../Skills/next-one/SKILL.md) · [CLI リファレンス](../../Skills/next-one/references/cli.md) · [任意の作業ルール](../codex-rules-snippet.md)。これらの詳細資料は現在、中国語で提供しています。
 
 ### CLI を直接使う
 
@@ -128,19 +128,19 @@ bind コマンドは、このチェックアウトをプロジェクトとして
 
 ## データとプライバシー
 
-- Release インストーラとその CLI は `~/Library/Application Support/Todo-AI-Release`、debug 開発版は `~/Library/Application Support/Todo-AI` を使います。タスク、添付ファイル、言語、ウィンドウ設定、連携リソースは別々です。インストール版の保存先がなければ空のリストで始まり、その後の更新では自身のデータを保持します。開発版のデータは取り込みも削除もしません。
-- 以前の共有データ版から更新した場合、設定から新しい Codex 連携手順をコピーして再設定してください。既存のグローバル Skill は自動変更されません。新しい手順の CLI とデータパスを使ってください。`TODO_AI_HOME` はどちらの既定値よりも優先されます。
+- Release インストーラとその CLI は `~/Library/Application Support/Next-One-Release`、debug 開発版は `~/Library/Application Support/Next-One` を使います。タスク、添付ファイル、言語、ウィンドウ設定、連携リソースは別々です。インストール版の保存先がなければ空のリストで始まり、その後の更新では自身のデータを保持します。開発版のデータは取り込みも削除もしません。
+- 以前の共有データ版から更新した場合、設定から新しい Codex 連携手順をコピーして再設定してください。既存のグローバル Skill は自動変更されません。新しい手順の CLI とデータパスを使ってください。`NEXT_ONE_HOME` はどちらの既定値よりも優先されます。
 - 添付ファイルは管理用フォルダにコピーされるため、元ファイルを移動しても残ります。動画再生はシステム既定のメディアアプリに依存します。
 - 削除したタスクと添付ファイルは復元でき、ゴミ箱の自動削除はありません。
 - Next One はタスクや添付ファイルを自動アップロードしません。Coding Agent に読み取りを依頼した内容は、その Agent のコンテキストに入り、当該サービスのデータ取り扱いに従います。
 - バックアップ時は UI を終了し、CLI の書き込みを止めてから、SQLite/WAL と添付ファイルを含むデータディレクトリ全体をコピーします。
 
-デモやテストでは、アプリと CLI に**同じ** `TODO_AI_HOME` を指定します。
+デモやテストでは、アプリと CLI に**同じ** `NEXT_ONE_HOME` を指定します。
 
 ```sh
-TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+NEXT_ONE_HOME="$PWD/.local/demo" ./scripts/run.sh
 # 別のターミナルで、同じリポジトリから実行：
-TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
+NEXT_ONE_HOME="$PWD/.local/demo" .build/debug/todo project list
 ```
 
 データディレクトリごとに UI は1つだけ起動してください。CLI は並行実行できます。
@@ -162,7 +162,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCore](../../Sources/TodoCore/README.md) | 永続化、トランザクション、タスクのルール、競合検査 |
 | [TodoApp](../../Sources/TodoApp/README.md) | フローティングウィンドウ、UI、ローカル連携の準備 |
 | [TodoCLI](../../Sources/TodoCLI/README.md) | Agent とスクリプト用の構造化インターフェース |
-| [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex によるタスクの読み取り・更新の取り決め |
+| [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex によるタスクの読み取り・更新の取り決め |
 
 ローカルで試すには `./scripts/package-dmg.sh` を実行してください。Applications にドラッグしてインストールする DMG と SHA-256 チェックサムが `.local/releases/` に生成されます。[ローカルインストール手順](../distribution/local-install.md)（中国語）を参照してください。この試用版は Developer ID 署名・公証を行っていません。
 

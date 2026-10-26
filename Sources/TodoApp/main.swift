@@ -4,9 +4,10 @@ import TodoCore
 @MainActor final class AppDelegate: NSObject, NSApplicationDelegate {
     var controller: FloatingController?
     func applicationDidFinishLaunching(_ notification: Notification) {
-        LanguageSettings.shared.load(directory: Store.defaultDirectory)
         do {
-            let model = AppModel(store: try Store())
+            let store = try Store()
+            LanguageSettings.shared.load(directory: store.directory)
+            let model = AppModel(store: store)
             model.prepareCodexIntegration()
             controller = FloatingController(model: model)
             for item in NSApp.mainMenu?.items.first?.submenu?.items ?? [] { item.target = controller }

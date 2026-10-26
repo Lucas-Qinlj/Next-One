@@ -76,10 +76,12 @@ final class LocalizationTests: XCTestCase {
     }
 
     func testTranslatedInstallPromptKeepsPathsAndRules() {
-        let integration = CodexIntegration(skill: URL(fileURLWithPath: "/test 空間/%1$@/SKILL.md"), cli: URL(fileURLWithPath: "/test/bin/todo"))
+        let integration = CodexIntegration(skill: URL(fileURLWithPath: "/test 空間/%1$@/SKILL.md"), cli: URL(fileURLWithPath: "/test/bin/next-one"))
         for language in Localization.languages {
             let prompt = integration.installPrompt(dataDirectory: URL(fileURLWithPath: "/test/data"), language: language)
-            for value in [integration.skill.path, integration.cli.path, "/test/data", "~/.agents/skills/todo-ai", "TODO_AI_HOME", "revision", "project list", "context"] {
+            XCTAssertFalse(prompt.contains("todo-ai"))
+            XCTAssertFalse(prompt.contains("TODO_AI_HOME"))
+            for value in [integration.skill.path, integration.cli.path, "/test/data", "~/.agents/skills/next-one", "NEXT_ONE_HOME", "revision", "project list", "context"] {
                 XCTAssertTrue(prompt.contains(value), "\(language): \(value)")
             }
             if language == "en" { XCTAssertTrue(prompt.hasPrefix("Please install")) }

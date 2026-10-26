@@ -8,7 +8,7 @@ from pathlib import Path
 
 cli = Path(__file__).resolve().parents[1] / '.build/debug/todo'
 with tempfile.TemporaryDirectory(prefix='todo-drag-') as directory:
-    env = dict(os.environ, TODO_AI_HOME=directory)
+    env = dict(os.environ, NEXT_ONE_HOME=directory)
     def run(*args, error=None):
         p = subprocess.run([str(cli), *args], env=env, text=True, capture_output=True)
         result = json.loads(p.stderr if p.returncode else p.stdout)

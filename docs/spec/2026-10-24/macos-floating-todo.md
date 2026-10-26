@@ -304,7 +304,7 @@ Codex -> Skill -> CLI ----> 共享业务规则 -----> 同一份本地数据
 
 ### 7.2 拟定命令面
 
-以下保留最初接口方向；实际完整参数与错误结构已落实在 CLI 帮助及 [接口参考](../../../Skills/todo-ai/references/cli.md)。
+以下保留最初接口方向；实际完整参数与错误结构已落实在 CLI 帮助及 [接口参考](../../../Skills/next-one/references/cli.md)。
 
 ```text
 todo project list --json
@@ -423,7 +423,7 @@ KF 开发执行会话采用第 2 节建议默认值：macOS 14 起，Swift Packa
 - 存储使用 SQLite WAL、FULL 同步、5 秒 busy timeout、BEGIN IMMEDIATE；v1 将个人待办集合保存为一个事务快照，任务级 revision 检查。容量和高吞吐并非本轮承诺，后续需要时可规范化表结构。
 - 所有数据及窗口偏好默认在 Application Support/Todo-AI，`TODO_AI_HOME` 用于隔离环境。schema v1；未知较新版本拒绝打开，不覆盖。
 - 详情采用明确“保存更改”，返回、切页、锁定、正常退出前也尝试保存；冲突保留草稿并提供重新读取入口。CLI 刷新不会覆盖草稿。
-- 实际 CLI 与错误契约见 [接口参考](../../../Skills/todo-ai/references/cli.md)，持续规则见 [可选规则](../../../docs/codex-rules-snippet.md)。Skill 仅保存在项目内。
+- 实际 CLI 与错误契约见 [接口参考](../../../Skills/next-one/references/cli.md)，持续规则见 [可选规则](../../../docs/codex-rules-snippet.md)。Skill 仅保存在项目内。
 - 实施顺序：双窗口与数据核心 → 完整 UI/CLI → 项目 Skill → 自动测试、原生交互与接入验收。现有目录未初始化 Git，当前目录实现，没有 worktree、提交或远程操作。
 - 实际命令：`swift build`、`swift test`、`python3 scripts/cli-smoke.py`、`./scripts/run.sh`。使用 Swift 工具和 Python 标准库。
 - 2026-10-25：完成本地实现、9 组核心测试与真实 CLI 测试；本会话按项目 Skill 读写并在 UI 验证同步。窄清单、第十层详情、冲突保留、PNG 预览、球菜单与拖动已有实际证据。最终三个角缩放、背后应用实际输入穿透、视频播放及新会话/多桌面组合仍需补验。
@@ -446,6 +446,8 @@ KF 开发执行会话采用第 2 节建议默认值：macOS 14 起，Swift Packa
 用户选定生成的白色竖向回形针与炭黑背景，并要求替换试用。应用图标和悬浮球复用同一原图，分别使用圆角方形与圆形裁切；菜单栏改用系统单色回形针，锁定时保留锁标识。仅视觉调整，名称、交互及业务规则不变。debug 打包通过，已替换本机应用并观察实际悬浮球；未重新制作 DMG 或对外发布。
 
 ### 2026-10-26：产品正式名称 Next One
+
+后续接入路径更名要求以 [Next One 接入路径统一](../2026-10-26/next-one-paths.md) 为准，取代下述保留数据目录、Skill 和环境变量原名的初次更名决定。
 
 - 用户确认软件名称改为 **Next One**，GitHub 仓库使用不含空格的 **Next-One**。白色竖向回形针与炭黑底保持不变。
 - 应用包名为 `Next One.app`，显示名称、窗口/菜单、四语文案、CLI 帮助与当前 README 使用新名称；安装背景和后续 DMG 打包同步。

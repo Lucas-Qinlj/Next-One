@@ -1,24 +1,24 @@
 # 本地接口 v1
 
-所有命令成功输出 `{"ok":true,"data":...}` 到 stdout；失败输出 `{"ok":false,"error":{"code":"...","message":"..."}}` 到 stderr，并退出 1。统一 JSON，`--json` 可省略。对象字段使用 snake_case，任务包含 `project_id`、`parent_id`、`revision`；未分类对应缺省 project_id；可空字段无值时省略。使用前以 `todo --help` 核对命令。
+所有命令成功输出 `{"ok":true,"data":...}` 到 stdout；失败输出 `{"ok":false,"error":{"code":"...","message":"..."}}` 到 stderr，并退出 1。统一 JSON，`--json` 可省略。对象字段使用 snake_case，任务包含 `project_id`、`parent_id`、`revision`；未分类对应缺省 project_id；可空字段无值时省略。使用前以 `next-one --help` 核对命令。
 
 ```sh
-todo project list
-todo project bind --path "$PWD" --name "我的项目"
-todo context --cwd "$PWD" --limit 100 --offset 0
-todo list --project PROJECT_ID
-todo get TASK_ID
-todo add --project PROJECT_ID --title '明确的后续工作' --source codex --request-key STABLE_KEY
-todo add --parent TASK_ID --title '明确的子任务' --source codex --request-key CHILD_KEY
-todo update TASK_ID --status in_progress --expected-revision 1
-todo update TASK_ID --description-file ./result.txt --expected-revision 2
-todo complete TASK_ID --expected-revision 3
-todo complete TASK_ID --expected-revision 3 --cascade
-todo move TASK_ID --project PROJECT_ID --parent root --expected-revision 4
-todo delete TASK_ID --expected-revision 5
-todo trash
-todo restore TASK_ID --expected-revision 6
-todo attachment add TASK_ID --path ./reference.png --expected-revision 7 --request-key ATTACHMENT_KEY
+next-one project list
+next-one project bind --path "$PWD" --name "我的项目"
+next-one context --cwd "$PWD" --limit 100 --offset 0
+next-one list --project PROJECT_ID
+next-one get TASK_ID
+next-one add --project PROJECT_ID --title '明确的后续工作' --source codex --request-key STABLE_KEY
+next-one add --parent TASK_ID --title '明确的子任务' --source codex --request-key CHILD_KEY
+next-one update TASK_ID --status in_progress --expected-revision 1
+next-one update TASK_ID --description-file ./result.txt --expected-revision 2
+next-one complete TASK_ID --expected-revision 3
+next-one complete TASK_ID --expected-revision 3 --cascade
+next-one move TASK_ID --project PROJECT_ID --parent root --expected-revision 4
+next-one delete TASK_ID --expected-revision 5
+next-one trash
+next-one restore TASK_ID --expected-revision 6
+next-one attachment add TASK_ID --path ./reference.png --expected-revision 7 --request-key ATTACHMENT_KEY
 ```
 
 - `project bind --project ID --expected-revision N` 添加同一项目的额外绑定；`project update ID --name NAME --expected-revision N` 改名；`--path NEW --replace-path OLD` 重新绑定失效目录。
@@ -63,4 +63,4 @@ todo attachment add TASK_ID --path ./reference.png --expected-revision 7 --reque
 
 ## 数据渠道
 
-debug CLI 默认读取 Application Support/Todo-AI，release CLI 默认读取 Application Support/Todo-AI-Release。TODO_AI_HOME 显式覆盖默认值；`--help` 显示实际解析目录且不打开数据库。安装版与开发版不自动复制/迁移任务，调用方应使用目标应用设置给出的 CLI 与目录。
+debug CLI 默认读取 Application Support/Next-One，release CLI 默认读取 Application Support/Next-One-Release。NEXT_ONE_HOME 显式覆盖默认值；`--help` 显示实际解析目录且不打开数据库。安装版与开发版不自动复制/迁移任务，调用方应使用目标应用设置给出的 CLI 与目录。

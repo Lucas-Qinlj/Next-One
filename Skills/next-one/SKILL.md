@@ -1,11 +1,11 @@
 ---
-name: todo-ai
+name: next-one
 description: 通过 Next One 本地 CLI 读取项目待办、记录用户明确工作事项并更新真实进度。用于已绑定目录的本机 Codex 工作，不用于全量聊天监听、远程自动同步或直接改数据库。
 ---
 
 # Next One
 
-使用前定位可执行文件：用户提供的 `todo`、PATH 中的 `todo`，或本项目 `.build/debug/todo`。不要猜测另一个项目的数据目录。同一构建渠道的应用与 CLI 共用数据：debug 默认本机 Application Support/Todo-AI，release 安装版默认 Application Support/Todo-AI-Release。优先使用用户从应用设置复制的准确 CLI/数据路径，不能用 .build/debug/todo 代替安装版 CLI；显式设置 TODO_AI_HOME 时该目录优先。隔离测试时，两者必须使用相同 TODO_AI_HOME。执行 `todo --help` 核对实际版本。
+使用前定位可执行文件：用户提供的 `next-one`、PATH 中的 `next-one`，或本项目 `.build/debug/todo`。不要猜测另一个项目的数据目录。同一构建渠道的应用与 CLI 共用数据：debug 默认本机 Application Support/Next-One，release 安装版默认 Application Support/Next-One-Release。优先使用用户从应用设置复制的准确 CLI/数据路径，不能用 .build/debug/todo 代替安装版 CLI；显式设置 NEXT_ONE_HOME 时该目录优先。隔离测试时，两者必须使用相同 NEXT_ONE_HOME。执行 `next-one --help` 核对实际版本。
 
 1. 开始项目工作，用 `todo context --cwd "$PWD" --json` 读取绑定项目摘要。目录边界匹配，嵌套取最长；worktree 只有显式绑定才归属同一项目。
 2. `project_unmatched` 表示没有绑定，不得改写别的项目。用户明确指定项目 ID 或未分类后才可写。需要绑定时使用 `project bind --path DIR`，不扫描代码。无目录项目可由用户明确要求后通过 `project create --name NAME` 创建；之后以项目 ID 绑定目录，不能凭名称自动匹配。用户要求排序/分组时使用接口参考中的 place/group 原子命令，不自行拆成多次 move。

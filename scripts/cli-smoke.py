@@ -4,7 +4,7 @@ import concurrent.futures, json, os, pathlib, subprocess, tempfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CLI = ROOT / '.build/debug/todo'
 with tempfile.TemporaryDirectory(prefix='todo-cli-') as tmp:
-    env = dict(os.environ, TODO_AI_HOME=tmp)
+    env = dict(os.environ, NEXT_ONE_HOME=tmp)
     def run(*args, error=None):
         p = subprocess.run([str(CLI), *args], env=env, text=True, capture_output=True)
         value = json.loads(p.stderr if p.returncode else p.stdout)

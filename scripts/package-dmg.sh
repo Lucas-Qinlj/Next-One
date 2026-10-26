@@ -14,7 +14,7 @@ staging=$(mktemp -d "$PWD/.build/dmg-stage.XXXXXX")
 trap 'rm -rf "$staging"' EXIT
 ./scripts/package-app.sh release "$staging/Next One.app"
 /usr/libexec/PlistBuddy -c 'Add :CFBundleShortVersionString string 0.1.0' "$staging/Next One.app/Contents/Info.plist"
-/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 3' "$staging/Next One.app/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleVersion string 4' "$staging/Next One.app/Contents/Info.plist"
 architecture=$(uname -m)
 revision=$(git rev-parse --short HEAD)
 image="$output_dir/Next-One-0.1.0-local-isolated-${architecture}-${revision}.dmg"

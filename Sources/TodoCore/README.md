@@ -6,7 +6,7 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 
 分支移动、级联完成、祖先重开、删除/恢复均为事务。恢复按删除组处理，不恢复之前已独立删除的后代。附件先复制并同步文件，再提交记录，失败回滚并清理本次副本；进程中断留下的无引用文件不自动删除。附件软删除与任务回收站均长期保留。
 
-数据默认由 TodoCore 编译配置决定：debug 使用 Application Support/Todo-AI，release 使用 Application Support/Todo-AI-Release（Package.swift 的 TODO_AI_DISTRIBUTION）。同构建的应用与 CLI 一致，复制后的 CLI 不依赖所在位置。`TODO_AI_HOME` 优先覆盖；不自动迁移或删除旧目录。当前全量快照适合个人清单，读改写成本随总任务、请求历史增长；需要大量数据时再引入规范化表和迁移。目录为本机用户私有，不监听端口，不提供远程接口。
+数据默认由 TodoCore 编译配置决定：debug 使用 Application Support/Next-One，release 使用 Application Support/Next-One-Release（Package.swift 的 TODO_AI_DISTRIBUTION）。同构建的应用与 CLI 一致，复制后的 CLI 不依赖所在位置。`NEXT_ONE_HOME` 优先覆盖；不自动迁移或删除旧目录。当前全量快照适合个人清单，读改写成本随总任务、请求历史增长；需要大量数据时再引入规范化表和迁移。目录为本机用户私有，不监听端口，不提供远程接口。
 
 验证：根目录 `swift test`，实际 CLI 进程验证用 `python3 scripts/cli-smoke.py`。不要用真实待办做失败路径测试。
 
@@ -18,3 +18,5 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 
 
 本地化：`LocalizedText` 分离文案模板与插值参数，`Localization` 使用本地 `.strings` 资源输出中/英/日/韩文；只改变展示，不参与 Store 数据更新。`TodoError.localizedText` 供 UI 翻译，`message` / `errorDescription` 保留原中文契约，系统生成的动态错误使用 `verbatim:`。位置参数一次性从原模板替换，用户内容中的 `%1$@` 等文本不会被再次替换。
+
+品牌路径兼容：默认目录为 Next-One / Next-One-Release。新路径不存在时可链接至同渠道旧目录，保留同一数据库，不复制 live WAL；已有新目录优先，不跨渠道导入。显式 Store(directory:) 与环境变量指定目录不创建兼容链接。NEXT_ONE_HOME 优先于旧 TODO_AI_HOME。DataDirectoryTests 覆盖链接复用、双入口一致性、附件/偏好及异常保护。

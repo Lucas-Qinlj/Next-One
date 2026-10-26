@@ -8,22 +8,48 @@ public final class Store {
     private let lock = NSRecursiveLock()
     public static var defaultDirectoryName: String {
         #if TODO_AI_DISTRIBUTION
-        return "Todo-AI-Release"
+        return "Next-One-Release"
         #else
-        return "Todo-AI"
+        return "Next-One"
         #endif
     }
     static func resolveDirectory(environment: [String: String], applicationSupport: URL) -> URL {
-        if let path = environment["TODO_AI_HOME"] { return URL(fileURLWithPath: path) }
+        if let path = environment["NEXT_ONE_HOME"] ?? environment["TODO_AI_HOME"] { return URL(fileURLWithPath: path) }
         return applicationSupport.appendingPathComponent(defaultDirectoryName)
     }
     public static var defaultDirectory: URL {
         resolveDirectory(environment: ProcessInfo.processInfo.environment,
                          applicationSupport: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0])
     }
-    public init(directory: URL = Store.defaultDirectory) throws {
+    static func prepareDefaultDirectory(_ directory: URL, legacy: URL) throws {
+        let fm = FileManager.default
+        // Alias the existing store instead of copying a live SQLite database or splitting writes.
+        if (try? directory.resourceValues(forKeys: [.isSymbolicLinkKey]))?.isSymbolicLink == true {
+            guard (try? directory.resolvingSymlinksInPath().resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true else {
+                throw TodoError("storage_unavailable", verbatim: "Invalid data directory link: " + directory.path)
+            }
+            return
+        }
+        if fm.fileExists(atPath: directory.path) { return }
+        guard fm.fileExists(atPath: legacy.path) else { return }
+        guard (try? legacy.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true else {
+            throw TodoError("storage_unavailable", verbatim: "Legacy data path is not a directory: " + legacy.path)
+        }
+        do { try fm.createSymbolicLink(at: directory, withDestinationURL: legacy) }
+        catch {
+            // A concurrent app/CLI may have created exactly the same link.
+            guard directory.resolvingSymlinksInPath() == legacy.resolvingSymlinksInPath(), fm.fileExists(atPath: directory.path) else { throw error }
+        }
+    }
+    public init(directory explicitDirectory: URL? = nil) throws {
+        let directory = explicitDirectory ?? Store.defaultDirectory
         self.directory = directory
         do {
+            let env = ProcessInfo.processInfo.environment
+            if explicitDirectory == nil && env["NEXT_ONE_HOME"] == nil && env["TODO_AI_HOME"] == nil {
+                let legacyName = Store.defaultDirectoryName.replacingOccurrences(of: "Next-One", with: "Todo-AI")
+                try Store.prepareDefaultDirectory(directory, legacy: directory.deletingLastPathComponent().appendingPathComponent(legacyName))
+            }
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
             try FileManager.default.createDirectory(at: directory.appendingPathComponent("attachments"), withIntermediateDirectories: true)
         } catch { throw TodoError("storage_unavailable", verbatim: error.localizedDescription) }

@@ -115,7 +115,7 @@ This builds and launches `.build/Next One.app`, including its CLI and Skill reso
 
 Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
 
-See the [included Skill](Skills/todo-ai/SKILL.md), [CLI reference](Skills/todo-ai/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). These detailed references are currently in Chinese.
+See the [included Skill](Skills/next-one/SKILL.md), [CLI reference](Skills/next-one/references/cli.md), and [optional working rules](docs/codex-rules-snippet.md). These detailed references are currently in Chinese.
 
 ### Use the CLI directly
 
@@ -133,19 +133,19 @@ Updates require the task's latest `revision`. Creation supports stable request k
 
 ## Data and privacy
 
-- Release installers and their CLI use `~/Library/Application Support/Todo-AI-Release`; debug/development builds use `~/Library/Application Support/Todo-AI`. Tasks, attachments, language, window preferences, and integration resources are separate. The installer starts empty if its own directory does not exist, preserves its own data on later upgrades, and never imports or deletes development data.
-- After switching from the older shared-data installer, copy the new Codex setup instruction from Settings to reconnect the agent to the installer’s data. Existing global Skills are not rewritten automatically; use the CLI/data paths in that instruction. `TODO_AI_HOME` explicitly overrides either default.
+- Release installers and their CLI use `~/Library/Application Support/Next-One-Release`; debug/development builds use `~/Library/Application Support/Next-One`. Tasks, attachments, language, window preferences, and integration resources are separate. The installer starts empty if its own directory does not exist, preserves its own data on later upgrades, and never imports or deletes development data.
+- After switching from the older shared-data installer, copy the new Codex setup instruction from Settings to reconnect the agent to the installer’s data. Existing global Skills are not rewritten automatically; use the CLI/data paths in that instruction. `NEXT_ONE_HOME` explicitly overrides either default.
 - Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
 - Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
 - Next One does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
 - To back up, quit the UI and stop CLI writes, then copy the entire data directory, including SQLite/WAL files and attachments.
 
-For an isolated demo or test, use the **same** `TODO_AI_HOME` for both app and CLI:
+For an isolated demo or test, use the **same** `NEXT_ONE_HOME` for both app and CLI:
 
 ```sh
-TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+NEXT_ONE_HOME="$PWD/.local/demo" ./scripts/run.sh
 # In another terminal, from the same repository:
-TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
+NEXT_ONE_HOME="$PWD/.local/demo" .build/debug/todo project list
 ```
 
 Use one UI instance per data directory; CLI calls can run concurrently.
@@ -167,7 +167,7 @@ The release command creates an optimized local app bundle at `.build/Next One.ap
 | [TodoCore](Sources/TodoCore/README.md) | Persistence, transactions, task rules, and conflict checks |
 | [TodoApp](Sources/TodoApp/README.md) | Floating windows, task UI, and local integration preparation |
 | [TodoCLI](Sources/TodoCLI/README.md) | Structured local interface for agents and scripts |
-| [Skills/todo-ai](Skills/todo-ai/SKILL.md) | Codex task-reading and update conventions |
+| [Skills/next-one](Skills/next-one/SKILL.md) | Codex task-reading and update conventions |
 
 For a local drag-to-Applications installer, run `./scripts/package-dmg.sh`. The DMG and SHA-256 checksum are written to `.local/releases/`; see the [local installation guide](docs/distribution/local-install.md) (Chinese). This trial package is not Developer ID signed or notarized.
 
@@ -192,3 +192,5 @@ Before making changes, read [AGENTS.md](AGENTS.md) and the relevant specificatio
 ## License
 
 A license has not yet been selected; this repository currently has no `LICENSE` file. An open-source license needs to be added before the project is presented as licensed open-source software.
+
+Next One uses `Next-One` / `Next-One-Release` paths. When only the same-channel legacy folder exists, the new path links to it so existing tasks, attachments and preferences stay in one store; no data is copied or merged. Existing new folders take precedence. `NEXT_ONE_HOME` takes priority over the compatible legacy `TODO_AI_HOME`. The Skill is now `next-one`; install it from the new Settings instruction when needed.

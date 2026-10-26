@@ -10,8 +10,8 @@ swift build -c "$configuration"
 mkdir -p "$app_path"/Contents/{MacOS,Helpers,Resources/CodexIntegration}
 cp ".build/$configuration/TodoAI" "$app_path"/Contents/MacOS/TodoAI.new
 mv -f "$app_path"/Contents/MacOS/TodoAI.new "$app_path"/Contents/MacOS/TodoAI
-cp ".build/$configuration/todo" "$app_path"/Contents/Helpers/todo.new
-mv -f "$app_path"/Contents/Helpers/todo.new "$app_path"/Contents/Helpers/todo
+cp ".build/$configuration/todo" "$app_path"/Contents/Helpers/next-one.new
+mv -f "$app_path"/Contents/Helpers/next-one.new "$app_path"/Contents/Helpers/next-one
 cp Resources/Distribution/TodoAI.icns "$app_path"/Contents/Resources/TodoAI.icns
 cp Resources/Distribution/paperclip-logo.png "$app_path"/Contents/Resources/paperclip-logo.png
 # SwiftPM resolves Bundle.module at the root of the main application bundle.
@@ -22,10 +22,12 @@ from pathlib import Path
 import shutil
 import sys
 root = Path(sys.argv[1]) / 'Contents/Resources/CodexIntegration'
-staging = root / 'todo-ai.new'
+staging = root / 'next-one.new'
 if staging.exists(): shutil.rmtree(staging)
-shutil.copytree('Skills/todo-ai', staging)
-target = root / 'todo-ai'
+shutil.copytree('Skills/next-one', staging)
+legacy = root / 'todo-ai'
+if legacy.exists(): shutil.rmtree(legacy)
+target = root / 'next-one'
 if target.exists(): shutil.rmtree(target)
 staging.rename(target)
 COPY

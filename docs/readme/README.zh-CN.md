@@ -110,7 +110,7 @@ cd Next-One
 
 仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
 
-详细说明：[内置 Skill](../../Skills/todo-ai/SKILL.md) · [CLI 接口](../../Skills/todo-ai/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。这些详细参考文档当前以中文提供。
+详细说明：[内置 Skill](../../Skills/next-one/SKILL.md) · [CLI 接口](../../Skills/next-one/references/cli.md) · [可选持续规则](../codex-rules-snippet.md)。这些详细参考文档当前以中文提供。
 
 ### 直接使用 CLI
 
@@ -128,19 +128,19 @@ cd Next-One
 
 ## 数据与隐私
 
-- Release 安装版及其 CLI 使用 `~/Library/Application Support/Todo-AI-Release`；debug 开发版使用 `~/Library/Application Support/Todo-AI`。待办、附件、语言、窗口设置和接入资源全部独立。安装版自身目录不存在时为空清单，后续升级保留自身数据，不导入或删除开发版数据。
-- 从旧的共用数据库安装包升级后，请从新版设置复制 Codex 接入指令重新接入。已有全局 Skill 不会自动改写，应使用新指令中的 CLI/数据路径。`TODO_AI_HOME` 可显式覆盖两种默认目录。
+- Release 安装版及其 CLI 使用 `~/Library/Application Support/Next-One-Release`；debug 开发版使用 `~/Library/Application Support/Next-One`。待办、附件、语言、窗口设置和接入资源全部独立。安装版自身目录不存在时为空清单，后续升级保留自身数据，不导入或删除开发版数据。
+- 从旧的共用数据库安装包升级后，请从新版设置复制 Codex 接入指令重新接入。已有全局 Skill 不会自动改写，应使用新指令中的 CLI/数据路径。`NEXT_ONE_HOME` 可显式覆盖两种默认目录。
 - 附件导入时复制到托管目录，原文件移动不会影响副本；视频播放依赖系统默认媒体应用。
 - 已删除的任务和附件可恢复，不自动清空回收站。
 - Next One 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。
 - 备份前退出 UI 并停止 CLI 写入，再复制完整数据目录，包括 SQLite/WAL 文件和附件。
 
-演示或测试使用隔离目录，应用与 CLI 必须设置**相同的** `TODO_AI_HOME`：
+演示或测试使用隔离目录，应用与 CLI 必须设置**相同的** `NEXT_ONE_HOME`：
 
 ```sh
-TODO_AI_HOME="$PWD/.local/demo" ./scripts/run.sh
+NEXT_ONE_HOME="$PWD/.local/demo" ./scripts/run.sh
 # 在另一个终端中，进入同一仓库后执行：
-TODO_AI_HOME="$PWD/.local/demo" .build/debug/todo project list
+NEXT_ONE_HOME="$PWD/.local/demo" .build/debug/todo project list
 ```
 
 同一数据目录只运行一个 UI 实例；CLI 可并发调用。
@@ -162,7 +162,7 @@ python3 scripts/drag-cli-smoke.py
 | [TodoCore](../../Sources/TodoCore/README.md) | 持久化、事务、任务规则与冲突校验 |
 | [TodoApp](../../Sources/TodoApp/README.md) | 悬浮窗口、任务界面与本地接入资源准备 |
 | [TodoCLI](../../Sources/TodoCLI/README.md) | 面向 Agent 和脚本的结构化接口 |
-| [Skills/todo-ai](../../Skills/todo-ai/SKILL.md) | Codex 读取和更新待办的约定 |
+| [Skills/next-one](../../Skills/next-one/SKILL.md) | Codex 读取和更新待办的约定 |
 
 本机试装可执行 `./scripts/package-dmg.sh`，生成可拖入 Applications 的 DMG 和 SHA-256 校验文件，位于 `.local/releases/`。详见[本机安装说明](../distribution/local-install.md)。试装包尚未进行 Developer ID 签名或 Apple 公证。
 
@@ -187,3 +187,5 @@ python3 scripts/drag-cli-smoke.py
 ## 许可证
 
 许可证尚未选定，仓库目前没有 `LICENSE` 文件。正式以开源软件发布前，需要补充明确的开源许可证。
+
+Next One 默认使用 `Next-One` / `Next-One-Release` 路径。同渠道旧目录存在且新路径不存在时，新路径链接到原存储，保留任务、附件和偏好，不复制或合并数据；已有新目录优先。`NEXT_ONE_HOME` 优先于兼容的旧变量 `TODO_AI_HOME`。Skill 已更名 `next-one`，需要时从新版设置复制指令安装。

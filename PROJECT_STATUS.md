@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 14:12 | next-one-paths | 接入路径统一更名
+
+- 状态：实现及本机安装验证完成，新 DMG 打包中。
+- 需求与范围：用户要求数据目录、Skill 和 CLI 接入路径统一使用 Next-One 品牌。
+- 改动：默认目录 Next-One / Next-One-Release，next-one Skill 和导出 CLI，NEXT_ONE_HOME；旧数据以兼容链接继续使用同一存储，显式路径不自动链接。
+- 验证与证据：debug 全量 30 项及补充目录 4 项、最终本地化 5 项/接入 2 项通过；release 全量 32 项通过；两套真实 CLI smoke 与 Skill 校验通过。隔离及现用安装版设置实际确认新路径；现用新旧数据目录指向同一存储，任务数据库/附件哈希未变，旧 CLI 隐藏兼容入口一致。
+- 未完成/阻塞/下一步：现用 release 应用已备份并替换，设置页保持打开；新 DMG 打包中。不自动覆盖全局 Skill，不清理旧数据目录或历史接入版本。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/next-one-paths.md)；main，本轮修正既有更名功能，未推送。
+
 ## 2026-10-26 14:00 | next-one-installer | 最新 Next One 安装包
 
 - 状态：打包及本机验证完成。
@@ -172,7 +181,7 @@
 - 多行描述、图片缩略图、视频文件信息、文件选择/图片粘贴/拖入附件；托管副本，100 MB 上限，软删除与恢复。
 - 独立球/面板、展开收起、拖动、固定锚点三角约束缩放、置顶、背景透明、系统锁定穿透、右键/菜单栏恢复入口、窗口偏好保存。
 - 共享事务校验、SQLite WAL、revision 冲突保护、创建幂等键、CLI JSON/错误结构、外部更新刷新与草稿保护。
-- 项目内 [todo-ai Skill](Skills/todo-ai/SKILL.md) 与 [可选持续规则](docs/codex-rules-snippet.md)，未安装全局内容。
+- 项目内 [todo-ai Skill](Skills/next-one/SKILL.md) 与 [可选持续规则](docs/codex-rules-snippet.md)，未安装全局内容。
 
 ## 已验证
 
