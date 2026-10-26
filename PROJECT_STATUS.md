@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:47 | install-archive-completed | 安装长编号归档版本
+
+- 状态：用户授权的本机替换完成，新版已运行。
+- 需求与范围：现用 Next One release 升级为 725ac85 的归档版本；不执行归档。
+- 改动：正常退出旧应用，主仓库 `.local/backups/before-archive-20261026-184504/` 备份旧应用与完整 release 数据，逐文件比对后替换 /Applications/Next One.app。启动完成存储 v2→v3 迁移，内置 integration/current CLI/Skill 同步更新。
+- 验证与证据：release 42项测试通过；安装文件与构建一致。升级后的快照符合仅清除回收站占号的迁移规则，现有4条任务及编号/状态原样保留，附件哈希相等，删除任务数量不变；原生清单核对A1–A4仍在，编号未达到4位时不显示提示。验证记录 `.local/install/verification.txt`。
+- 未完成/阻塞/下一步：无安装阻塞；未操作真实归档、未改全局Skill。回退必须同时恢复旧应用与对应数据；未合并main或制作DMG。
+- 关联文档与 Git 状态：[归档 Spec](docs/spec/2026-10-26/archive-completed.md)；codex/archive-completed，按用户提交推送授权保存安装记录。
+
 ## 2026-10-26 18:41 | archive-completed | 长编号提示与完成归档
 
 - 状态：实现、自动测试、隔离真实 CLI/原生流程验证完成。
