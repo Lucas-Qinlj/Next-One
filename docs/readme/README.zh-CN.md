@@ -13,6 +13,8 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 
 </div>
 
+**[下载 macOS 预览版](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · 尚未签名公证 · 仅限非商业用途。
+
 **置顶伴随开发，透明度按需调整，现成指令复制给 Agent 即可开始接入。**
 
 ## 为什么需要 Next One？

@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 15:21 | github-preview-release | 首个公开安装包 Release
+
+- 状态：安装包验证完成，GitHub 发布中。
+- 需求与范围：用户授权公开仓库，并重新打包上传 GitHub Releases 供他人下载；保留非商业许可。
+- 改动：0.1.0 build 6、标签 v0.1.0-preview.1，包含许可证与 neo Skill；发布 arm64 DMG 与相对文件名 SHA-256，四语 README 增加下载入口。
+- 验证与证据：GitHub 设置页已显示 public（身份验证后）；主线 28 个提交/300 个文件版本的常见凭据模式及敏感文件名检查无命中，并非全面安全审计。release 构建、CRC/SHA-256、挂载资源/许可/CLI 检查通过；主程序和 CLI 与实测运行版一致，完整 Skill 与源码一致。
+- 未完成/阻塞/下一步：上传并核验匿名下载；未签名公证，不宣称生产就绪。未替用户安装、未修改全局 Skill。
+- 关联文档与 Git 状态：[版本说明](docs/distribution/releases/v0.1.0-preview.1.md)；产物源码 2799e2a，main 和发布标签按本次授权推送。
+
 ## 2026-10-26 15:09 | noncommercial-license | 非商业许可证与 GitHub 同步
 
 - 状态：许可证及全部主线待同步内容已提交并推送。
