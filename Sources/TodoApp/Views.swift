@@ -198,9 +198,9 @@ struct CompletedRootSection: View {
                     if !model.completedGroups.insert(key).inserted { model.completedGroups.remove(key) }
                 } label: {
                     HStack(spacing: 5) {
-                        Rectangle().frame(width: 13, height: 1)
+                        Rectangle().frame(width: 13, height: 2)
                         Text(L("已完成 \(tasks.count)")).font(.system(size: 9, weight: .medium))
-                        Rectangle().frame(height: 1)
+                        Rectangle().frame(height: 2)
                     }
                     .foregroundStyle(.secondary).frame(height: 20).contentShape(Rectangle())
                 }

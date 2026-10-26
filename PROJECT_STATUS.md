@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:26 | completed-line-width | 已完成分隔线加粗
+
+- 状态：已完成，本地构建通过。
+- 需求与范围：用户要求已完成组件灰线大小加倍，按线宽从 1 pt 调为 2 pt。
+- 改动：标题左右两段灰线同步加粗，文字与长度不变。
+- 验证与证据：swift build --product TodoAI 与 git diff --check 通过；确认仅两段灰线由 1 pt 改为 2 pt，未新增测试、未重新做原生截图验收。
+- 未完成/阻塞/下一步：无实现阻塞；未替换现用应用。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/unified-completed.md)；沿用 codex/task-short-codes，不合并或推送。
+
 ## 2026-10-26 18:24 | task-short-codes | 全局任务编号与项目数量
 
 - 状态：实现、自动测试、真实 CLI 与本机隔离原生验证完成。
