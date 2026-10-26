@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 03:09 | codex-composer-focus | C3 无权限焦点方案对照验证
+
+- 状态：验证中；真实交接无法直接输入由用户确认，根因未确认。
+- 需求与范围：用户授权验证第一种无新增权限方案；不自动发送，不替换正式应用。
+- 改动：仅本地隔离测试工具及验收记录；产品代码未修改。工具从普通窗口调整为匹配生产关键属性的非激活悬浮面板，复用生产输入框。
+- 验证与证据：用户反馈直接深链接、普通窗口 A/B 均可输入 x，真实 Next One 不可；新版面板测试工具编译通过、界面已打开。见关联验收记录。
+- 未完成/阻塞/下一步：新版面板 A/B 待用户观察；Codex UI 工具禁止访问，不绕过。尚不能判定关闭顺序或其他焦点机制为根因。
+- 关联文档与 Git 状态：[验收记录](docs/acceptance/codex-task-handoff.md)、[原 Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅提交本轮证据文档，不推送；实验文件保存在已忽略的 .local/codex-focus-probe/。
+
 ## 2026-10-27 02:53 | codex-task-handoff-install | 推送并替换 B9 开发版本
 
 - 状态：release 构建、推送、备份、安装替换及启动校验完成，等待用户功能验收。

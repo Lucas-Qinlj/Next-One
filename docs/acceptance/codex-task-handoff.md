@@ -64,3 +64,11 @@ Codex UI 自动化此前明确被工具拒绝：`Computer Use is not allowed to 
 ## 安装交付补充（2026-10-27 02:53）
 
 用户随后授权推送并替换现用应用，由用户验收。基于 d767193 的 release 构建已安装并启动，代码已推送 origin/main；所有文件与构建一致，启动后任务、项目、回收站、附件与语言/同步/窗口偏好一致。旧应用及完整数据备份在 `.local/backups/before-codex-handoff-20261027-025102/`，日志在 `.local/codex-handoff-install/verification.txt`。沿用原本本地构建身份，不声称正式签名公证。全局 Skill 未改；产品包与 integration/current 的上游 Skill 已更新，不能据此宣称现有静态全局副本自动更新。功能验收仍等用户结果。
+
+## C3 输入框焦点对照（2026-10-27 03:09）
+
+本轮仅验证无新增权限的窗口交接方案，尚未修改或替换产品。用户依次反馈：直接点击深链接能输入 x；普通 NSWindow 测试工具的先打开后关闭（A）、先关闭后打开（B）均能输入 x；真实 Next One 右键交接后无法直接输入。上述均为用户手动观察，不是自动化焦点读回，也未发送测试消息。
+
+代码核对发现真实窗口使用 accessory 应用、borderless/nonactivatingPanel、floating 层级及主动获取焦点的 NSTextView，与普通窗口实验不同。普通窗口 A/B 不能排除真实面板的关闭时序问题。已编译并打开 `.local/codex-focus-probe/C3 Panel Probe.app`，采用相同关键窗口属性并复用生产输入框实现，继续比较两种顺序；该工具仍不是完整生产流程，结果待用户反馈。工具仅预填固定测试文字，不读取待办、不请求辅助功能权限。
+
+Codex UI 观察仍被 Computer Use 明确拒绝，未绕过；最终输入焦点需要用户观察。根因和修复均未确认，冷启动、跨 Spaces 等尚未验证。
