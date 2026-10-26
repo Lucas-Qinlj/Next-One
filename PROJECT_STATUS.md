@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## DMG 拖拽安装窗口与发布流程参考（2026-10-26）
+
+- 用户反馈旧包只是普通文件夹，要求正式拖拽窗口并寻找专业发布 Skill。本轮检索并阅读 macos-release、release-mac-app 等 Skill，与 Apple 官方分发文档交叉核对；[比较与发布流程](docs/research/2026-10-26-macos-release-tools.md)记录适用边界。未安装全局 Skill、采用 Sparkle 或执行其推送/发布步骤。
+- 将镜像构建改为 dmgbuild 1.6.7（独立本地 Python 环境，三个 MIT 纯 Python wheel 版本及 SHA-256 锁定），保留原生 release 应用构建。新增固定图标布局、Retina 背景、四语拖拽文案和正式清单 ICNS，移除可见的 Install.txt。普通应用启动无新增第三方依赖。
+- 新产物：`.local/releases/Todo-AI-0.1.0-local-drag-install-arm64-244add0.dmg`，0.1.0 本机试装 build 2，约 3.2 MB。旧包保留；不覆盖现用应用，不操作真实待办。
+- 已验证：release 构建与 DMG CRC/SHA-256 通过；Finder 实际双击打开后只有左侧 TodoAI 与右侧 Applications，背景、箭头、四语文字和图标正常，无侧栏/工具栏占位；截图见[安装说明](docs/distribution/local-install.md)。初次 Retina 图形重复缩放在实机检查中发现并修正，最终图无裁切。
+- `verify-mounted.py` 只读验证四语资源、完整 Skill、应用图标、Applications 链接、DSStore 左右位置/背景和真实 CLI --help；包内应用/CLI 哈希与原 release 二进制一致。仅改打包和资源，未重复运行无关业务测试。新版安装窗口保留打开供用户拖入试装；未替用户安装到 Applications。
+- 未执行 Developer ID 签名、公证、真实下载后 Gatekeeper 路径、跨机器/架构测试或对外发布；安装窗口外观完成不等同于正式发行完成。
+
 ## 本机 DMG 试装包（2026-10-26）
 
 - 用户要求制作安装包在当前电脑试装；交付 0.1.0 本地试装版（build 1、arm64、源码 `8346817`），产物 `.local/releases/Todo-AI-0.1.0-local-arm64-8346817.dmg`，约 1.2 MB，附 SHA-256 校验文件。未进行 Developer ID 签名、Apple 公证或对外发布。

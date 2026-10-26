@@ -12,6 +12,7 @@ cp ".build/$configuration/TodoAI" "$app_path"/Contents/MacOS/TodoAI.new
 mv -f "$app_path"/Contents/MacOS/TodoAI.new "$app_path"/Contents/MacOS/TodoAI
 cp ".build/$configuration/todo" "$app_path"/Contents/Helpers/todo.new
 mv -f "$app_path"/Contents/Helpers/todo.new "$app_path"/Contents/Helpers/todo
+cp Resources/Distribution/TodoAI.icns "$app_path"/Contents/Resources/TodoAI.icns
 # SwiftPM resolves Bundle.module at the root of the main application bundle.
 ditto ".build/$configuration/TodoAI_TodoCore.bundle" "$app_path"/TodoAI_TodoCore.bundle
 # Copy the complete source skill into bundle-owned resources, including references.
@@ -34,6 +35,8 @@ cat > "$app_path"/Contents/Info.plist <<'PLIST'
 <key>CFBundleExecutable</key><string>TodoAI</string>
 <key>CFBundleIdentifier</key><string>local.todo-ai.dev</string>
 <key>CFBundleName</key><string>TodoAI</string>
+<key>CFBundleDisplayName</key><string>Todo-AI</string>
+<key>CFBundleIconFile</key><string>TodoAI.icns</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>CFBundleDevelopmentRegion</key><string>zh-Hans</string>
 <key>CFBundleLocalizations</key><array><string>zh-Hans</string><string>en</string><string>ja</string><string>ko</string></array>
