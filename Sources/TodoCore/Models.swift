@@ -23,7 +23,7 @@ public struct TodoItem: Codable, Identifiable, Equatable {
     public var title: String
     public var description: String = ""
     public var status: String = "todo"
-    public var priority: String = "medium"
+    public var priority: String = "low"
     public var sortOrder: Int?
     public var color: String = "none"
     public var dueDate: String?

@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:14 | default-priority-low | 新建待办默认一般
+
+- 状态：实现、验证和现用应用替换完成。
+- 需求与范围：用户要求默认优先级从比较紧急改为一般，仅影响以后新建任务，不批量调整已有待办。
+- 改动：共享 TodoItem 默认值改为 low，UI／Quick Add／子任务／CLI 复用同一入口；同步产品 Spec 与 CLI 参考。
+- 验证与证据：release打包通过；用旧版CLI在隔离目录创建medium任务，再用新版包内CLI确认其保持原值、新建根任务和子任务均为low、显式medium/high和无关更新保留优先级。替换前备份应用与完整数据，应用与构建一致，任务快照不变；只读SQLite校验产生的shm变化不当作数据丢失。证据 `.local/default-priority/verification.txt`。
+- 未完成/阻塞/下一步：无；原系统权限／同步验收边界不变，不新增任务数据迁移。备份 `.local/backups/before-default-priority-20261027-001341/` 的实际目录以 `.local/default-priority/backup-path.txt` 为准。
+- 关联文档与 Git 状态：[产品Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[CLI参考](Skills/next-one/references/cli.md)；main小修复，本地提交并按本会话授权推送、替换现用应用。
+
 ## 2026-10-27 00:09 | calendar-list-refresh | 设置页每2秒刷新目标清单
 
 - 状态：实现、验证及现用应用替换完成。
