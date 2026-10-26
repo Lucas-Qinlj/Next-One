@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 15:28 | readme-logo | README 标题上方展示 Logo
+
+- 状态：已完成。
+- 需求与范围：用户要求在 README 标题上方醒目展示软件 Logo。
+- 改动：四语 README 顶部居中放置 180 × 180 的黑底白色回形针图标，复用应用图标的圆角透明边缘版本，保存为 docs/assets/logo.png。
+- 验证与证据：四语图片相对路径及标题前位置检查通过，git diff --check 通过；纯文档和素材修改，不运行应用测试。
+- 未完成/阻塞/下一步：无；不重打安装包。
+- 关联文档与 Git 状态：[README](README.md)；main，本轮提交并推送 GitHub。
+
 ## 2026-10-26 15:21 | github-preview-release | 首个公开安装包 Release
 
 - 状态：公开预览版 Release 已发布，匿名下载验证通过。

@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="../assets/logo.png" alt="Next One" width="180" height="180">
+
 # Next One
 
 **あなたと Coding Agent が、ひとつのタスクリストとコンテキストを共有。**

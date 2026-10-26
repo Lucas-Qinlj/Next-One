@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="../assets/logo.png" alt="Next One" width="180" height="180">
+
 # Next One
 
 **하나의 할 일 목록, 같은 작업 맥락. 나와 Coding Agent가 함께 관리합니다.**

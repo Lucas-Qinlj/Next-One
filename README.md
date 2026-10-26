@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/logo.png" alt="Next One" width="180" height="180">
+
 # Next One
 
 **One task list. Shared context. You and your coding agent.**
