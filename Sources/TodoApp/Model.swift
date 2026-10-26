@@ -31,6 +31,7 @@ import TodoCore
     var newProject = "unclassified"
     var pinned = true { didSet { composerExpanded = false } }
     var locked = false { didSet { composerExpanded = false } }
+    var lockHover = false
     var opacity = 0.9
     var growsRight = false
     var growsDown = true

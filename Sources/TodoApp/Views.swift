@@ -57,7 +57,7 @@ struct ContentView: View {
             }
         }
         .disabled(model.isArchiving)
-        .background(Color(nsColor: .windowBackgroundColor).opacity(reduceTransparency || contrast == .increased ? 1 : model.opacity))
+        .background(Color(nsColor: .windowBackgroundColor).opacity(model.lockHover ? 0 : (reduceTransparency || contrast == .increased ? 1 : model.opacity)))
         .clipShape(.rect(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(.primary.opacity(0.14)))
         .overlay { ResizeHandles(model: model) }

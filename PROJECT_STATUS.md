@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:40 | locked-hover-fade | 锁定面板悬停淡化
+
+- 状态：本地实现完成，自动及原生属性验证通过；物理交互待补验。
+- 需求与范围：锁定时鼠标进入面板，背景0%、其他内容50%；移出恢复，悬浮球不变，不覆盖用户保存的透明度。
+- 改动：锁定展开时启用50 ms鼠标位置读取；临时状态控制根背景、面板alpha与阴影；移出／解锁／取消置顶恢复，收起停timer，展开／移动重算。保留穿透、焦点和球入口，无新权限或依赖。同步产品Spec及UI说明。
+- 验证与证据：debug打包通过；相关7项测试通过，追加原生鼠标位置与timer测试后LockedHoverTests两项通过。原生内容渲染空白背景RGBA=(0,0,0,0)，窗口alpha=0.5，证据 `.local/locked-hover-fade/evidence/hover-content.png`（不含窗口合成系数）；真实隔离清单／设置打开及锁定成功。
+- 未完成/阻塞/下一步：CUA锁定窗口坐标点击报windowNotFoundAtPosition，无法完成物理连续悬停／背后输入复验；多屏、Spaces和辅助功能组合未实测。无代码阻塞，测试实例已退出；不替换现用应用、不推送。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/locked-hover-fade.md)；codex/locked-hover-fade完成后安全快进合并main，仅提交本任务。
+
 ## 2026-10-27 00:34 | scrollbar-edge-alignment | 滚动条贴容器边界
 
 - 状态：公共绘制修复完成，构建与原生离屏渲染验证通过；未替换现用应用。

@@ -19,6 +19,7 @@ final class TaskPanel: NSPanel {
     var resizeMouseOrigin: CGPoint?
     var statusItem: NSStatusItem!
     var timer: Timer?
+    var lockHoverTimer: Timer?
     let preferencesURL: URL
     init(model: AppModel) {
         self.model = model
@@ -66,12 +67,14 @@ final class TaskPanel: NSPanel {
         let a = geometry.anchor
         ball.setFrame(CGRect(x: a.x - 22, y: a.y - 22, width: 44, height: 44), display: true)
         ball.contentView?.needsDisplay = true
+        updateLockHover()
     }
     @objc func recover() { geometry.fit(in: currentScreen, chooseDirection: true); layout(); ball.orderFrontRegardless(); savePreferences() }
     func toggle() {
         if expanded { guard model.saveDraft() else { return }; panel.orderOut(nil) }
         else { geometry.fit(in: currentScreen, chooseDirection: true); layout(); panel.orderFrontRegardless() }
         expanded.toggle(); ball.orderFrontRegardless()
+        updateLockHoverTracking()
     }
     func move(to point: CGPoint, start: Bool, end: Bool) {
         if start { mouseOrigin = point; dragOrigin = geometry.anchor }
@@ -106,7 +109,34 @@ final class TaskPanel: NSPanel {
         panel.ignoresMouseEvents = model.locked; panel.inputEnabled = !model.locked
         if model.locked { panel.makeFirstResponder(nil); panel.resignKey() }
         ball.contentView?.needsDisplay = true
+        updateLockHoverTracking()
         savePreferences()
+    }
+    func updateLockHoverTracking() {
+        if model.locked && expanded {
+            if lockHoverTimer == nil {
+                // A click-through window does not receive hover events. Read position only.
+                let timer = Timer(timeInterval: 0.05, repeats: true) { [weak self] timer in
+                    MainActor.assumeIsolated {
+                        guard let self else { timer.invalidate(); return }
+                        self.updateLockHover()
+                    }
+                }
+                lockHoverTimer = timer
+                RunLoop.main.add(timer, forMode: .common)
+            }
+        } else {
+            lockHoverTimer?.invalidate()
+            lockHoverTimer = nil
+        }
+        updateLockHover()
+    }
+    func updateLockHover(at point: CGPoint = NSEvent.mouseLocation) {
+        let hovering = model.locked && expanded && panel.isVisible && panel.frame.contains(point)
+        guard model.lockHover != hovering else { return }
+        model.lockHover = hovering
+        panel.alphaValue = hovering ? 0.5 : 1
+        panel.hasShadow = !hovering
     }
     func setLocked(_ locked: Bool) {
         guard !locked || model.pinned else { return }
