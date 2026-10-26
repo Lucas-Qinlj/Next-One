@@ -29,6 +29,7 @@ Usage: next-one <command> [id] [--field value] [--json]
 Fields: --title, --description, --description-file FILE (or - for stdin), --status,
         --priority high|medium|low, --color none|red|orange|green|blue|purple,
         --due-date yyyy-MM-dd, --due-at ISO8601 (timezone required); empty value clears.
+Task references: ID, parent, target and task anchors accept UUID or global short code (A1, AA1), case-insensitive.
 Data: NEXT_ONE_HOME overrides Application Support/\(Store.defaultDirectoryName). No network server.
 Resolved data directory: \(Store.defaultDirectory.path)
 """

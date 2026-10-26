@@ -61,12 +61,21 @@ public final class Store {
         try sql("PRAGMA journal_mode=WAL")
         try sql("PRAGMA synchronous=FULL")
         let version = try scalar("PRAGMA user_version")
-        guard version == "0" || version == "1" else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
+        guard version == "0" || version == "1" || version == "2" else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
         try sql("BEGIN IMMEDIATE")
         do {
             try sql("CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL)")
             if try scalar("SELECT json FROM state WHERE id=1").isEmpty { try save(Snapshot()) }
-            try sql("PRAGMA user_version=1"); try sql("COMMIT")
+            // Read version again inside the write lock: another process may have migrated it.
+            let lockedVersion = try scalar("PRAGMA user_version")
+            guard ["0", "1", "2"].contains(lockedVersion) else { throw TodoError("storage_unavailable", "数据版本较新，请升级应用；未修改数据。") }
+            if lockedVersion != "2" {
+                var state = try load()
+                try state.assignLegacyTaskCodes()
+                try save(state)
+                try sql("PRAGMA user_version=2")
+            }
+            try sql("COMMIT")
         } catch { try? sql("ROLLBACK"); throw error }
     }
     deinit { sqlite3_close(db) }
@@ -118,7 +127,8 @@ public final class Store {
                 let result = try JSONSerialization.jsonObject(with: record.response) as! [String: Any]
                 try sql("COMMIT"); return result
             }
-            let result = try perform(command, args, &state, &copied)
+            let resolved = try resolveTaskReferences(command, args, state)
+            let result = try perform(command, resolved, &state, &copied)
             if !readOnly {
                 if let key = args["request-key"] {
                     state.requests[key] = RequestRecord(fingerprint: fingerprint, response: try JSONSerialization.data(withJSONObject: result, options: [.sortedKeys]))
@@ -132,6 +142,26 @@ public final class Store {
             if let copied { try? FileManager.default.removeItem(at: copied) }
             throw error
         }
+    }
+    private func resolveTaskReferences(_ command: String, _ args: [String: String], _ state: Snapshot) throws -> [String: String] {
+        var resolved = args
+        var fields: [String] = []
+        if !command.hasPrefix("project "), command != "board place" { fields.append("id") }
+        if ["add", "move", "place"].contains(command) { fields.append("parent") }
+        if command == "place" { fields.append("anchor") }
+        if command == "group" { fields.append("target") }
+        for field in fields {
+            guard let value = args[field], !(field == "parent" && value == "root") else { continue }
+            resolved[field] = state.tasks[try index(value, state, deleted: command == "restore")].id
+        }
+        if command == "board place" {
+            for field in ["key", "anchor"] {
+                if let value = args[field], value.hasPrefix("t:") {
+                    resolved[field] = "t:" + state.tasks[try index(String(value.dropFirst(2)), state)].id
+                }
+            }
+        }
+        return resolved
     }
     private func validateArguments(_ command: String, _ args: [String: String]) throws {
         let fields = "title description status priority color due-date due-at"
@@ -169,7 +199,7 @@ public final class Store {
         return value
     }
     private func index(_ id: String, _ state: Snapshot, deleted: Bool = false) throws -> Int {
-        guard let i = state.tasks.firstIndex(where: { $0.id == id && (deleted || $0.deletionID == nil) }) else { throw TodoError("not_found", "待办不存在或已删除。") }
+        guard let i = state.tasks.firstIndex(where: { ($0.id == id || $0.shortCode == id.uppercased()) && (deleted || $0.deletionID == nil) }) else { throw TodoError("not_found", "待办不存在或已删除。") }
         return i
     }
     private func touch(_ item: inout TodoItem) { item.revision += 1; item.updatedAt = timestamp() }
@@ -361,7 +391,7 @@ public final class Store {
             let page = Array(filtered.dropFirst(offset).prefix(limit))
             let tasks: Any
             if command == "context" {
-                tasks = page.map { item -> [String: Any] in ["id": item.id, "parent_id": item.parentID as Any? ?? NSNull(), "title": item.title, "status": item.status, "priority": item.priority, "revision": item.revision] }
+                tasks = page.map { item -> [String: Any] in ["id": item.id, "short_code": item.shortCode as Any? ?? NSNull(), "parent_id": item.parentID as Any? ?? NSNull(), "title": item.title, "status": item.status, "priority": item.priority, "revision": item.revision] }
             } else { tasks = try jsonObject(page) }
             return ["project": try project.map { try jsonObject($0) } ?? NSNull(), "tasks": tasks, "total": filtered.count, "truncated": offset + page.count < filtered.count, "next_offset": offset + page.count < filtered.count ? (offset + page.count) as Any : NSNull()]
         case "get":
@@ -383,6 +413,7 @@ public final class Store {
             if item.status == "done" { item.completedAt = timestamp() }
             let orders = state.children(item.parentID).filter { $0.projectID == item.projectID && ($0.status == "done") == (item.status == "done") }.compactMap(\.sortOrder)
             if let last = orders.max() { item.sortOrder = last + 1 }
+            item.shortCode = try state.allocateTaskCode()
             state.tasks.append(item)
             let reopened = item.status == "done" ? [] : reopenAncestors(item.id, &state)
             return ["task": try jsonObject(item), "reopened_ancestors": reopened]

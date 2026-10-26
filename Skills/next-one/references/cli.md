@@ -76,3 +76,11 @@ IDs, revisions, and request keys above are placeholders, not a script to run unc
 Debug defaults to `~/Library/Application Support/Next-One`; release defaults to `~/Library/Application Support/Next-One-Release`. `NEXT_ONE_HOME` overrides the default; the legacy `TODO_AI_HOME` is a fallback only when the new variable is absent. `--help` shows the resolved directory without opening the store.
 
 Development and release data remain separate. If a default new path is absent and the same-channel legacy folder exists, the new path links to the existing store. No live database is copied or merged. Explicit directories do not trigger this compatibility link. Use the CLI and directory supplied by the target app's settings.
+
+## Global task short codes
+
+Each task has a server-assigned `short_code`, unique across all projects, roots, children, completed tasks and trash in the selected store. Sequence: A1…A9, B1…Z9, AA1…AA9, AB1…; codes never change on edits, moves, completion or restoration and deleted codes are not reused. UUID remains `id`; `context` summaries also include `short_code`.
+
+Task `id`, `--parent`, `--target`, `place --anchor`, and `board place` task keys (`t:A1`) accept exact codes case-insensitively. Project IDs and attachment IDs remain UUIDs. `root` and `unclassified` retain their existing meanings. Use `get A1`, then e.g. `complete A1 --expected-revision N` with the freshly read revision. All existing depth, cycle, project, cascade and conflict checks still apply. Codes are read-only; there is no code-edit option. `get` does not expose deleted tasks; find their code and revision via `trash` for restoration.
+
+Storage version 2 assigns codes once to older tasks (including trash), ordered by creation time then UUID. Close older app/CLI processes before upgrading; older binaries must not write a version-2 store. A fresh old-version connection rejects it. Use matching packaged app and CLI; never switch to the old development CLI as a fallback. The separate debug and release stores do not share numbering.

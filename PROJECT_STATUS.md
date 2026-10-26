@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:24 | task-short-codes | 全局任务编号与项目数量
+
+- 状态：实现、自动测试、真实 CLI 与本机隔离原生验证完成。
+- 需求与范围：全局稳定短编号、对话/CLI 精确引用、标题前样式及项目父子总数；继承上一轮统一完成区。
+- 改动：独立 codex/task-short-codes 分支，模型/Store/视图/Skill 同步。
+- 验证与证据：最终 38 项测试通过；打包 CLI 验证编号查询/父级/幂等/完成恢复及旧 CLI 拒绝 v2；Skill 校验通过。原生窗口验证编号样式、父子计数、独立完成区与收起后计数保留；截图 `.local/codes-data/codes-expanded.png`。
+- 未完成/阻塞/下一步：无本轮实现阻塞；未安装全局 Skill或验证新会话自动路由，未升级真实库、替换现用应用、合并或推送。真实升级须退出旧应用/CLI，使用匹配新版。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/task-short-codes.md)；本地开发，不合并、推送或安装。
+
 ## 2026-10-26 18:06 | unified-completed | 统一底部已完成区域
 
 - 状态：实现、自动测试及本机隔离原生交互验证完成。

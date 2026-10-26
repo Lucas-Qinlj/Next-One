@@ -7,6 +7,27 @@ import TodoCore
 func taskTint(_ value: String) -> Color {
     switch value { case "red": return .red; case "orange": return .orange; case "green": return .green; case "blue": return .blue; case "purple": return .purple; default: return .secondary }
 }
+func projectTint(_ index: Int, scheme: ColorScheme) -> Color {
+    Color(hue: (0.55 + Double(index) * 0.381966).truncatingRemainder(dividingBy: 1),
+          saturation: scheme == .dark ? 0.52 : 0.75,
+          brightness: scheme == .dark ? 0.88 : 0.60)
+}
+struct TaskCodeLabel: View {
+    @Environment(\.colorScheme) private var scheme
+    let item: TodoItem
+    let projects: [Project]
+    var titleSize: CGFloat = 13
+    private var tint: Color {
+        if let index = projects.firstIndex(where: { $0.id == item.projectID }) { return projectTint(index, scheme: scheme) }
+        return .gray
+    }
+    var body: some View {
+        if let code = item.shortCode {
+            Text(code).font(.system(size: titleSize * 0.8)).foregroundStyle(tint.opacity(0.6))
+                .fixedSize(horizontal: true, vertical: false)
+        }
+    }
+}
 @MainActor func label(_ value: String) -> String { ["todo": L("待办"), "in_progress": L("进行中"), "done": L("已完成"), "high": L("紧急"), "medium": L("比较紧急"), "low": L("一般"), "none": L("无"), "red": L("红"), "orange": L("橙"), "green": L("绿"), "blue": L("蓝"), "purple": L("紫")][value] ?? value }
 struct IconButton: View {
     let name: String
@@ -217,11 +238,8 @@ struct ProjectTaskGroup: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var key: String { (completedSection ? "completed-project-" : "project-") + projectID }
     private var isCollapsed: Bool { model.collapsed.contains(key) }
-    private var border: Color {
-        Color(hue: (0.55 + Double(colorIndex) * 0.381966).truncatingRemainder(dividingBy: 1),
-              saturation: colorScheme == .dark ? 0.52 : 0.75,
-              brightness: colorScheme == .dark ? 0.88 : 0.60)
-    }
+    var taskCount: Int { model.state.taskTreeCount(tasks) }
+    private var border: Color { projectTint(colorIndex, scheme: colorScheme) }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Button {
@@ -230,7 +248,7 @@ struct ProjectTaskGroup: View {
                 }
                 model.window?.savePreferences()
             } label: {
-                Text(name).font(.system(size: 9, weight: .medium)).lineLimit(1)
+                Text("\(name) (\(taskCount))").font(.system(size: 9, weight: .medium)).lineLimit(1)
                     .foregroundStyle(border)
                     .background {
                         GeometryReader { geometry in
@@ -254,7 +272,7 @@ struct ProjectTaskGroup: View {
             }
             .padding(.horizontal, 18)
             .help(name + (isCollapsed ? L("：展开项目") : L("：收起项目")))
-            .accessibilityLabel(name)
+            .accessibilityLabel("\(name) (\(taskCount))")
             .accessibilityValue(isCollapsed ? L("已收起") : L("已展开"))
             .modifier(ProjectEndDrop(model: model, project: projectID, enabled: !completedSection))
             VStack(alignment: .leading, spacing: 2) {
@@ -365,7 +383,10 @@ struct TaskRow: View {
                 RoundedRectangle(cornerRadius: 2).fill(taskTint(item.color)).frame(width: 3, height: 24)
                 Button { model.select(item) } label: {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(item.title).lineLimit(1).strikethrough(item.status == "done").foregroundStyle(item.status == "done" ? .secondary : .primary)
+                        HStack(alignment: .center, spacing: 5) {
+                            TaskCodeLabel(item: item, projects: model.state.projects)
+                            Text(item.title).font(.system(size: 13)).lineLimit(1).strikethrough(item.status == "done").foregroundStyle(item.status == "done" ? .secondary : .primary)
+                        }
                         if !children.isEmpty || item.dueDate != nil || item.dueAt != nil || depth >= 6 {
                             HStack(spacing: 8) {
                                 if !children.isEmpty { Text("\(children.filter { $0.status == "done" }.count)/\(children.count)") }
@@ -415,10 +436,13 @@ struct DetailView: View {
                     }
                     detailCard {
                         VStack(alignment: .leading, spacing: 10) {
-                            TextField(L("标题"), text: field(\TodoItem.title), axis: .vertical)
-                                .font(.system(size: 20, weight: .semibold))
-                                .textFieldStyle(.plain).lineLimit(1...4)
-                                .accessibilityLabel(L("标题"))
+                            HStack(alignment: .center, spacing: 6) {
+                                TaskCodeLabel(item: item, projects: model.state.projects, titleSize: 20)
+                                TextField(L("标题"), text: field(\TodoItem.title), axis: .vertical)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .textFieldStyle(.plain).lineLimit(1...4)
+                                    .accessibilityLabel(L("标题"))
+                            }
                             GrowingNotesEditor(text: field(\TodoItem.description))
                         }.padding(12)
                     }
@@ -465,8 +489,12 @@ struct DetailView: View {
                             detailDivider
                             HStack(spacing: 8) {
                                 IconButton(name: child.status == "done" ? "checkmark.circle" : "circle", title: L("切换完成状态")) { model.toggle(child) }
-                                Button(child.title) { model.select(child); loadDue() }
-                                    .buttonStyle(.plain).lineLimit(2)
+                                Button { model.select(child); loadDue() } label: {
+                                    HStack(alignment: .center, spacing: 5) {
+                                        TaskCodeLabel(item: child, projects: model.state.projects)
+                                        Text(child.title).font(.system(size: 13)).lineLimit(2)
+                                    }
+                                }.buttonStyle(.plain)
                                 Spacer(minLength: 0)
                             }.padding(.horizontal, 10).padding(.vertical, 6)
                         }
@@ -674,7 +702,8 @@ struct TrashView: View {
                 if roots.isEmpty { ContentUnavailableView(L("回收站为空"), systemImage: "trash") }
                 ForEach(roots) { item in
                     HStack {
-                        Text(item.title)
+                        TaskCodeLabel(item: item, projects: model.state.projects)
+                        Text(item.title).font(.system(size: 13))
                         Spacer()
                         Button(L("恢复分支")) { _ = model.run("restore", ["id": item.id, "expected-revision": String(item.revision)]) }
                     }

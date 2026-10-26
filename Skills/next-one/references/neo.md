@@ -15,6 +15,7 @@ Act on direct user requests. Remove the leading standalone `neo` prefix and its 
 | neo Show today's unfinished tasks. | Query all projects unless a scope was specified; select unfinished tasks due on the user's local calendar date. Separate overdue items if included. Tasks with no due date are not automatically due today. |
 | neo Move mailing the parcel to tomorrow at 3pm. | Uniquely identify the task, fetch its current revision, and change only its due time. |
 | neo I have mailed the parcel. | Treat this as the user's completion confirmation and complete the matched task. Do not silently cascade to unfinished descendants. |
+| neo Complete A1. | Resolve `get A1`, use its current revision, and complete that exact task; retain cascade confirmation rules. |
 | neo Delete the mailing task. | Soft-delete the matched task, explaining the branch impact. Do not permanently purge anything. |
 | neo Restore the mailing task I just deleted. | Uniquely identify it in the trash and restore it. |
 
@@ -24,6 +25,7 @@ Phrases such as "note this", "I need to", or "I want to" can express creation; t
 
 - An explicitly named project takes precedence. For clear project work, use the established conversation context or directory binding. If the requested project is missing or ambiguous, clarify; do not automatically create or bind one.
 - Clearly personal work, or a standalone new task with no project context, defaults to `unclassified`. Say so in the result. Do not place personal tasks in a code project merely because that directory is the agent's working directory.
+- Explicit short codes such as `A1` and `AA1` identify one task across all projects in the selected app store. Use `get CODE` directly, including completed tasks; do not search titles or require a folder binding. If a stated project conflicts with the returned project, clarify. For deleted tasks, use `trash` to match `short_code` and obtain the revision before `restore`. Missing codes must not fall back to a similarly named title.
 - Queries without a scope use `list --project all`. For edits or completion, search the stated scope or clear context first; otherwise search all projects, but require a unique match before writing.
 - Read all relevant result pages before concluding that a match is unique. Do not silently select the first result. Resolve "this task" directly only when the conversation identifies a definite task ID. Present concise titles, projects, and dates when multiple candidates exist.
 - If a requested requirements document or project context is unavailable, report what is missing rather than inventing requirements, dependencies, or acceptance criteria.
@@ -42,6 +44,6 @@ Locate the actual CLI and data directory using SKILL.md. Never send `neo` to a s
 
 Illustration only: with a request time of **2026-10-26 in Asia/Singapore**, "neo Tomorrow at 8am I need to mail a parcel" maps to "Mail a parcel", Unfiled, and `2026-10-27T08:00:00+08:00`. Real requests must use their own current date and timezone.
 
-Only report a successful write after `ok:true`. Include the action, task title, project, and absolute date/time with timezone when relevant, in the user's language. Queries report actual records. On failure, explain that the write did not succeed and give the next step. A user's completion statement is evidence for their own personal task; agent-executed development work still requires actual results.
+Only report a successful write after `ok:true`. Include the action, short code, task title, project, and absolute date/time with timezone when relevant, in the user's language. Queries report actual records. On failure, explain that the write did not succeed and give the next step. A user's completion statement is evidence for their own personal task; agent-executed development work still requires actual results.
 
 This entry point manages tasks. It does not itself authorize mailing a parcel, making payments, deploying software, or performing other external actions described in a task.

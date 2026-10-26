@@ -21,6 +21,13 @@ final class CompletedSectionTests: XCTestCase {
         XCTAssertEqual(list.pendingBoardKeys, ["p:" + project.id])
         let child = try XCTUnwrap(model.state.children(parent.id).first)
         XCTAssertEqual(TaskGroupView(model: model, tasks: model.state.children(parent.id), depth: 1, groupID: parent.id).done.map(\.id), [child.id])
+        let grouped = ProjectTaskGroup(model: model, projectID: project.id, name: project.name, tasks: list.pendingRoots, colorIndex: 0)
+        XCTAssertEqual(grouped.taskCount, 2)
+        let completed = ProjectTaskGroup(model: model, projectID: project.id, name: project.name, tasks: list.completedRoots.filter { $0.projectID == project.id }, colorIndex: 0, completedSection: true)
+        XCTAssertEqual(completed.taskCount, 1)
+        model.collapsed.insert(grouped.key)
+        XCTAssertEqual(grouped.taskCount, 2)
+        model.collapsed.remove(grouped.key)
         let originalOrder = model.state.boardKeys
         _ = try store.execute("update", ["id": parent.id, "expected-revision": "1", "status": "done"])
         model.refresh()

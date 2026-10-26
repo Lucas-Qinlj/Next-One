@@ -68,3 +68,5 @@ CodexIntegration 只从应用包 Contents/Helpers/next-one 和 Contents/Resource
 ## 统一已完成区域
 
 `TaskListView.pendingRoots/completedRoots` 仅对根任务分区，`pendingBoardKeys` 过滤没有未完成根任务的项目但不修改存储顺序。`CompletedRootSection` 提供无箭头的灰线标题，全部项目下复用 `ProjectTaskGroup` 彩色边框；单项目筛选保留无框。完成区使用 `completed-project-` 折叠键，与上方 `project-` 独立，不注册项目拖动/末尾落点。项目拖动预览同步只展示未完成根任务。`TaskGroupView` 继续负责父级内子任务分区，因此未完成父任务的已完成子任务不会被抽走。`swift test --filter CompletedSectionTests` 检查完成/恢复、层级、筛选、空框过滤及独立折叠键。详见[Spec](../../docs/spec/2026-10-26/unified-completed.md)。
+
+任务标题前复用 `TaskCodeLabel`：13 pt 标题配 10.4 pt 编号，HStack center 对齐，项目同色且透明度 60%，未分类用灰色；详情和回收站也显示编号。`projectTint` 统一编号与边框颜色，完成状态不改变编号颜色/增加删除线。项目标题的括号数量使用 `taskTreeCount` 统计该区域根任务及所有未删除后代，包含未完成父级下的已完成子任务，不随折叠减少。详见 [Spec](../../docs/spec/2026-10-26/task-short-codes.md)。

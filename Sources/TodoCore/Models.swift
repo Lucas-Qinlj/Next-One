@@ -18,6 +18,7 @@ public struct TodoItem: Codable, Identifiable, Equatable {
     public var id: String = UUID().uuidString
     public var projectID: String?
     public var parentID: String?
+    public var shortCode: String?
     public var title: String
     public var description: String = ""
     public var status: String = "todo"
@@ -52,8 +53,37 @@ public struct Snapshot: Codable, Equatable {
     public var attachments: [Attachment] = []
     public var boardOrder: [String]?
     public var boardRevision: Int?
+    public var nextTaskNumber: Int?
     var requests: [String: RequestRecord] = [:]
     public init() {}
+    // Bijective base-26 letters with one base-9 (1...9) digit.
+    public static func taskCode(_ number: Int) -> String {
+        precondition(number > 0)
+        var letters = (number - 1) / 9 + 1
+        var prefix = ""
+        while letters > 0 {
+            letters -= 1
+            prefix = String(UnicodeScalar(65 + letters % 26)!) + prefix
+            letters /= 26
+        }
+        return prefix + String((number - 1) % 9 + 1)
+    }
+    mutating func allocateTaskCode() throws -> String {
+        let number = nextTaskNumber ?? 1
+        guard number > 0, number < Int.max else { throw TodoError("storage_unavailable", verbatim: "Task number capacity exceeded.") }
+        nextTaskNumber = number + 1
+        return Self.taskCode(number)
+    }
+    mutating func assignLegacyTaskCodes() throws {
+        // Include deleted tasks, so their codes are never reused.
+        let indices = tasks.indices.sorted {
+            tasks[$0].createdAt == tasks[$1].createdAt ? tasks[$0].id < tasks[$1].id : tasks[$0].createdAt < tasks[$1].createdAt
+        }
+        for i in indices { tasks[i].shortCode = try allocateTaskCode() }
+    }
+    public func taskTreeCount(_ roots: [TodoItem]) -> Int {
+        roots.reduce(0) { $0 + 1 + descendants($1.id).count }
+    }
     public var liveTasks: [TodoItem] { tasks.filter { $0.deletionID == nil } }
     public func children(_ id: String?) -> [TodoItem] {
         liveTasks.filter { $0.parentID == id }.sorted(by: taskOrder)

@@ -20,3 +20,9 @@ SQLite v1 使用一个 Codable 状态快照，`BEGIN IMMEDIATE` 串行读改写�
 本地化：`LocalizedText` 分离文案模板与插值参数，`Localization` 使用本地 `.strings` 资源输出中/英/日/韩文；只改变展示，不参与 Store 数据更新。`TodoError.localizedText` 供 UI 翻译，`message` / `errorDescription` 保留原中文契约，系统生成的动态错误使用 `verbatim:`。位置参数一次性从原模板替换，用户内容中的 `%1$@` 等文本不会被再次替换。
 
 品牌路径兼容：默认目录为 Next-One / Next-One-Release。新路径不存在时可链接至同渠道旧目录，保留同一数据库，不复制 live WAL；已有新目录优先，不跨渠道导入。显式 Store(directory:) 与环境变量指定目录不创建兼容链接。NEXT_ONE_HOME 优先于旧 TODO_AI_HOME。DataDirectoryTests 覆盖链接复用、双入口一致性、附件/偏好及异常保护。
+
+## 全局任务短编号
+
+存储版本 2 为所有任务持久化 `shortCode`，`nextTaskNumber` 在 `BEGIN IMMEDIATE` 内原子递增。`Snapshot.taskCode` 用双射 26 进制字母和 1–9 末位编码；旧库初始化时按创建时间/UUID 为所有任务（含回收站）补号，不修改用户字段与 revision。版本在事务内再次检查，避免并发迁移重复编号。升级前退出旧程序；旧版本新连接拒绝打开 v2 库，禁止旧进程继续写新库。原 UUID 和关系保持不变。
+
+`resolveTaskReferences` 在业务执行前将精确短编号解析成 UUID，确保层级、循环、分支和附件校验使用同一主键。请求幂等指纹保留原始参数，失败回滚不占号。JSON 与 context 增加 `short_code`，详见 [CLI 契约](../../Skills/next-one/references/cli.md#global-task-short-codes)。`ShortCodeTests` 与 CoreTests 覆盖编码边界、迁移、并发和编号引用。
