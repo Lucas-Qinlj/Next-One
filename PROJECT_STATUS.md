@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:30 | install-task-short-codes | 替换现用 Next One 安装版
+
+- 状态：按用户授权完成替换并启动。
+- 需求与范围：现用 /Applications/Next One.app 升级至本分支 1bf3fe6，包含统一完成区、全局编号/项目数量和 2 pt 灰线，保持 release 身份及数据渠道。
+- 改动：正常退出旧版，备份原应用与完整数据至主仓库 `.local/backups/before-task-codes-20261026-182854/`；逐文件校验新版后替换。首次启动将 release 存储 v1 升级 v2，运行时 integration/current 的 CLI/Skill 同步为包内新版；未安装全局 Skill。
+- 验证与证据：release 打包及 38 项测试通过；安装文件与产物逐字节一致。升级前后去除新增 shortCode/nextTaskNumber 后完整存储快照相等、附件哈希相等；原生现用窗口确认编号、项目数量和加粗灰线。`.local/install/verification.txt` 记录验证结果。
+- 未完成/阻塞/下一步：无替换阻塞；应用已运行。全局 Skill 未更新，未合并、推送或重制 DMG；回退需同时恢复备份应用及升级前数据，不用旧版写入新库。
+- 关联文档与 Git 状态：[编号 Spec](docs/spec/2026-10-26/task-short-codes.md)、[完成区 Spec](docs/spec/2026-10-26/unified-completed.md)；codex/task-short-codes，本轮记录本地提交。
+
 ## 2026-10-26 18:26 | completed-line-width | 已完成分隔线加粗
 
 - 状态：已完成，本地构建通过。
