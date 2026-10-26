@@ -63,7 +63,13 @@ struct ReminderSyncView: View {
                 }.padding(.vertical, 4)
             }
         }
-        .task { await sync.loadLists() }
+        .task {
+            while !Task.isCancelled {
+                await sync.loadLists()
+                do { try await Task.sleep(for: .seconds(2)) }
+                catch { break }
+            }
+        }
         .alert(L("确认同步清单"), isPresented: $confirming) {
             Button(L("取消"), role: .cancel) { pendingTarget = nil }
             Button(L("确认")) {

@@ -4,7 +4,7 @@ import SwiftUI
 import TodoCore
 
 @MainActor @Observable final class ReminderSync {
-    struct ListChoice: Identifiable { let id: String; let sourceID: String; let title: String }
+    struct ListChoice: Identifiable, Equatable { let id: String; let sourceID: String; let title: String }
     struct Issue: Identifiable { let id: String; let title: String; let kind: String }
     private(set) var lists: [ListChoice] = []
     private(set) var enabled = false
@@ -56,8 +56,9 @@ import TodoCore
         }.sorted { $0.id < $1.id }
     }
     func loadLists(requestPermission: Bool = false) async {
-        guard file != nil else { return }
-        busy = true; defer { busy = false }
+        guard file != nil, !busy, !running else { return }
+        if requestPermission { busy = true }
+        defer { if requestPermission { busy = false } }
         do {
             if requestPermission && EKEventStore.authorizationStatus(for: .reminder) != .fullAccess {
                 guard try await events.requestFullAccessToReminders() else {
@@ -68,10 +69,11 @@ import TodoCore
                 if requestPermission || enabled { problem = L("请在系统设置中允许 Next One 访问提醒事项。") }
                 return
             }
-            lists = events.calendars(for: .reminder).filter(\.allowsContentModifications).map {
+            let updatedLists = events.calendars(for: .reminder).filter(\.allowsContentModifications).map {
                 ListChoice(id: $0.calendarIdentifier, sourceID: $0.source.sourceIdentifier,
                            title: $0.source.title + " · " + $0.title)
             }.sorted { $0.title < $1.title }
+            if lists != updatedLists { lists = updatedLists }
             problem = lists.isEmpty ? L("请先在系统提醒事项中创建 iCloud 清单。") : nil
             refreshIssues()
         } catch { problem = LanguageSettings.shared.describe(error) }
