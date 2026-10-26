@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 04:40 | codex-handoff-final-install | C3 最终验收、推送及应用替换
+
+- 状态：用户明确确认本轮全部验收通过；已完成备份、安装替换、启动及数据一致性检查。
+- 需求与范围：用户授权提交、合并、推送并替换；最终采用独立普通交接窗口，保持清单展开、就近显示、编号-标题及新输入提示，不使用辅助功能定位。
+- 改动：相关代码已提交并合并 main，将已验收 `.local/releases/c3-handoff-copy-20261027/Next One.app` 安装至 Applications；未改变系统权限或全局 Skill，未发布 DMG。
+- 验证与证据：安装前确认无运行中的 TodoAI，完整备份旧 App 与 release 数据；安装包逐文件等于验收包，主程序 SHA-256 `85cc710d32cc6e3f73bcf4e35439c1df7f7c38db4e797ee11553b623f8e4d861`。重启后待办/项目/回收站/附件/偏好均一致，进程位于 Applications。备份及 verification.txt：`.local/backups/before-c3-final-20261027-044009/`。
+- 未完成/阻塞/下一步：本轮 C3 无待验收项；多屏/Spaces/其他 B9 范围未因此追加验证。沿用既有本地 linker ad-hoc 构建，未正式签名公证。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)；main，代码提交至 6722ad4，本条记录提交后按授权推送 origin/main；无无关修改。
+
 ## 2026-10-27 04:37 | codex-handoff-copy | 交接窗口显示待办标题及简化文案
 
 - 状态：实现、15 项回归测试、release 构建和隔离原生窗口视觉检查通过。
