@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 00:50 | readme-recent-features | 四语README补充提醒事项同步与近期功能
+
+- 状态：文档更新、事实核对与链接检查完成。
+- 需求与范围：用户要求将近期功能特别是提醒事项与日历同步明确写入README；同步维护英／中／日／韩版本。
+- 改动：功能亮点置首新增提醒事项同步，独立介绍开启步骤、iCloud与系统版本条件、字段方向、手机完成回传、删除／归档／关闭行为、附件及Urgent限制；补充锁定悬停、贴边滚动条、短编号与完成归档、默认一般优先级。修正旧隐私／云同步表述，标明当前main与旧预览包差异。
+- 验证与证据：对照ReminderSyncView、App/Core ReminderSync实际实现、语言资源和同步验收记录；核对Apple日历官方说明。四语README相对链接、图片路径、代码块闭合及git diff --check通过；纯文档不重跑代码测试。
+- 未完成/阻塞/下一步：无文档阻塞；未新增系统同步或交互验收，不重打包／替换应用、不更新公开DMG。
+- 关联文档与 Git 状态：[英文README](README.md)、[中文README](docs/readme/README.zh-CN.md)、[日文README](docs/readme/README.ja.md)、[韩文README](docs/readme/README.ko.md)；main，仅提交本轮文档，沿用本会话明确推送授权。
+
 ## 2026-10-27 00:44 | locked-hover-install | 推送并替换滚动条与锁定淡化版本
 
 - 状态：release构建、8项针对性测试、备份、应用替换及启动核验完成。

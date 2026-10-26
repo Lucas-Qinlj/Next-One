@@ -16,6 +16,8 @@ macOS 14+ · SwiftUI + AppKit · Local storage · Codex Skill + CLI
 
 **[Download the macOS preview](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)** · Apple Silicon · macOS 14+ · Unsigned / not notarized · Noncommercial use only.
 
+**Version note:** the features below describe current `main`. The linked `v0.1.0-preview.1` download predates these updates; build current source to use them.
+
 **Keep it on top. Tune the transparency. Copy a ready-made setup instruction to your agent.**
 
 ## Why Next One?
@@ -70,6 +72,7 @@ Actual macOS app captures with fictional demo tasks. The app supports Simplified
 
 | Feature | What it helps you do |
 | --- | --- |
+| **Apple Reminders + Calendar** | Sync dated tasks to a chosen Reminders list, view them in Calendar, and receive completion updates from iPhone. Opt-in; see setup below. |
 | **Shared human–agent context** | Read and edit the same tasks from the app and CLI. Agent writes appear in the running app; the CLI also works while the app is closed. |
 | **Project-aware handoffs** | Bind folders to projects and retrieve the right context from the working directory. Explicitly bind additional worktrees to the same project. |
 | **Always-on-top workspace companion** | Keep the checklist visible alongside your editor or agent chat, so checking the next step does not mean switching to another task app. Move, resize, or collapse it from the floating ball. |
@@ -83,11 +86,45 @@ Actual macOS app captures with fictional demo tasks. The app supports Simplified
 
 Lock mode makes the panel ignore mouse input while the floating ball remains available to unlock it. Some cross-app and desktop combinations still need manual validation; see [current limitations](#current-status-and-limitations).
 
+## Sync with Apple Reminders and Calendar
+
+**Give a task a due date, see it in Calendar, and mark it complete on your iPhone.** Next One writes to Apple Reminders; Calendar displays those scheduled reminders. It does not create separate calendar events.
+
+### Set it up
+
+1. For Mac–iPhone sync, sign in to the same Apple Account on both devices and enable iCloud Reminders. Create a dedicated list in Reminders, such as “Next One”.
+2. Open **Next One → Settings → Sync to Calendar**, allow Reminders access, select the target list by its account and name, and confirm. Sync is off by default; the list picker refreshes every two seconds while Settings is open.
+3. Give an unfinished task a due date or time. Initial sync includes dated unfinished tasks across all projects; undated tasks stay local. A reminder title looks like `A1-Prepare the demo`.
+4. In Apple Calendar, enable **Scheduled Reminders** in the calendar list. Calendar integration requires **macOS 15+ / iOS 18+**; the base Next One app still supports macOS 14+. See [Apple’s Calendar guide](https://support.apple.com/guide/calendar/use-reminders-icl873b9a527/mac).
+5. Allow Reminders notifications if you want alerts. A future due time adds an ordinary alert; a date without a time does not get an app-defined alert time. Delivery depends on system notification, Focus, and iCloud settings.
+
+### What stays in sync
+
+| Action or content | Behavior |
+| --- | --- |
+| Title, text notes, priority, due date/time | Published from Next One to the selected list, with project and parent-path context in notes. Dated subtasks appear as separate reminders. |
+| Complete or uncomplete a linked reminder on the phone | Returns to Next One while the Mac app is running, or on its next launch. Completing a parent with unfinished children asks you how to handle them. |
+| Edit, complete, delete, archive, or remove the due date in Next One | Updates the linked reminder; deletion, archiving, or removing its date removes that linked reminder. Other reminders in the list are left alone. |
+| Add, rename, move, or delete items in Apple apps | Not a general two-way import. New reminders are not imported; conflicting changes to linked items pause that item for review in Settings. |
+| Turn sync off or change lists | Turning it off keeps existing reminders. Changing the target requires confirmation and moves managed items. |
+| Photos, videos, and other attachments | Stay local; they are not sent to Reminders. |
+
+Keep Next One running for ongoing sync. CLI edits made while it is closed remain saved locally and sync after the next launch; CLI success does not mean iCloud delivery is complete. High priority does **not** automatically enable Apple’s **Urgent** alarm.
+
+Mac/iPhone Calendar display, completion feedback, and an ordinary notification have been verified in the test environment. Offline, sleep, permission-revocation, and cross-account edge cases are not fully verified; see the [sync acceptance report](docs/acceptance/calendar-reminders-sync.md).
+
+## Recent improvements (October 2026)
+
+- **Lock and hover:** pin and lock the panel, then move the pointer over it to make its background fully transparent and its other content 50% opaque. Moving away or unlocking restores the original appearance without changing your saved opacity. The floating ball stays opaque and usable for unlocking.
+- **Edge-aligned scrollbars:** 3 pt thumbs sit against each scroll container’s right or bottom edge while retaining the native drag area.
+- **Short codes and completed work:** tasks show short codes such as `A1`; completed root tasks share a collapsible section at the bottom. When a live code reaches four characters, an archive prompt can move completed tasks across all projects to the trash and free their codes. Recovery assigns available codes again, so agents must resolve a code to its UUID before writing.
+- **Gentler default priority:** new tasks default to Normal; existing priorities are unchanged.
+
 ## Keep your workflow in view
 
 **Keep your next step beside your code.** Use the pin button to keep Next One above ordinary windows on the current desktop. Collapse it to the floating ball when you need more space, then expand it to check progress without hunting through another app.
 
-**Choose how much presence it has.** Adjust **Background opacity** in Settings from **0%–100%**. Only the background becomes transparent; text and the floating button remain clear. Pinning and opacity are independent controls, so you can choose the balance that suits your workspace.
+**Choose how much presence it has.** Adjust **Background opacity** in Settings from **0%–100%**. Outside locked-hover mode, only the background becomes transparent; text and the floating button remain clear. Pinning and opacity are independent controls, so you can choose the balance that suits your workspace.
 
 **Start sharing tasks with a copy and a paste.** In **Settings → Codex integration**, click the copy icon and paste the complete instruction into a local Codex chat. The app prepares the paths and setup steps, including preserving existing Skill customizations and read-only verification. The instruction follows your selected UI language. Sending it asks Codex to perform the setup; copying alone does not install anything. This built-in instruction targets Codex; other coding agents can use the documented local CLI.
 
@@ -168,7 +205,7 @@ Updates require the task's latest `revision`. Creation supports stable request k
 - Update an older Skill using the instruction in the current app: the Skill is `next-one`, the exported CLI is `integration/current/bin/next-one`, and `NEXT_ONE_HOME` overrides the data directory. The old `TODO_AI_HOME` remains a compatibility fallback; the new variable takes priority. Copying the instruction alone does not update a global Skill.
 - Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
 - Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
-- Next One does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
+- Reminders sync is off by default. If enabled, task text, dates, priorities, and completion state are written to the selected Apple account’s Reminders list and may sync through iCloud; attachments stay local. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
 - To back up, quit the UI and stop CLI writes, then copy the entire data directory, including SQLite/WAL files and attachments.
 
 For an isolated demo or test, use the **same** `NEXT_ONE_HOME` for both app and CLI:
@@ -209,7 +246,7 @@ The native app and CLI are implemented and have been built and run on Apple Sili
 - Signed/notarized downloads, cross-machine distribution, and cross-architecture validation are not complete.
 - Full validation of click-through input reaching other apps, multi-display changes, Spaces, full-screen apps, and Stage Manager remains incomplete.
 - Some media interactions and fresh-session Skill discovery still need end-to-end checks.
-- There is no cloud sync, team workspace, or guaranteed remote-agent access to this Mac's data.
+- There is no full Next One database/attachment cloud sync or team workspace. Optional Apple Reminders sync covers the fields above; it does not provide remote-agent access to this Mac.
 - The pixel-aquarium experiment under `docs/` is a separate prototype, not a feature of the native app.
 
 See [project status](PROJECT_STATUS.md), the [acceptance report](docs/acceptance/macos-floating-todo.md), and the [product specification](docs/spec/2026-10-24/macos-floating-todo.md) for evidence and remaining work.
