@@ -10,12 +10,12 @@
 
 ## 2026-10-27 05:02 | release-0-2-0 | 0.2.0 正式签名预发布
 
-- 状态：签名 App／DMG 及本地验证完成，准备推送与 GitHub Pre-release 发布。
+- 状态：签名 App／DMG、本地验证、main／标签推送及 GitHub Pre-release 发布完成。
 - 需求与范围：用户授权 0.2.0 推送、打包发布；随后明确暂不公证，保留 Pre-release；标题与发布说明全英文，重点说明新增功能。
 - 改动：版本 0.2.0 build 2026102702；新增英文功能发布说明、更新四语下载入口；DMG 脚本继承版本并强制 Developer ID 签名，移除影响严格签名校验的 FinderInfo 后缀隐藏属性。App／Helper 使用 runtime 和时间戳，DMG 使用正式签名；Team 5C58V84WF7。
-- 验证与证据：69 项测试通过；App／Helper／DMG 严格签名、DMG CRC、挂载后的 App 签名、四语／Logo／Skill／CLI／布局检查通过；DMG 复制应用在隔离数据下启动通过。最终 SHA-256 `64d1debbdad25e99431afa97ef579c20cc790437324bf182c33b5deaa50f35e4`。产物 `.local/releases/v0.2.0/`。
-- 未完成/阻塞/下一步：GitHub 发布和公开附件核验待执行；用户选择本轮不公证，无 submission ID，不声称 Gatekeeper 通过。没有替换现用应用。
-- 关联文档与 Git 状态：[0.2.0 英文说明](docs/distribution/releases/v0.2.0.md)、[release Skill](.agents/skills/next-one-release/SKILL.md)；main，本轮提交后按授权推送并建立 v0.2.0 标签。
+- 验证与证据：69 项测试通过；更新后的 package-dmg.sh 实际执行通过；App／Helper／DMG 严格签名、DMG CRC、挂载后的 App 签名、四语／Logo／Skill／CLI／布局检查通过；DMG 复制应用在隔离数据下启动通过。最终 SHA-256 `64d1debbdad25e99431afa97ef579c20cc790437324bf182c33b5deaa50f35e4`。产物 `.local/releases/v0.2.0/`。
+- 未完成/阻塞/下一步：公开发布页面已核实 Pre-release 标记及全英文说明，匿名下载 DMG 与最终 SHA-256 一致；用户选择本轮不公证，无 submission ID，不声称 Gatekeeper 通过。没有替换现用应用。
+- 关联文档与 Git 状态：[0.2.0 英文说明](docs/distribution/releases/v0.2.0.md)、[release Skill](.agents/skills/next-one-release/SKILL.md)；main 与 v0.2.0 标签已推送，发布源码 9dceeb3；[GitHub Release](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)。本条交付记录另行提交推送，不移动发布标签。
 
 ## 2026-10-27 04:53 | certificate-signing-policy | 所有打包强制正式证书签名
 

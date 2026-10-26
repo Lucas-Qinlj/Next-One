@@ -2,7 +2,7 @@
 
 ## 0.2.0 预发布打包
 
-0.2.0 使用正式 Developer ID 签名的 App 与 DMG，按用户选择暂不公证。功能说明见 [0.2.0 Release notes](releases/v0.2.0.md)。当前 `package-dmg.sh` 继承 App 版本，签名 CLI、App 与 DMG，失败即停止；不公证、不安装、不发布。以下旧版签名状态仅适用于对应历史产物。
+[0.2.0 Pre-release 已发布](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.2.0)，使用正式 Developer ID 签名的 App 与 DMG，按用户选择暂不公证；匿名下载 SHA-256 校验通过。功能说明见 [0.2.0 Release notes](releases/v0.2.0.md)。当前 `package-dmg.sh` 继承 App 版本，签名 CLI、App 与 DMG，失败即停止；不公证、不安装、不发布。以下旧版签名状态仅适用于对应历史产物。
 
 ## 2026-10-27 正式签名本机安装
 
