@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:42 | scrollbar-visible | 贴边滚动滑块持续可见
+
+- 状态：修复已实现，验证及安装进行中。
+- 需求与范围：用户反馈滚动条几乎看不到，要求贴边且明显粗于边框，并授权提交、推送和替换现用应用；延续 01:12 scrollbar-gutter 的无占位布局。
+- 改动：保留 3 pt（约 1 pt 边框的三倍）和原生 overlay 布局/输入机制；独立无命中绘制层避免原生渐隐，颜色增强为 labelColor 65%，无溢出隐藏。同步 Spec、模块说明及通用偏好。
+- 验证与证据：进行中；证据目录 `.local/scrollbar-visible/`。初轮检查发现切换布局后绘制层尺寸未更新，已修正为随宿主布局同步。
+- 未完成/阻塞/下一步：完成必要检查、release 构建、推送及备份后替换；不进行公开发布、公证或修改系统偏好。
+- 关联文档与 Git 状态：[产品 Spec](docs/spec/2026-10-24/macos-floating-todo.md)、[UI 模块](Sources/TodoApp/README.md)；main 小修复，仅提交本轮内容。
+
 ## 2026-10-27 02:22 | codex-task-handoff | 补充创建会话菜单样式
 
 - 状态：Spec 已更新，未实施。
