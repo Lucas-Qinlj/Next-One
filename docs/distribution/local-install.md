@@ -12,6 +12,8 @@
 
 ## 制作
 
+许可证：后续构建的应用及内置 next-one Skill 均携带根目录 [LICENSE](../../LICENSE) 与 [NOTICE](../../NOTICE)，仅限许可证允许的非商业用途。此前已生成的本机 DMG 保留原样，不将它们描述为已重新打包包含许可证。
+
 ```sh
 ./scripts/package-dmg.sh
 ```

@@ -12,6 +12,10 @@ info = plistlib.loads((app / 'Contents/Info.plist').read_bytes())
 assert info['CFBundleIdentifier'] == 'local.todo-ai.release'
 assert info['CFBundleIconFile'] == 'TodoAI.icns'
 assert (app / 'Contents/Resources/TodoAI.icns').read_bytes()[:4] == b'icns'
+for notice in ['LICENSE', 'NOTICE']:
+    expected = Path(notice).read_bytes()
+    assert (app / 'Contents/Resources' / notice).read_bytes() == expected
+    assert (app / 'Contents/Resources/CodexIntegration/next-one' / notice).read_bytes() == expected
 assert os.readlink(volume / 'Applications') == '/Applications'
 for lang in ['zh-Hans', 'en', 'ja', 'ko']:
     assert (app / 'TodoAI_TodoCore.bundle' / f'{lang}.lproj/Localizable.strings').is_file(), lang

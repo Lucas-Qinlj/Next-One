@@ -218,4 +218,4 @@ Before making changes, read [AGENTS.md](AGENTS.md) and the relevant specificatio
 
 ## License
 
-A license has not yet been selected; this repository currently has no `LICENSE` file. An open-source license needs to be added before the project is presented as licensed open-source software.
+**Noncommercial use only.** Next One is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Noncommercial use, modification and redistribution are allowed subject to its terms; commercial use is not licensed. Preserve the license and [required notice](NOTICE) when distributing copies. This is source-available software with noncommercial restrictions, not an unrestricted open-source license. Third-party components retain their own licenses.

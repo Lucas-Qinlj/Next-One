@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 15:09 | noncommercial-license | 非商业许可证与 GitHub 同步
+
+- 状态：许可证已加入，验证与推送中。
+- 需求与范围：用户要求提交并推送当前成果到 GitHub，增加不得商用的许可证。
+- 改动：采用官方原文 PolyForm Noncommercial License 1.0.0，添加 LICENSE/NOTICE，四语 README 同步非商业限制；应用打包与独立分发 Skill 均携带许可及声明，挂载检查验证两处内容。
+- 验证与证据：待官方文本一致性、文档链接、打包资源与远端提交核验。
+- 未完成/阻塞/下一步：不合并两个独立工作树中的未交付任务、不修改仓库可见性、不发布 GitHub Release；既有 DMG 不追溯修改。
+- 关联文档与 Git 状态：[LICENSE](LICENSE)、[NOTICE](NOTICE)；main，推送本地主线待同步提交，完成后核验 origin/main 与本地一致。
+
 ## 2026-10-26 14:57 | readme-vibe-scenarios | README 聚焦 Vibe Coding 痛点
 
 - 状态：四语文档及配图更新完成，检查通过。
