@@ -627,7 +627,7 @@ struct SettingsView: View {
                 Divider()
                 VStack(alignment: .leading, spacing: 6) {
                     Text(L("背景不透明度 \(Int(model.opacity * 100))%")).font(.system(size: 13, weight: .semibold))
-                    Slider(value: $model.opacity, in: 0.3...1).onChange(of: model.opacity) { model.window?.savePreferences() }
+                    Slider(value: $model.opacity, in: 0...1).onChange(of: model.opacity) { model.window?.savePreferences() }
                     Text(L("文字和悬浮球保持清晰。")).font(.caption2).foregroundStyle(.secondary)
                 }
                 Divider()

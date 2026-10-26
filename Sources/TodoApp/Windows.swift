@@ -32,7 +32,7 @@ final class TaskPanel: NSPanel {
             if let x = p["x"] as? Double, let y = p["y"] as? Double, x.isFinite, y.isFinite { geometry.anchor = CGPoint(x: x, y: y) }
             if let w = p["width"] as? Double, let h = p["height"] as? Double, w.isFinite, h.isFinite { geometry.size = CGSize(width: w, height: h) }
             geometry.growsRight = p["right"] as? Bool ?? false; geometry.growsDown = p["down"] as? Bool ?? true
-            model.opacity = min(1, max(0.3, p["opacity"] as? Double ?? 0.9)); model.pinned = p["pinned"] as? Bool ?? true
+            model.opacity = min(1, max(0, p["opacity"] as? Double ?? 0.9)); model.pinned = p["pinned"] as? Bool ?? true
             model.collapsed = Set(p["collapsed"] as? [String] ?? [])
         }
         for window in [panel, ball] { window.isOpaque = false; window.backgroundColor = .clear; window.hasShadow = true; window.hidesOnDeactivate = false; window.isReleasedWhenClosed = false }
