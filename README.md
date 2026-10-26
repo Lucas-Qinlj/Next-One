@@ -24,6 +24,27 @@ A follow-up gets buried in a chat. A new session needs the same explanation agai
 
 It is built for solo developers, indie makers, and anyone who builds software through conversation with coding agents. The included integration targets **Codex**; other local agents can use the documented CLI, but dedicated integrations have not been verified.
 
+## Just start with `neo`
+
+Install or update the `next-one` Skill from **Settings → Codex integration**, and make sure your local coding agent can discover it. Then write `neo` followed by what you want to record or change.
+
+<img src="docs/assets/neo-examples/en.png" alt="neo Add user management, analytics, and operations dashboards to this project's backlog." width="960">
+
+*Illustrative input example based on a Coding Agent composer. It shows an unsent request, not a successful execution. The model and permission controls reproduce the reference UI; they are not Next One requirements.*
+
+> neo Add user management, analytics, and operations dashboards to this project's backlog.
+
+| You say | Next One workflow |
+| --- | --- |
+| `neo Tomorrow at 8am I need to mail a parcel` | Create a personal task with a due time |
+| `neo Show today's unfinished tasks` | Read today's due tasks |
+| `neo Move mailing the parcel to tomorrow at 3pm` | Find the task and update its due time |
+| `neo I have mailed the parcel` | Find the task and mark it complete |
+
+`neo` helps the agent select Next One; the rest of the sentence determines the operation. The project example records future work rather than immediately implementing it. Personal tasks default to Unfiled; project tasks use an explicit project or clear project context. Dates use your local timezone. Ambiguous task matches are clarified before changes, and writes are reported successful only after the CLI succeeds. Due times do not schedule notifications.
+
+This is a Skill convention, not a shell command or background listener. The bundled setup targets Codex; discovery depends on your agent and installed Skill version. Fresh-session automatic routing has not yet been verified.
+
 ## A look inside
 
 <table>
@@ -66,9 +87,10 @@ Lock mode makes the panel ignore mouse input while the floating ball remains ava
 
 <p align="center"><img src="docs/assets/screenshots/en/settings.jpg" alt="English settings with language selection, background opacity slider, pin control and copyable Codex setup instructions" width="480"></p>
 
+*Historical settings capture from before the rename; use the paths copied from your current app, not the paths pictured here.*
+
 ## How you and the agent work together
 
-With the updated `next-one` Skill installed and available to your coding agent, start a direct request with **`neo`**: `neo tomorrow at 8am I need to mail a parcel`, `neo show today's tasks`, or `neo mark mailing the parcel as done`. The agent interprets the request and uses the local CLI. Standalone personal tasks default to Unfiled; project tasks retain project context. Dates are resolved in your timezone. This records due dates, not scheduled notifications. `neo` is a Skill routing convention, not a shell command or background listener.
 
 1. **Capture the work.** Create a project, bind its folder, and add the goal, constraints, and acceptance criteria.
 2. **Start with context.** Ask Codex to read that project's open tasks before making changes.
@@ -113,7 +135,8 @@ This builds and launches `.build/Next One.app`, including its CLI and Skill reso
 
 1. Launch Next One and open **Settings → Codex integration**.
 2. Copy the installation instruction and send it in a **local Codex session on the same Mac**. The instruction asks that session to install the bundled Skill, preserve existing customization, and verify the CLI using read-only commands.
-3. Bind your project folder, then ask Codex to read its Next One context. Additional worktree folders must be explicitly bound.
+3. Bind a project folder for project work; standalone personal tasks can stay in Unfiled. Additional worktree folders must be explicitly bound.
+4. Once the updated Skill is available, send a `neo` request. If it is not discovered, refresh or restart the agent session.
 
 Copying the instruction alone does not install anything. App startup prepares bundled integration resources inside the app's data directory; it does not modify your global Skills or Codex configuration. Automatic discovery after installation still needs validation in a fresh target session.
 
@@ -135,8 +158,8 @@ Updates require the task's latest `revision`. Creation supports stable request k
 
 ## Data and privacy
 
-- Release installers and their CLI use `~/Library/Application Support/Next-One-Release`; debug/development builds use `~/Library/Application Support/Next-One`. Tasks, attachments, language, window preferences, and integration resources are separate. The installer starts empty if its own directory does not exist, preserves its own data on later upgrades, and never imports or deletes development data.
-- After switching from the older shared-data installer, copy the new Codex setup instruction from Settings to reconnect the agent to the installer’s data. Existing global Skills are not rewritten automatically; use the CLI/data paths in that instruction. `NEXT_ONE_HOME` explicitly overrides either default.
+- Release uses `~/Library/Application Support/Next-One-Release`; debug uses `~/Library/Application Support/Next-One`. If only the same-channel legacy folder exists, the new path links to that store, preserving tasks, attachments and preferences without copying or merging. Existing new folders take precedence; a fresh install with neither folder starts empty. Development and release data stay separate.
+- Update an older Skill using the instruction in the current app: the Skill is `next-one`, the exported CLI is `integration/current/bin/next-one`, and `NEXT_ONE_HOME` overrides the data directory. The old `TODO_AI_HOME` remains a compatibility fallback; the new variable takes priority. Copying the instruction alone does not update a global Skill.
 - Imported attachments are copied into managed storage. Moving the original file does not remove the imported copy. Video playback depends on the system's default media application.
 - Deleted tasks and attachments remain recoverable; there is no automatic trash cleanup.
 - Next One does not automatically upload your tasks or attachments. Content you explicitly ask a coding agent to read enters that agent's context and is subject to its own data handling.
@@ -194,5 +217,3 @@ Before making changes, read [AGENTS.md](AGENTS.md) and the relevant specificatio
 ## License
 
 A license has not yet been selected; this repository currently has no `LICENSE` file. An open-source license needs to be added before the project is presented as licensed open-source software.
-
-Next One uses `Next-One` / `Next-One-Release` paths. When only the same-channel legacy folder exists, the new path links to it so existing tasks, attachments and preferences stay in one store; no data is copied or merged. Existing new folders take precedence. `NEXT_ONE_HOME` takes priority over the compatible legacy `TODO_AI_HOME`. The Skill is now `next-one`; install it from the new Settings instruction when needed.

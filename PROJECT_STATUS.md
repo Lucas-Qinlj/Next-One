@@ -7,6 +7,14 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 14:41 | readme-neo-examples | 四语 README 与 neo 输入示例
+
+- 状态：四语文档与配图更新完成，检查通过。
+- 需求与范围：用户要求更新全部四语 README，参考 Coding Agent 输入框生成本地化 neo 示例；补充要求保留完整底栏及 GPT-6 Astra 模型名称。
+- 改动：中英日韩 README 增加靠前的 neo 示例图与新增/查询/改期/完成用法、安装前提和边界；统一数据路径兼容说明，保留原生实拍并注明旧设置路径。四张生成图包含模型、权限、推理程度和发送控件，明确标为未发送输入示意。
+- 验证与证据：逐张视觉检查文字、GPT-6 Astra 及底栏完整性；四语文档链接、图片路径、PNG 尺寸、保留实拍、命名/数据规则和提示词清单检查通过，git diff --check 通过。无应用代码变更，不运行无关业务测试。
+- 未完成/阻塞/下一步：不将生成图视为成功执行或自动路由证据；不推送、不重打安装包。
+- 关联文档与 Git 状态：[英文 README](README.md)、[中文 README](docs/readme/README.zh-CN.md)、[素材与提示词](docs/assets/neo-examples/README.md)；main，本轮仅提交文档与图片。
 ## 2026-10-26 14:31 | neo-shortcut | neo 自然语言快捷入口
 
 - 状态：Skill、产品文档及应用内置资源更新完成；新会话自动发现未验证。

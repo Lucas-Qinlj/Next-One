@@ -2,7 +2,6 @@
 
 # Next One
 
-安装并让 Coding Agent 发现新版 `next-one` Skill 后，可直接说 **`neo 明天早上八点我要出门寄快递`**。`neo` 帮助 Agent 选择 Next One，再将自然语言解释为新增、查询、修改或完成操作。生活事项默认归入未分类，项目任务沿用明确项目上下文；按用户时区解析日期。它是 Skill 的触发约定，不是终端命令，也不承诺定时通知或后台监听。
 
 **你和 Coding Agent，共同维护一份待办上下文。**
 
@@ -25,6 +24,27 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 **Next One 让你与 Coding Agent 共同维护一份持久化、按项目组织的待办。** 你在悬浮应用里查看和编辑，Agent 通过 CLI 读写同一份本地数据。目标、进度、验收条件和剩余工作都留在任务里，下次会话可以直接读取。
 
 它面向独立开发者、个人创作者，以及通过与 Coding Agent 对话来构建软件的人。目前内置 **Codex** 接入；其他本地 Agent 可以使用公开的 CLI 接口，但尚未验证专用集成。
+
+## 从一句 `neo` 开始
+
+在**设置 → Codex 接入**复制指令，安装或更新 `next-one` Skill，并让本机 Coding Agent 发现它。之后直接输入 `neo`，再说你要记录或调整的事情。
+
+<img src="../assets/neo-examples/zh-CN.png" alt="neo 当前项目后面要加用户管理、统计看板和运维看板功能" width="960">
+
+*Coding Agent 输入框示意，展示尚未发送的指令，不代表执行成功。模型和权限控件按参考界面保留，不是 Next One 的使用要求。*
+
+> neo 当前项目后面要加用户管理、统计看板和运维看板功能
+
+| 你说 | 对应操作 |
+| --- | --- |
+| `neo 明天早上八点我要出门寄快递` | 新增生活待办并记录截止时间 |
+| `neo 看看今天还有什么没做` | 查询今天到期的未完成事项 |
+| `neo 把寄快递改到明天下午三点` | 找到对应任务并修改截止时间 |
+| `neo 寄快递已经完成了` | 找到对应任务并标记完成 |
+
+`neo` 帮助 Agent 选择 Next One，后面的自然语言决定具体操作。图中的项目需求会先记录为后续工作，不会直接开始开发。生活事项默认放入未分类；项目事项使用明确项目或当前项目上下文。日期按用户本地时区解析；同名任务不明确时先询问，CLI 写入成功后才报告完成。截止时间不等于定时通知。
+
+这是 Skill 的触发约定，不是终端命令或后台监听。内置安装指令面向 Codex，是否发现 Skill 取决于 Agent 和安装版本；新会话自动路由仍待验证。
 
 ## 界面预览
 
@@ -64,6 +84,8 @@ macOS 14+ · SwiftUI + AppKit · 本地存储 · Codex Skill + CLI
 **现成指令，一键复制给 Agent。** 打开**设置 → Codex 接入**，点击复制图标，把完整指令粘贴到本机 Codex 对话中发送。应用已准备好实际路径、安装步骤、保留已有 Skill 自定义内容的要求和只读验证方式，省去自己查路径、拼指令的过程。指令跟随当前界面语言；发送后才由 Codex 执行安装，单纯复制不会安装。当前内置指令面向 Codex，其他 Coding Agent 可通过公开的本地 CLI 接入。
 
 <p align="center"><img src="../assets/screenshots/zh-CN/settings.jpg" alt="中文设置：语言切换、背景不透明度滑块、置顶按钮和可复制的 Codex 安装指令" width="480"></p>
+
+*此设置截图拍摄于更名前，仅展示布局；接入时复制当前应用生成的路径，不照抄图中旧路径。*
 
 ## 你与 Agent 如何一起工作
 
@@ -108,7 +130,8 @@ cd Next-One
 
 1. 启动 Next One，打开 **设置 → Codex 接入**。
 2. 复制安装指令，发送到**同一台 Mac 上的本地 Codex 会话**。指令要求该会话安装应用携带的 Skill，保留已有自定义内容，并通过只读命令验证 CLI。
-3. 绑定项目目录后，让 Codex 读取项目的 Next One 上下文；额外 worktree 需要显式绑定。
+3. 项目工作绑定目录；生活事项可直接放未分类，额外 worktree 需要显式绑定。
+4. 确认新版 Skill 可用后发送 `neo` 指令；若会话尚未发现 Skill，刷新或重启 Agent 会话。
 
 仅复制指令不会安装任何内容。应用启动只会在自身数据目录准备接入资源，不修改全局 Skill 或 Codex 配置。安装后的自动发现仍需在新的目标会话中验证。
 
@@ -130,8 +153,8 @@ cd Next-One
 
 ## 数据与隐私
 
-- Release 安装版及其 CLI 使用 `~/Library/Application Support/Next-One-Release`；debug 开发版使用 `~/Library/Application Support/Next-One`。待办、附件、语言、窗口设置和接入资源全部独立。安装版自身目录不存在时为空清单，后续升级保留自身数据，不导入或删除开发版数据。
-- 从旧的共用数据库安装包升级后，请从新版设置复制 Codex 接入指令重新接入。已有全局 Skill 不会自动改写，应使用新指令中的 CLI/数据路径。`NEXT_ONE_HOME` 可显式覆盖两种默认目录。
+- Release 使用 `~/Library/Application Support/Next-One-Release`；debug 使用 `~/Library/Application Support/Next-One`。同渠道旧目录存在而新路径不存在时，新路径链接到原存储，保留任务、附件和偏好，不复制或合并数据。已有新目录优先；新旧目录均不存在时才从空清单开始。开发版和安装版数据仍独立。
+- 旧 Skill 请用当前应用设置中的指令更新：Skill 名为 `next-one`，导出 CLI 为 `integration/current/bin/next-one`，`NEXT_ONE_HOME` 可覆盖数据目录。旧变量 `TODO_AI_HOME` 仅作兼容，新变量优先。单纯复制指令不会更新全局 Skill。
 - 附件导入时复制到托管目录，原文件移动不会影响副本；视频播放依赖系统默认媒体应用。
 - 已删除的任务和附件可恢复，不自动清空回收站。
 - Next One 不自动上传待办或附件。你明确让 Coding Agent 读取的内容会进入该 Agent 的上下文，并遵循其数据处理方式。
@@ -189,5 +212,3 @@ python3 scripts/drag-cli-smoke.py
 ## 许可证
 
 许可证尚未选定，仓库目前没有 `LICENSE` 文件。正式以开源软件发布前，需要补充明确的开源许可证。
-
-Next One 默认使用 `Next-One` / `Next-One-Release` 路径。同渠道旧目录存在且新路径不存在时，新路径链接到原存储，保留任务、附件和偏好，不复制或合并数据；已有新目录优先。`NEXT_ONE_HOME` 优先于兼容的旧变量 `TODO_AI_HOME`。Skill 已更名 `next-one`，需要时从新版设置复制指令安装。
