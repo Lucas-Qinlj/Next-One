@@ -1,5 +1,7 @@
 # 本机 DMG 试装
 
+公开预览版已发布：[v0.1.0-preview.1](https://github.com/Lucas-Qinlj/Next-One/releases/tag/v0.1.0-preview.1)，应用 0.1.0 build 6、macOS 14+ / arm64。Assets 提供 DMG 与 SHA-256，匿名下载校验通过。该版本包含 LICENSE/NOTICE 与 neo Skill，仍未签名公证；详细限制见[版本说明](releases/v0.1.0-preview.1.md)。下方旧本机包记录保留供追溯。
+
 - 日期：2026-10-26
 - 范围：本机 release 应用与 DMG 制作，供用户手动拖入 Applications 试装。不是签名公证或公开发布。
 - 版本：0.1.0 本地试装版，build 5；文件名同时包含本机架构和源码提交标识。首次交付目标为 Apple Silicon（arm64），macOS 14+。
