@@ -3,6 +3,13 @@ import ApplicationServices
 @testable import TodoApp
 
 final class CodexAccessibilityFocusTests: XCTestCase {
+    func testWindowAncestrySupportsDeepEditorsAndRejectsUnrelatedOrCyclicTrees() {
+        XCTAssertTrue(CodexFocusMatch.reachesWindow(from: 0, isWindow: { $0 == 40 }, parent: { $0 + 1 }))
+        XCTAssertFalse(CodexFocusMatch.reachesWindow(from: 0, isWindow: { $0 == 40 }, parent: { $0 < 20 ? $0 + 1 : nil }))
+        var reads = 0
+        XCTAssertFalse(CodexFocusMatch.reachesWindow(from: 0, isWindow: { $0 == 40 }, parent: { _ in reads += 1; return 0 }))
+        XCTAssertEqual(reads, 64)
+    }
     func testAppFocusAloneDoesNotProveKeyboardOwnership() {
         XCTAssertFalse(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: 34, appEditorMatches: true, systemEditorMatches: false, editorFocused: true))
         XCTAssertFalse(CodexFocusReadback.ownsKeyboard(targetPID: 12, systemPID: nil, appEditorMatches: true, systemEditorMatches: true, editorFocused: true))

@@ -13,6 +13,16 @@ import TodoCore
 
 /// Only the explicitly opened prompt is eligible; titles/placeholders and partial text never match.
 enum CodexFocusMatch {
+    static func reachesWindow<Node>(from node: Node, isWindow: (Node) -> Bool,
+                                    parent: (Node) -> Node?, limit: Int = 64) -> Bool {
+        var current: Node? = node
+        for _ in 0..<limit {
+            guard let item = current else { return false }
+            if isWindow(item) { return true }
+            current = parent(item)
+        }
+        return false
+    }
     static func matches(role: String?, value: String?, enabled: Bool, focusSettable: Bool, prompt: String) -> Bool {
         guard !normalize(prompt).isEmpty, enabled, focusSettable,
               role == kAXTextAreaRole || role == kAXTextFieldRole, let value else { return false }
@@ -59,6 +69,8 @@ enum CodexFocusReadback {
 }
 
 private enum CodexAX {
+    static let maximumNodes = 4096
+    static let maximumDepth = 64
     static func value(_ element: AXUIElement, _ name: String) -> CFTypeRef? {
         var result: CFTypeRef?
         guard AXUIElementCopyAttributeValue(element, name as CFString, &result) == .success else { return nil }
@@ -86,14 +98,13 @@ private enum CodexAX {
         // Prefer the editor identified by Codex itself; it must belong to this window
         // and contain the complete new prompt. Global keyboard ownership is verified later.
         if let editor = element(value(app, kAXFocusedUIElementAttribute)),
-           let editorWindow = element(value(editor, kAXWindowAttribute)), CFEqual(editorWindow, window),
-           matches(editor, prompt: prompt), !Task.isCancelled,
+           matches(editor, prompt: prompt), belongs(editor, to: window, deadline: deadline), !Task.isCancelled,
            ProcessInfo.processInfo.systemUptime < deadline {
             return .found(Match(app: app, window: window, editor: editor))
         }
         var queue: [(AXUIElement, Int)] = [(window, 0)], visited: [AXUIElement] = [], found: AXUIElement?
         var index = 0
-        while index < queue.count, index < 400 {
+        while index < queue.count, index < maximumNodes {
             guard !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline else { return .failed(.searchTimeout) }
             let (item, depth) = queue[index]; index += 1
             if visited.contains(where: { CFEqual($0, item) }) { continue }
@@ -107,7 +118,7 @@ private enum CodexAX {
             let childResult = AXUIElementGetAttributeValueCount(item, kAXChildrenAttribute as CFString, &count)
             guard [.success, .attributeUnsupported, .noValue].contains(childResult) else { return .failed(.readFailed) }
             if childResult == .success, count > 0 {
-                guard depth < 30, queue.count + count <= 400 else { return .failed(.searchLimit) }
+                guard depth < maximumDepth, queue.count + count <= maximumNodes else { return .failed(.searchLimit) }
                 guard AXUIElementCopyAttributeValues(item, kAXChildrenAttribute as CFString, 0, count, &children) == .success else { return .failed(.readFailed) }
                 for child in (children as? [AXUIElement]) ?? [] { queue.append((child, depth + 1)) }
             }
@@ -116,9 +127,20 @@ private enum CodexAX {
         guard let found else { return .failed(.noMatch) }
         return .found(Match(app: app, window: window, editor: found))
     }
+    static func belongs(_ editor: AXUIElement, to window: AXUIElement, deadline: TimeInterval) -> Bool {
+        if let declaredWindow = element(value(editor, kAXWindowAttribute)) {
+            return CFEqual(declaredWindow, window)
+        }
+        // Some web editors omit AXWindow; establish ownership through parents, never by title.
+        return CodexFocusMatch.reachesWindow(from: editor, isWindow: { CFEqual($0, window) }, parent: {
+            guard !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline else { return nil }
+            return element(value($0, kAXParentAttribute))
+        }, limit: maximumDepth)
+    }
     static func requestFocus(_ match: Match, prompt: String) -> CodexFocusFailure? {
         guard let window = element(value(match.app, kAXFocusedWindowAttribute)), CFEqual(window, match.window),
-              matches(match.editor, prompt: prompt) else { return .changed }
+              matches(match.editor, prompt: prompt),
+              belongs(match.editor, to: window, deadline: ProcessInfo.processInfo.systemUptime + 0.3) else { return .changed }
         let system = AXUIElementCreateSystemWide()
         AXUIElementSetMessagingTimeout(system, 0.05)
         if let inputApp = element(value(system, kAXFocusedApplicationAttribute)), !CFEqual(inputApp, match.app) {
@@ -200,7 +222,7 @@ enum CodexFocusOutcome: Equatable {
                 if front?.bundleIdentifier == "com.openai.codex", let pid = front?.processIdentifier {
                     sawCodex = true
                     // Do not let one stale full-window scan consume the whole readiness window.
-                    let scanDeadline = min(deadline, ProcessInfo.processInfo.systemUptime + 1)
+                    let scanDeadline = min(deadline, ProcessInfo.processInfo.systemUptime + 3)
                     let worker = Task.detached { CodexAX.find(pid: pid, prompt: prompt, deadline: scanDeadline) }
                     let result = await withTaskCancellationHandler(operation: { await worker.value }, onCancel: { worker.cancel() })
                     guard !Task.isCancelled, NSWorkspace.shared.frontmostApplication?.processIdentifier == pid else { return }
