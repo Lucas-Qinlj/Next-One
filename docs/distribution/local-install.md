@@ -6,9 +6,9 @@
 
 ## 安装窗口
 
-![Finder 实际打开的拖拽安装窗口](installer-window.jpg)
+![Finder 实际打开的拖拽安装窗口](next-one-installer-window.png)
 
-本轮改为固定 720 × 480 pt 的 Finder 图标窗口：左侧应用、右侧 Applications、中间箭头，下方提供中英日韩拖拽提示。使用与悬浮球风格一致的清单图标，移除散落的 Install.txt。截图为实际打开 DMG 的结果，不是设计稿。
+本轮改为固定 720 × 480 pt 的 Finder 图标窗口：左侧应用、右侧 Applications、中间箭头，下方提供中英日韩拖拽提示。使用与悬浮球一致的黑底白色回形针图标，移除散落的 Install.txt。截图为实际打开 DMG 的结果，不是设计稿。
 
 ## 制作
 
@@ -58,3 +58,9 @@ DMG 完整性、完整资源、从映像复制到独立目录后的启动与 CLI
 ```
 
 脚本检查图标、四语资源、完整 Skill、Applications 链接、背景与图标左右关系，并调用包内 CLI --help。检查不安装应用、不修改真实待办。更换 macOS 或打包依赖后仍需实际 Finder 检查。
+
+## 最新本地安装包（2026-10-26）
+
+- 文件：`.local/releases/Next-One-0.1.0-local-isolated-arm64-59ea3a2.dmg`，约 4.5 MB；同目录附 `.sha256`。
+- 源码：`59ea3a2`；产品名称 Next One，0.1.0 build 3，arm64。
+- release 构建、镜像 CRC/SHA-256、挂载资源/布局/CLI、安装包复制完整性及隔离数据启动均通过；上图为本次 Finder 实际截图。测试应用已退出，未覆盖 Applications 中现用开发版。

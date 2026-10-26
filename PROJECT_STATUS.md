@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 14:00 | next-one-installer | 最新 Next One 安装包
+
+- 状态：打包及本机验证完成。
+- 需求与范围：用户要求重新打包最新版本；基于源码 59ea3a2，包含 Next One 名称与黑底白色回形针。
+- 改动：复用现有 release/DMG 流程生成 `Next-One-0.1.0-local-isolated-arm64-59ea3a2.dmg`（约 4.5 MB，0.1.0 build 3），附 SHA-256 文件；不覆盖现用应用。
+- 验证与证据：release 构建、hdiutil CRC 与 SHA-256、包内四语/Skill/CLI、release 标识、图标资源一致性均通过；Finder 实际打开确认 Next One 名称、回形针与左右拖拽布局，截图见安装说明。映像完整复制到独立目录逐文件比对通过，以隔离数据启动成功后正常退出。
+- 未完成/阻塞/下一步：无阻塞；安装窗口保留打开供用户试装。未替用户安装、未改真实任务或全局 Skill；未签名公证、未公开发布或验证其他机器。
+- 关联文档与 Git 状态：[安装说明](docs/distribution/local-install.md)；main，安装包保存在忽略的 `.local/releases/`，交付记录本地提交，不推送。
+
 ## 2026-10-26 13:53 | product-rename | 产品更名 Next One
 
 - 状态：已完成本地应用更名及远端仓库改名。
