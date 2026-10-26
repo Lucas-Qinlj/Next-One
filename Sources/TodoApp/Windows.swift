@@ -20,6 +20,7 @@ final class TaskPanel: NSPanel {
     var statusItem: NSStatusItem!
     var timer: Timer?
     var lockHoverTimer: Timer?
+    var handoffRestoreTask: Task<Void, Never>?
     let preferencesURL: URL
     init(model: AppModel) {
         self.model = model
@@ -71,6 +72,7 @@ final class TaskPanel: NSPanel {
     }
     @objc func recover() { geometry.fit(in: currentScreen, chooseDirection: true); layout(); ball.orderFrontRegardless(); savePreferences() }
     func toggle() {
+        handoffRestoreTask?.cancel(); handoffRestoreTask = nil
         if expanded { guard model.saveDraft() else { return }; panel.orderOut(nil) }
         else { geometry.fit(in: currentScreen, chooseDirection: true); layout(); panel.orderFrontRegardless() }
         expanded.toggle(); ball.orderFrontRegardless()
@@ -78,11 +80,24 @@ final class TaskPanel: NSPanel {
     }
     // Handoff has already saved/validated the draft; do not toggle or save again here.
     func setExpandedForHandoff(_ value: Bool) {
+        handoffRestoreTask?.cancel(); handoffRestoreTask = nil
         if value { panel.orderFrontRegardless() }
         else { panel.orderOut(nil) }
         expanded = value
         ball.orderFrontRegardless()
         updateLockHoverTracking()
+    }
+    func restoreAfterHandoff() {
+        handoffRestoreTask?.cancel()
+        handoffRestoreTask = Task { @MainActor [weak self] in
+            // The URL protocol has no prefill-ready callback. This is a trial settling delay.
+            do { try await Task.sleep(for: .milliseconds(800)) } catch { return }
+            guard let self, !self.expanded else { return }
+            self.panel.makeFirstResponder(nil)
+            self.panel.inputEnabled = false
+            self.setExpandedForHandoff(true)
+            self.panel.inputEnabled = !self.model.locked
+        }
     }
     func move(to point: CGPoint, start: Bool, end: Bool) {
         if start { mouseOrigin = point; dragOrigin = geometry.anchor }

@@ -23,7 +23,10 @@ import TodoCore
         pendingCodexHandoff = nil
         let wasExpanded = window?.expanded == true
         window?.setExpandedForHandoff(false)
-        guard !opener(pending.url) else { return }
+        if opener(pending.url) {
+            if wasExpanded { window?.restoreAfterHandoff() }
+            return
+        }
         window?.setExpandedForHandoff(wasExpanded)
         pending.session.cancelled = false
         pending.session.report(TodoError("codex_open", "无法打开 Codex，请确认已安装后重试。"))

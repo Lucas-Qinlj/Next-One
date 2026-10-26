@@ -123,6 +123,7 @@ final class CodexHandoffTests: XCTestCase {
         let model = AppModel(store: store)
         let controller = FloatingController(model: model)
         defer {
+            controller.handoffRestoreTask?.cancel()
             controller.timer?.invalidate(); controller.lockHoverTimer?.invalidate()
             controller.panel.orderOut(nil); controller.ball.orderOut(nil)
             NSStatusBar.system.removeStatusItem(controller.statusItem)
@@ -155,8 +156,18 @@ final class CodexHandoffTests: XCTestCase {
         XCTAssertNil(model.codexHandoff)
         model.finishCodexHandoff { _ in XCTFail("Duplicate open"); return true }
         XCTAssertEqual(count, 2)
-        controller.toggle()
+        try await Task.sleep(for: .milliseconds(1000))
         XCTAssertTrue(controller.panel.isVisible)
+        XCTAssertTrue(controller.expanded)
+        XCTAssertFalse(controller.panel.isKeyWindow)
+        XCTAssertTrue(controller.panel.inputEnabled)
+        controller.setExpandedForHandoff(false)
+        controller.restoreAfterHandoff()
+        controller.toggle() // User explicitly expands then collapses before the timer fires.
+        controller.toggle()
+        try await Task.sleep(for: .milliseconds(1000))
+        XCTAssertFalse(controller.panel.isVisible)
+        XCTAssertFalse(controller.expanded)
     }
 
     @MainActor func testSingleAndMultipleSourcePathsAndUnmatchedFallback() async throws {
