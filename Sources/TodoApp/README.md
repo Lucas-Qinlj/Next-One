@@ -38,7 +38,7 @@ UI 每 0.7 秒读取已提交快照。没有修改的详情随外部更新刷新
 
 `TaskDragging.swift` 使用应用内鼠标追踪，保留 mouseDown/mouseDragged/mouseUp 同一条事件链；标题和留白按住移动超过 4 pt 后显示忽略鼠标的跟手预览窗，不进入系统 NSDraggingSession。单击仍打开详情。每次移动按当前窗口中任务行 bounds 与 visibleRect 的交集判断落点，中部仅允许两个未分类任务合并，边缘显示插入线；松手通过原 Store.place/group 提交并清除预览，Escape 或落到区域外取消。下方末尾区域及项目标题也是明确落点。没有捕获或重放全局系统输入，没有新增权限。
 
-全部项目视图按 boardKeys 混排项目框和未分类任务，组间 BoardDropSlot 单独负责落点和高亮；未分类已完成折叠区在这些插槽之后，不再在该区域下方放置“未分类末尾”拖动入口。项目标题单击折叠，按住移动拖动直接渲染的整个分组组件，松手仅改变顶层位置。落点邻近 8 pt 空隙可归入插槽，任务行命中仍优先按真实边界判断。
+全部项目视图按 boardKeys 混排项目框和未分类任务，组间 BoardDropSlot 单独负责落点和高亮；统一已完成折叠区在这些插槽之后，不再在该区域下方放置“未分类末尾”拖动入口。项目标题单击折叠，按住移动拖动直接渲染的整个分组组件，松手仅改变顶层位置。落点邻近 8 pt 空隙可归入插槽，任务行命中仍优先按真实边界判断。
 
 清单密度：全部范围顶层 spacing=0，显式插槽 6 pt；组内 spacing=2、顶部 2/底部 6 pt，任务行纵向 padding=3 pt。取消重复分组外部底边留白，保持原点击控件大小及拖动容错。
 
@@ -64,3 +64,7 @@ CodexIntegration 只从应用包 Contents/Helpers/next-one 和 Contents/Resource
 产品显示名为 Next One，默认应用包为 `.build/Next One.app`；菜单、窗口、四语安装指令使用新名称。内部 `TodoAI` 可执行文件、资源 bundle、应用标识保持兼容旧版，数据路径兼容规则见下文。
 
 默认新目录不存在且同渠道旧目录存在时，Store 建立新路径到旧目录的符号链接，数据库、附件和偏好仍为同一份；已有新目录不合并，显式目录不自动链接。语言偏好在 Store 准备完毕后加载。NEXT_ONE_HOME 优先，TODO_AI_HOME 仅作为旧调用兼容；安装提示只展示新变量。
+
+## 统一已完成区域
+
+`TaskListView.pendingRoots/completedRoots` 仅对根任务分区，`pendingBoardKeys` 过滤没有未完成根任务的项目但不修改存储顺序。`CompletedRootSection` 提供无箭头的灰线标题，全部项目下复用 `ProjectTaskGroup` 彩色边框；单项目筛选保留无框。完成区使用 `completed-project-` 折叠键，与上方 `project-` 独立，不注册项目拖动/末尾落点。项目拖动预览同步只展示未完成根任务。`TaskGroupView` 继续负责父级内子任务分区，因此未完成父任务的已完成子任务不会被抽走。`swift test --filter CompletedSectionTests` 检查完成/恢复、层级、筛选、空框过滤及独立折叠键。详见[Spec](../../docs/spec/2026-10-26/unified-completed.md)。

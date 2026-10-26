@@ -141,7 +141,7 @@ struct NativeTaskDragSource: NSViewRepresentable {
                     // potentially blank layer-backed NSHostingView bitmap.
                     panel.contentView = NSHostingView(rootView:
                         ProjectTaskGroup(model: model, projectID: project.id, name: project.name,
-                                         tasks: model.state.children(nil).filter { $0.projectID == project.id },
+                                         tasks: model.state.children(nil).filter { $0.projectID == project.id && $0.status != "done" },
                                          colorIndex: model.state.projects.firstIndex { $0.id == project.id } ?? 0)
                             .padding(.horizontal, 10)
                             .frame(width: previewWidth, height: previewHeight, alignment: .top)
@@ -331,11 +331,12 @@ struct BoardBlock: ViewModifier {
 struct ProjectEndDrop: ViewModifier {
     @Bindable var model: AppModel
     let project: String?
+    var enabled = true
     func body(content: Content) -> some View {
         content
-            .background { LocalDropRegionView(model: model, taskID: nil, projectID: project) }
+            .background { if enabled { LocalDropRegionView(model: model, taskID: nil, projectID: project) } }
             .overlay(alignment: .bottom) {
-                if model.dropHint == TaskDropHint(target: "end-" + (project ?? "unclassified"), placement: "end") {
+                if enabled && model.dropHint == TaskDropHint(target: "end-" + (project ?? "unclassified"), placement: "end") {
                     Rectangle().fill(Color.accentColor).frame(height: 2).allowsHitTesting(false)
                 }
             }

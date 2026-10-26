@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-26 18:06 | unified-completed | 统一底部已完成区域
+
+- 状态：实现、自动测试及本机隔离原生交互验证完成。
+- 需求与范围：已完成根任务统一到底部，灰线嵌入标题，无箭头；展开后按项目彩色框分组。未完成父任务的已完成子任务保留原位。
+- 改动：独立 worktree 实施展示分区和折叠状态，复用已有项目框；不改业务数据。
+- 验证与证据：debug 构建、33 项测试及打包通过；隔离原生窗口验证灰线总区开合、项目独立折叠、父级子任务保留、父任务完成整支下移及恢复后返回上方。截图 `.local/completed-data/expanded.png`；测试用数据通过 CLI 创建。
+- 未完成/阻塞/下一步：无本轮实现阻塞；未合并主分支、未替换现用安装、未推送。多显示器/Spaces 等无关窗口行为未重新验证。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-26/unified-completed.md)；codex/unified-completed，本地实施，不合并、推送或安装。
+
 ## 2026-10-26 15:32 | english-skill | Next One Skill 全英文说明
 
 - 状态：英文文档、接口核对和现用内置资源更新完成。

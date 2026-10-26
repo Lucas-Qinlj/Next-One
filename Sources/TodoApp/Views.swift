@@ -104,26 +104,30 @@ struct ResizeHandles: View {
 struct TaskListView: View {
     @Bindable var model: AppModel
     var roots: [TodoItem] { model.state.children(nil).filter { model.scope == "all" || ($0.projectID ?? "unclassified") == model.scope } }
-    var projectsWithTasks: [Project] {
-        let ids = Set(roots.compactMap(\.projectID))
-        return model.state.projects.filter { ids.contains($0.id) }
+    var pendingRoots: [TodoItem] { roots.filter { $0.status != "done" } }
+    var completedRoots: [TodoItem] { roots.filter { $0.status == "done" } }
+    var pendingBoardKeys: [String] {
+        let projects = Set(pendingRoots.compactMap(\.projectID))
+        let tasks = Set(pendingRoots.map(\.id))
+        return model.state.boardKeys.filter {
+            let id = String($0.dropFirst(2))
+            return $0.hasPrefix("p:") ? projects.contains(id) : tasks.contains(id)
+        }
     }
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: model.scope == "all" ? 0 : 2) {
                     if model.scope == "all" {
-                        ForEach(model.state.boardKeys, id: \.self) { key in
+                        ForEach(pendingBoardKeys, id: \.self) { key in
                             BoardDropSlot(model: model, key: key, placement: "before")
                             boardContent(key).modifier(BoardBlock(model: model, key: key))
                         }
-                        if let last = model.state.boardKeys.last {
+                        if let last = pendingBoardKeys.last {
                             BoardDropSlot(model: model, key: last, placement: "after")
                         }
-                        TaskGroupView(model: model, tasks: roots.filter { $0.projectID == nil && $0.status == "done" },
-                                      depth: 0, groupID: "root-unclassified")
                     } else {
-                        TaskGroupView(model: model, tasks: roots, depth: 0, groupID: "root-" + model.scope)
+                        ForEach(pendingRoots) { TaskRow(model: model, taskID: $0.id, depth: 0) }
                     }
                     if model.taskDrag != nil && model.scope != "all" {
                         Text(model.scope == "all" || model.scope == "unclassified" ? L("移至未分类末尾") : L("移至项目末尾"))
@@ -131,6 +135,7 @@ struct TaskListView: View {
                             .contentShape(Rectangle())
                             .modifier(ProjectEndDrop(model: model, project: model.scope == "all" || model.scope == "unclassified" ? nil : model.scope))
                     }
+                    CompletedRootSection(model: model, tasks: completedRoots)
                 }.padding(.horizontal, 14).padding(.vertical, 12)
             }.overlay {
                 if roots.isEmpty {
@@ -152,7 +157,7 @@ struct TaskListView: View {
         let id = String(key.dropFirst(2))
         if key.hasPrefix("p:"), let project = model.state.projects.first(where: { $0.id == id }) {
             ProjectTaskGroup(model: model, projectID: id, name: project.name,
-                             tasks: roots.filter { $0.projectID == id },
+                             tasks: pendingRoots.filter { $0.projectID == id },
                              colorIndex: model.state.projects.firstIndex(where: { $0.id == id }) ?? 0)
         } else if key.hasPrefix("t:") {
             TaskRow(model: model, taskID: id, depth: 0)
@@ -160,6 +165,45 @@ struct TaskListView: View {
     }
 
 }
+struct CompletedRootSection: View {
+    @Bindable var model: AppModel
+    let tasks: [TodoItem]
+    private var key: String { "completed-root-" + model.scope }
+    private var expanded: Bool { model.completedGroups.contains(key) }
+    var body: some View {
+        if !tasks.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
+                Button {
+                    if !model.completedGroups.insert(key).inserted { model.completedGroups.remove(key) }
+                } label: {
+                    HStack(spacing: 5) {
+                        Rectangle().frame(width: 13, height: 1)
+                        Text(L("已完成 \(tasks.count)")).font(.system(size: 9, weight: .medium))
+                        Rectangle().frame(height: 1)
+                    }
+                    .foregroundStyle(.secondary).frame(height: 20).contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityValue(expanded ? L("已展开") : L("已收起"))
+                .padding(.horizontal, -10)
+                if expanded {
+                    if model.scope == "all" {
+                        ForEach(model.state.projects.filter { project in tasks.contains { $0.projectID == project.id } }) { project in
+                            ProjectTaskGroup(model: model, projectID: project.id, name: project.name,
+                                             tasks: tasks.filter { $0.projectID == project.id },
+                                             colorIndex: model.state.projects.firstIndex(where: { $0.id == project.id }) ?? 0,
+                                             completedSection: true)
+                        }
+                        ForEach(tasks.filter { $0.projectID == nil }) { TaskRow(model: model, taskID: $0.id, depth: 0) }
+                    } else {
+                        ForEach(tasks) { TaskRow(model: model, taskID: $0.id, depth: 0) }
+                    }
+                }
+            }
+        }
+    }
+}
+
 struct ProjectTaskGroup: View {
     @Bindable var model: AppModel
     @Environment(\.colorScheme) private var colorScheme
@@ -167,10 +211,11 @@ struct ProjectTaskGroup: View {
     let name: String
     let tasks: [TodoItem]
     let colorIndex: Int
+    var completedSection = false
     @State private var titleWidth: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    private var key: String { "project-" + projectID }
+    var key: String { (completedSection ? "completed-project-" : "project-") + projectID }
     private var isCollapsed: Bool { model.collapsed.contains(key) }
     private var border: Color {
         Color(hue: (0.55 + Double(colorIndex) * 0.381966).truncatingRemainder(dividingBy: 1),
@@ -198,7 +243,7 @@ struct ProjectTaskGroup: View {
             }
             .buttonStyle(.plain)
             .overlay {
-                if let project = model.state.projects.first(where: { $0.id == projectID }) {
+                if !completedSection, let project = model.state.projects.first(where: { $0.id == projectID }) {
                     NativeTaskDragSource(model: model, project: project, onClick: {
                         withAnimation(.easeInOut(duration: reduceMotion ? 0.01 : 0.45)) {
                             if !model.collapsed.insert(key).inserted { model.collapsed.remove(key) }
@@ -211,9 +256,9 @@ struct ProjectTaskGroup: View {
             .help(name + (isCollapsed ? L("：展开项目") : L("：收起项目")))
             .accessibilityLabel(name)
             .accessibilityValue(isCollapsed ? L("已收起") : L("已展开"))
-            .modifier(ProjectEndDrop(model: model, project: projectID))
+            .modifier(ProjectEndDrop(model: model, project: projectID, enabled: !completedSection))
             VStack(alignment: .leading, spacing: 2) {
-                TaskGroupView(model: model, tasks: tasks, depth: 0, groupID: key)
+                ForEach(tasks) { TaskRow(model: model, taskID: $0.id, depth: 0) }
             }
             .padding(.horizontal, 10).padding(.top, 2).padding(.bottom, 6)
             .frame(maxWidth: .infinity, alignment: .leading)
