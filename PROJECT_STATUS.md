@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:34 | codex-task-handoff | B9 从待办打开 Codex 会话 Spec
+
+- 状态：需求已对齐，Spec 已形成；尚未实施。
+- 需求与范围：用户要求把 B9 及批注形成 Spec；本轮仅文档。首版打开新会话并预填，由用户发送。
+- 改动：明确项目/聊天选择、单/多路径匹配、Enter 与 Shift+Enter、无默认指令、XML 上下文和附件路径、Skill 边界及验收条件。
+- 验证与证据：核对现有菜单、Store 附件接口、Swift Package 和测试命令；文档结构、相对链接与差异检查。本轮不运行代码测试、不创建测试会话；运行能力未验证。
+- 未完成/阻塞/下一步：开发前核实外部读取 Codex 项目列表、无项目聊天和目标版本跳转预填；无文档阻塞，不将会话内工具视为原生应用公共接口。
+- 关联文档与 Git 状态：[B9 Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main 文档维护，仅提交本轮 Spec 和状态记录，不推送。
+
 ## 2026-10-27 01:12 | scrollbar-gutter | 移除全页面滚动条占位空白
 
 - 状态：公共修复、验证及现用应用替换完成。
