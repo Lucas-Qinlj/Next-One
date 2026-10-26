@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 01:56 | codex-task-handoff | 用户跨项目深链接验证
+
+- 状态：已有项目切换与两行预填经用户手测确认；无项目聊天仍未解决。
+- 需求与范围：接续 01:49 预验证，用户从另一项目点击两个入口并提供截图。
+- 改动：更新 Spec 和预验证记录，明确显式 path 切回 Next One，省略 path 沿用原项目；不再将后者视为无项目入口。
+- 验证与证据：用户反馈及截图分别显示 Next One 和 customer-acquisition，输入框均有两行测试文本；文档一致性、相对链接与差异检查通过。不是 Agent UI 自动化证据。
+- 未完成/阻塞/下一步：无项目聊天入口、原生应用项目列表来源、完整消息和冷启动仍待验证；未开发产品。
+- 关联文档与 Git 状态：[预验证记录](docs/acceptance/codex-task-handoff-preflight.md)、[Spec](docs/spec/2026-10-27/codex-task-handoff.md)；main，仅提交本轮文档，不推送。
+
 ## 2026-10-27 01:51 | release-workflow-skill | 项目打包签名 Skill 与本地证书目录
 
 - 状态：流程规范与本地资料整理完成；正式签名、公证流水线尚未实施／验收。
