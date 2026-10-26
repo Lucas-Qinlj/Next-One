@@ -60,3 +60,7 @@ Codex UI 自动化此前明确被工具拒绝：`Computer Use is not allowed to 
 本轮在独立 worktree 实现并提交。初次合并检查遇到 main 的另一轮未提交修改；待其独立提交后合并主分支，保留双方状态记录及滚动条修复，最终受影响的 15 项测试和开发包构建通过，再安全合并回 main；未推送、未安装替换现用应用、未安装全局 Skill、未签名公证或发布。B9 保留进行中，避免把待人工验收当作全部完成。
 
 本地构建日志和生产开发包保存到主仓库 `.local/codex-handoff-acceptance/`，不提交生成产物。此前调研见[预验证记录](codex-task-handoff-preflight.md)。
+
+## 安装交付补充（2026-10-27 02:53）
+
+用户随后授权推送并替换现用应用，由用户验收。基于 d767193 的 release 构建已安装并启动，代码已推送 origin/main；所有文件与构建一致，启动后任务、项目、回收站、附件与语言/同步/窗口偏好一致。旧应用及完整数据备份在 `.local/backups/before-codex-handoff-20261027-025102/`，日志在 `.local/codex-handoff-install/verification.txt`。沿用原本本地构建身份，不声称正式签名公证。全局 Skill 未改；产品包与 integration/current 的上游 Skill 已更新，不能据此宣称现有静态全局副本自动更新。功能验收仍等用户结果。

@@ -7,6 +7,15 @@
 - 证据与限制：[AC01–AC15 验收报告](docs/acceptance/macos-floating-todo.md)
 - 使用方法：[README](README.md)
 
+## 2026-10-27 02:53 | codex-task-handoff-install | 推送并替换 B9 开发版本
+
+- 状态：release 构建、推送、备份、安装替换及启动校验完成，等待用户功能验收。
+- 需求与范围：用户明确授权推送并替换现用应用，替换后由用户验证；不发布 DMG、不安装全局 Skill。
+- 改动：基于 d767193 构建 release，推送 origin/main；正常退出旧版，备份旧应用和完整 release 数据后替换 Applications 中 Next One 并启动。保留 local.todo-ai.release 与原数据目录/兼容链接。
+- 验证与证据：新包资源 bundle、灰色 Logo、产品 Skill、内置 CLI 校验通过；安装文件逐文件哈希与构建一致，替换期间数据逐文件不变，重启后待办/项目/回收站快照、附件及 language/reminder-sync/window 偏好全部一致。主程序 SHA-256 `483c2c54296017556310500e1181c9725e9c4b909db0617349729c31e8b5f29b`，启动进程确认。日志 `.local/codex-handoff-install/verification.txt`。
+- 未完成/阻塞/下一步：等待用户验证实际右键入口、预填和换行；Codex UI 与新会话 Skill 端到端限制不变。全局 Skill 未改，应用随包上游资源已更新。本轮沿用现用 linker ad-hoc 本地构建方式，未新增 Developer ID 签名、公证或对外分发。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)；main；备份 `.local/backups/before-codex-handoff-20261027-025102/`，构建 `.local/releases/codex-handoff-20261027-025102/`。本条记录提交后按本轮授权推送。
+
 ## 2026-10-27 02:43 | codex-task-handoff | B9 本地开发与验证
 
 - 状态：本地实现完成，自动及标准窗口交互验证通过；真实悬浮面板与 Codex 端到端待补验。
