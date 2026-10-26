@@ -15,13 +15,13 @@
 ## 自动与只读检查
 
 1. `swift test`：全量 65 项通过（在补充最后一个附件测试前运行）。
-2. 最终 `swift test --filter 'CodexHandoffTests|LocalizationTests|ScrollbarLayoutTests'`：14 项通过，其中 8 项交接测试，覆盖：
+2. 合并前 `swift test --filter 'CodexHandoffTests|LocalizationTests|ScrollbarLayoutTests'`：14 项通过，其中 8 项交接测试，覆盖：
    - 缺失数据库不创建、schema 不兼容、空列表、多路径、同名与精确/符号链接匹配；
    - 活动 WAL 的已提交数据、数据库忙碌失败、读前后主库字节不变；
    - 特殊字符/换行/加号 URL 往返、无默认指令、无 UUID、不同原路径/目标路径；
    - 最新任务标题、目标变化、任务删除、附件持久化路径/缺失、失败草稿保留、取消阻止 opener；
    - 单/多源路径、未匹配回退、合成 Enter/Shift+Enter/marked text/Escape、Logo 资源加载。
-3. `swift build -c release` 通过。
+3. 整合 main 最新常显滚动条修改后，同一筛选共 15 项通过（新增的滚动条检查也通过）。`swift build -c release` 通过。
 4. `scripts/package-app.sh debug .local/handoff-delivery/NextOne.app` 通过；应用/核心资源 bundle、Logo、更新 Skill 均携带。
 5. `skill-creator/scripts/quick_validate.py Skills/next-one` 通过。这是结构检查，不是新模型会话行为验证。
 6. 用新 Core 代码实际只读核对用户 Codex 数据：66 个项目、67 条目录，Next One 精确匹配 true；不修改真实数据、不输出完整列表。
@@ -57,6 +57,6 @@ Codex UI 自动化此前明确被工具拒绝：`Computer Use is not allowed to 
 
 ## Git 与交付范围
 
-本轮在独立 worktree 实现并提交。合并检查时 main 有另一轮未提交修改，涉及 ThinScrollbars.swift、README 和 PROJECT_STATUS 等重叠文件，因此暂不合并，不暂存或覆盖他人内容，保留工作分支等待安全合并；未推送、未安装替换现用应用、未安装全局 Skill、未签名公证或发布。B9 保留进行中，避免把待人工验收当作全部完成。
+本轮在独立 worktree 实现并提交。初次合并检查遇到 main 的另一轮未提交修改；待其独立提交后合并主分支，保留双方状态记录及滚动条修复，最终受影响的 15 项测试和开发包构建通过，再安全合并回 main；未推送、未安装替换现用应用、未安装全局 Skill、未签名公证或发布。B9 保留进行中，避免把待人工验收当作全部完成。
 
 本地构建日志和生产开发包保存到主仓库 `.local/codex-handoff-acceptance/`，不提交生成产物。此前调研见[预验证记录](codex-task-handoff-preflight.md)。

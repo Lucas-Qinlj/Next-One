@@ -12,9 +12,9 @@
 - 状态：本地实现完成，自动及标准窗口交互验证通过；真实悬浮面板与 Codex 端到端待补验。
 - 需求与范围：用户明确授权当前会话独立开发；首版仅已有项目，菜单首行灰色 ChatGPT Logo/分隔线，支持多行可选指令和易读 neo 上下文。
 - 改动：独立只读 Codex 项目适配、项目/目录流程、提交前新鲜度校验、附件路径和 URL 编码、原生 sheet/输入按键、四语资源、仓库 Skill、Logo 与打包资源。无新依赖，不改 Codex 数据或自动发送。
-- 验证与证据：全量 65 项通过后补充附件测试，最终受影响 14 项通过；release build、debug 打包及 Skill 结构校验通过。新代码真实只读 66 项目/67 目录；标准窗口同生产视图的深浅菜单、选择、换行、取消、失效目标和草稿保留实测通过。详见验收记录。
+- 验证与证据：全量 65 项通过后补充附件测试，整合最新主分支后受影响 15 项通过；release build、debug 打包及 Skill 结构校验通过。新代码真实只读 66 项目/67 目录；标准窗口同生产视图的深浅菜单、选择、换行、取消、失效目标和草稿保留实测通过。详见验收记录。
 - 未完成/阻塞/下一步：工具无法操作 Codex UI，真实悬浮面板定位受限；完整跳转/冷启动/焦点、真实中文候选和新会话 Skill 生效需人工补验。普通文件导入仍受既有图片/视频规则限制。B9 不标完成。
-- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)；codex/codex-task-handoff worktree，本任务已保存，主分支重叠修改已独立提交，正在保留双方成果并复测后合并；不推送、不安装替换或发布，产物保存在 .local/codex-handoff-acceptance/。
+- 关联文档与 Git 状态：[Spec](docs/spec/2026-10-27/codex-task-handoff.md)、[验收](docs/acceptance/codex-task-handoff.md)；codex/codex-task-handoff worktree，已保留双方修改、复测并安全合并 main；不推送、不安装替换或发布，产物保存在 .local/codex-handoff-acceptance/。
 
 ## 2026-10-27 02:42 | scrollbar-visible | 贴边滚动滑块持续可见
 
