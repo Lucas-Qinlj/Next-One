@@ -81,4 +81,6 @@ Codex UI 观察仍被 Computer Use 明确拒绝，未绕过；最终输入焦点
 
 ## C3 正式接入（2026-10-27 03:22）
 
+本地验收包：`.local/releases/c3-focus-20261027/Next One.app`；release 构建、两份 SwiftPM 资源 bundle、随包 Skill、CLI --help 校验通过，日志 tests.log/build.log/verification.txt 在同目录。未安装替换或正式签名公证；先退出正在运行的正式版再由用户打开此包，避免两个 UI 访问同一 release 数据目录。用户验收：从真实待办打开 Codex，清单收起但球保留，不点输入框能直接输入；指令不自动发送；点球可重开清单。最终焦点、冷启动、跨 Spaces 均不提前标通过。
+
 用户确认 D 可直接输入 x，随后授权修改正式实现、由用户验收。实现采用先校验、关闭 sheet、onDismiss 隐藏清单、打开 URL；保留球，成功不自动展开，系统拒绝 URL 时恢复清单和同一草稿。9 项 CodexHandoffTests 通过，新增生产 FloatingController 的面板隐藏／球可见／失败恢复／重试成功／重复回调／重新展开检查；这些使用注入 opener，不发送消息，不代表 Codex 焦点验收。真实流程与冷启动、Spaces 待用户验证。
