@@ -40,10 +40,12 @@ final class ThinScroller: NSScroller {
 final class TodoHostingView<Content: View>: NSHostingView<Content> {
     override func layout() {
         super.layout()
-        styleScrollbars(in: self)
+        TodoScrollbarPolicy.apply(to: self)
     }
+}
 
-    private func styleScrollbars(in view: NSView) {
+enum TodoScrollbarPolicy {
+    static func apply(to view: NSView) {
         if let scroll = view as? NSScrollView {
             // Keep the native hit area over the content, rather than reserving an empty gutter.
             if scroll.scrollerStyle != .overlay { scroll.scrollerStyle = .overlay }
@@ -54,6 +56,6 @@ final class TodoHostingView<Content: View>: NSHostingView<Content> {
                 scroll.horizontalScroller = ThinScroller.replacing(scroller)
             }
         }
-        for child in view.subviews { styleScrollbars(in: child) }
+        for child in view.subviews { apply(to: child) }
     }
 }

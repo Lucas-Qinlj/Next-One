@@ -7,6 +7,12 @@ import TodoCore
     var reminderSync: ReminderSync?
     var codexIntegration: CodexIntegration?
     var integrationError: Error?
+    var codexHandoff: CodexHandoffSession?
+    func beginCodexHandoff(_ item: TodoItem) {
+        guard saveDraft(), codexHandoff == nil else { return }
+        do { codexHandoff = CodexHandoffSession(taskID: item.id, store: store, database: try CodexProjects.databaseURL()) }
+        catch { report(error) }
+    }
     var state = Snapshot()
     var scope = "all" { didSet { composerExpanded = false } }
     var selectedID: String? { didSet { if selectedID != nil { composerExpanded = false } } }

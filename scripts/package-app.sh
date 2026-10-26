@@ -17,6 +17,7 @@ cp Resources/Distribution/paperclip-logo.png "$app_path"/Contents/Resources/pape
 cp LICENSE NOTICE "$app_path"/Contents/Resources/
 # SwiftPM resolves Bundle.module at the root of the main application bundle.
 ditto ".build/$configuration/TodoAI_TodoCore.bundle" "$app_path"/TodoAI_TodoCore.bundle
+ditto ".build/$configuration/TodoAI_TodoApp.bundle" "$app_path"/TodoAI_TodoApp.bundle
 # Copy the complete source skill into bundle-owned resources, including references.
 python3 - "$app_path" <<'COPY'
 from pathlib import Path

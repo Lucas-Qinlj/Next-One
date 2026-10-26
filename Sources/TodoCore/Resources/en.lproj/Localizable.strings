@@ -291,3 +291,26 @@
 "此条待办已停止同步。" = "Sync is paused for this task.";
 
 "恢复此条同步" = "Resume this task";
+
+// Codex task handoff
+"创建 Codex 会话" = "Create Codex chat";
+"选择待办目录" = "Choose task folder";
+"选择 Codex 项目" = "Choose Codex project";
+"选择会话目录" = "Choose chat folder";
+"补充指令（可留空）" = "Additional instructions (optional)";
+"Enter 打开 · Shift+Enter 换行；到 Codex 后发送。" = "Enter to open · Shift+Enter for a new line. Send in Codex.";
+"重新选择" = "Choose again";
+"打开 Codex" = "Open Codex";
+"没有可选项目，请先在 Codex 添加项目。" = "No projects available. Add a project in Codex first.";
+"Codex 数据目录必须是绝对路径。" = "The Codex data folder must be an absolute path.";
+"无法读取 Codex 项目，请确认已安装并打开过 Codex，然后重试。" = "Cannot read Codex projects. Make sure Codex is installed and has been opened, then retry.";
+"Codex 项目暂时无法读取，请重试。" = "Codex projects are temporarily unavailable. Please retry.";
+"无法识别此版本的 Codex 项目数据，请更新 Next One。" = "This Codex project format is not supported. Please update Next One.";
+"目录不存在或无法访问，请重新选择。" = "The folder is missing or inaccessible. Choose again.";
+"待办编号不可用，请刷新后重试。" = "The task code is unavailable. Refresh and retry.";
+"无法准备 Codex 会话，请重试。" = "Cannot prepare the Codex chat. Please retry.";
+"请先选择 Codex 项目。" = "Choose a Codex project first.";
+"Codex 项目目录已变化，请重新选择。" = "The Codex project folder has changed. Choose again.";
+"待办的项目目录已变化，请重新选择。" = "The task project folder has changed. Choose again.";
+"附件无法读取：%1$@" = "Cannot read attachment: %1$@";
+"无法打开 Codex，请确认已安装后重试。" = "Cannot open Codex. Make sure it is installed and retry.";

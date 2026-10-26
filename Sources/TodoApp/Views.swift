@@ -77,6 +77,9 @@ struct ContentView: View {
         .controlSize(.small)
         .tint(.primary)
         .environment(\.locale, LanguageSettings.shared.locale)
+        .sheet(item: $model.codexHandoff) { session in
+            CodexHandoffView(session: session) { model.codexHandoff = nil }
+        }
         .alert(model.confirm?.title ?? L("确认"), isPresented: Binding(get: { model.confirm != nil }, set: { if !$0 { model.confirm = nil } })) {
             Button(L("确认")) { let action = model.confirm?.action; model.confirm = nil; action?() }
             Button(L("取消"), role: .cancel) { model.confirm = nil }
@@ -422,6 +425,10 @@ struct TaskRow: View {
             }.padding(.leading, CGFloat(min(depth, 6)) * 10).padding(.vertical, 3)
                 .modifier(TaskRowDrag(model: model, item: item))
                 .contextMenu {
+                    Button { model.beginCodexHandoff(item) } label: {
+                        Label { Text(L("创建 Codex 会话")) } icon: { Image(nsImage: ChatGPTMenuIcon.image).foregroundStyle(.secondary) }
+                    }
+                    Divider()
                     Button(L("新增子任务")) { model.beginAdding(parent: item.id) }
                     Menu(L("优先级")) { ForEach(["low", "medium", "high"], id: \.self) { p in Button(label(p)) { _ = model.run("update", ["id": item.id, "expected-revision": String(item.revision), "priority": p]) } } }
                     Menu(L("颜色")) { ForEach(["none", "red", "orange", "green", "blue", "purple"], id: \.self) { color in Button(label(color)) { _ = model.run("update", ["id": item.id, "expected-revision": String(item.revision), "color": color]) } } }

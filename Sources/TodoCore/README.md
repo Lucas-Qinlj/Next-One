@@ -40,3 +40,9 @@ CodexSetup implements explicitly authorized install/status/uninstall with a next
 `ReminderSync.swift` 定义字段投影、完成状态判定和受管对象记录。数据目录内 `reminder-sync.json` 为版本化独立 sidecar，`reminder-sync.lock` 提供进程互斥；旧 CLI 保存任务 Snapshot 不会擦除映射，因此任务 schema 保持 v3。任务最新快照与删除记录可重建未发送意图；创建前保存映射意图，来源标记用于系统写入后中断恢复。映射使用数据集 ID + Todo UUID，复制到不同路径的映射拒绝自动启用。
 
 `Store.applyReminderCompletion` 在同一事务内复用 update 的 revision 和父子校验，再保留系统完成时间。同步失败不回滚用户本地保存。验证：`swift test --filter Reminder`，系统／iCloud 证据见[验收记录](../../docs/acceptance/calendar-reminders-sync.md)。
+
+## Codex 项目只读适配与交接文本
+
+`CodexHandoff.swift` 独立于 Store：`CodexProjects` 以 SQLite READONLY/query_only 读取 Codex 的 projects/project_roots，不创建数据库、不迁移、不读会话或凭据。支持显式绝对 CODEX_HOME，否则使用用户主目录下 .codex；当前只支持经过验证的 state_5.sqlite 所需表列，未知版本明确失败，不扫描备份或合并 JSON。读取事务保留 WAL 一致性，短忙碌超时不阻塞 UI 主线程。
+
+`CodexHandoff` 负责路径精确匹配、目录校验、纯文本 neo 包装和 URL 编码。用户补充指令原样追加，空输入无默认指令；Codex URL 无自动发送参数。附件沿用 Store 的实际记录与持久化路径，本功能不扩大既有图片／视频导入类型限制。验证位于 TodoAppTests/CodexHandoffTests，包含数据库夹具、真实 WAL、路径及消息往返和 UI 会话状态。

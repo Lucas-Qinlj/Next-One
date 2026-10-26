@@ -86,3 +86,13 @@ Managed setup: Settings copies an explicit installation/update request. App star
 `ReminderSync` 由 AppModel 持有，统一管理 EventKit 权限与串行对账。五秒检查本地变化、约三十秒兜底对账，系统变更通知也触发读取；先接收系统完成状态再发布本地字段。拉取二十秒超时，普通失败退避静默重试；权限、目标和逐项冲突在设置中反馈。
 
 `ReminderSyncView` 提供开关、账户与清单下拉、问号、目标迁移确认、冲突暂停／恢复。父任务完成复用现有级联规则。应用关闭时 CLI 仍可保存，下次启动补同步；无额外服务或后台进程。打包补充提醒事项权限用途说明。见[Spec](../../docs/spec/2026-10-26/calendar-reminders-sync.md)及[验收](../../docs/acceptance/calendar-reminders-sync.md)。
+
+## 从待办打开 Codex
+
+任务行右键首行的“创建 Codex 会话”使用灰色 ChatGPT Blossom，原生分隔线之后保留旧菜单项。`CodexHandoffSession` 管理目录／项目选择、指令草稿与失败重试；`CodexHandoffView` 使用原生 sheet，`HandoffTextView` 处理 Enter、Shift+Enter 和 marked text。sheet 与原窗口复用 `TodoScrollbarPolicy`，不修改系统偏好。
+
+启动交接先保存已有详情草稿；异步只读查询 Codex 项目，按精确规范化目录匹配。确认时重新校验项目目录和最新任务／附件，组装易读 `<neo>` 文本，通过 `NSWorkspace.open` 打开预填页面；不自动发送或修改任务状态。无项目聊天不在首版；未分类／无匹配目录必须选择已有项目。失败保留指令，取消使尚未完成的准备操作失效。
+
+Logo 为 SwiftPM 应用资源，打包时携带 `TodoAI_TodoApp.bundle`；来源与归属见[素材说明](../../docs/assets/chatgpt-mark.md)。仓库 Skill 更新不等于全局安装已更新。
+
+验证：`swift test --filter CodexHandoffTests`；另运行 LocalizationTests 和 ScrollbarLayoutTests。真实窗口与 Codex 端验证边界见[验收记录](../../docs/acceptance/codex-task-handoff.md)，规则见[Spec](../../docs/spec/2026-10-27/codex-task-handoff.md)。
